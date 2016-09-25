@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="StrassenbilderMeta" Class="StrassenbilderMetaDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\StrassenbilderMeta.mdf;Integrated Security=True" SettingsObjectName="Schneedetektion.Data.Properties.Settings" SettingsPropertyName="StrassenbilderMetaConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Cameras" Member="Cameras">
+    <Type Name="Camera">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Site" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Comment" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Coordinates" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="North" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="East" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Elevation" Type="System.Double" DbType="Float" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Images" Member="Images">
+    <Type Name="Image">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Place" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="DateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="TimeZone" Type="System.String" DbType="NVarChar(5)" CanBeNull="true" />
+      <Column Name="UnixTime" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Snow" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Polygons" Member="Polygons">
+    <Type Name="Polygon">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CameraName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ImageArea" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ImageWidth" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="ImageHeight" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="PolygonPointCollection" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="BgrSnow" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="BgrNormal" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>
