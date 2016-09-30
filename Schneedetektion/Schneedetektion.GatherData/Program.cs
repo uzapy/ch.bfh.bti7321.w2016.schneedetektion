@@ -27,11 +27,34 @@ namespace Schneedetektion.GatherData
                 "mvk126", "mvk127", "mvk128", "mvk129", "mvk131", "mvk132", "mvk134", "mvk156", "mvk157", "mvk158", "mvk159", "mvk160", "mvk161", "mvk162",
                 "mvk163", "mvk164" };
 
-            // RegisterImagesInDB();
+            RegisterImagesInDB();
             // UpdateDateTime();
             // RemoveDataWithoutFile();
             // GetLiveImage();
-            MoveOldPictures();
+            // MoveOldPictures();
+        }
+
+        private static void MoveOldPictures()
+        {
+            foreach (string folder in cameraNames)
+            {
+                if (Directory.Exists(oldFolderName + "\\" + folder))
+                {
+                    subDirectories = Directory.GetDirectories(oldFolderName + "\\" + folder);
+
+                    foreach (var subDir in subDirectories)
+                    {
+                        fileNames = Directory.GetFiles(subDir);
+
+                        foreach (var file in fileNames)
+                        {
+                            string newFile = Path.Combine(folderName, folder, Path.GetFileName(file));
+                            File.Copy(file, newFile, true);
+                            Console.WriteLine(file + " => " + Path.Combine(folderName, folder, Path.GetFileName(file)));
+                        }
+                    }
+                }
+            }
         }
 
         private static void RegisterImagesInDB()
@@ -42,29 +65,62 @@ namespace Schneedetektion.GatherData
 
                 string folder = folderName + "\\" + cameraName;
 
-                foreach (var subFolder in Directory.GetDirectories(folder))
-                {
-                    Console.WriteLine(subFolder);
+                Console.WriteLine(folder);
 
-                    foreach (var imageName in Directory.GetFiles(subFolder))
+                DateTime lowerLimit = new DateTime(2014, 1, 1);
+
+                if (Directory.Exists(folder))
+                {
+                    foreach (var imageName in Directory.GetFiles(folder))
                     {
                         Image image = new Image();
                         image.Name = Path.GetFileNameWithoutExtension(imageName);
                         image.Place = cameraName;
-                        int year = Int32.Parse(image.Name.Substring(7, 4));
-                        int month = Int32.Parse(image.Name.Substring(11, 2));
-                        int day = Int32.Parse(image.Name.Substring(13, 2));
-                        int hour = Int32.Parse(image.Name.Substring(16, 2));
-                        int minutes = Int32.Parse(image.Name.Substring(18, 2));
-                        int seconds = Int32.Parse(image.Name.Substring(20, 2));
-                        image.DateTime = new DateTime(year, month, day, hour, minutes, seconds);
-                        dataContext.Images.InsertOnSubmit(image);
+
+                        string fileContent = Encoding.ASCII.GetString(File.ReadAllBytes(imageName));
+
+                        if (!string.IsNullOrEmpty(fileContent))
+                        {
+                            string[] splitFileContent = fileContent.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+                            string dat = splitFileContent.Where(sfc => sfc.StartsWith("DAT")).FirstOrDefault().Split('=').Last();
+                            string tim = splitFileContent.Where(sfc => sfc.StartsWith("TIM")).FirstOrDefault().Split('=').Last();
+                            string tzn = splitFileContent.Where(sfc => sfc.StartsWith("TZN")).FirstOrDefault().Split('=').Last();
+                            string tit = splitFileContent.Where(sfc => sfc.StartsWith("TIT")).FirstOrDefault().Split('=').Last();
+
+                            try
+                            {
+                                DateTime dateTime = DateTime.ParseExact((dat + " " + tim), "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
+                                image.DateTime = dateTime;
+                                image.TimeZone = tzn;
+                                image.UnixTime = double.Parse(tit, CultureInfo.InvariantCulture);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                            }
+                        }
+                        else
+                        {
+                            continue;
+                        }
+
+
+                        if (!(image.DateTime < lowerLimit || image.DateTime > DateTime.Now || image.UnixTime < 1417500000))
+                        {
+                            dataContext.Images.InsertOnSubmit(image);
+                        }
+                        Console.WriteLine(image.Name + " | " + image.Place + " | " + image.DateTime + " | " + image.UnixTime);
+                        // dataContext.SubmitChanges();
                     }
                 }
+
                 dataContext.SubmitChanges();
 
                 Console.WriteLine("Finished!");
             }
+
+            Console.ReadLine();
         }
 
         private static void UpdateDateTime()
@@ -165,29 +221,6 @@ namespace Schneedetektion.GatherData
             }
 
             Console.ReadLine();
-        }
-
-        private static void MoveOldPictures()
-        {
-            foreach (string folder in cameraNames)
-            {
-                if (Directory.Exists(oldFolderName + "\\" + folder))
-                {
-                    subDirectories = Directory.GetDirectories(oldFolderName + "\\" + folder);
-
-                    foreach (var subDir in subDirectories)
-                    {
-                        fileNames = Directory.GetFiles(subDir);
-
-                        foreach (var file in fileNames)
-                        {
-                            string newFile = Path.Combine(folderName, folder, Path.GetFileName(file));
-                            File.Copy(file, newFile, true);
-                            Console.WriteLine(file + " => " + Path.Combine(folderName, folder, Path.GetFileName(file)));
-                        }
-                    } 
-                }
-            }
         }
     }
 }
