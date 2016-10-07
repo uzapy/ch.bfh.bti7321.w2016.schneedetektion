@@ -28,9 +28,8 @@ namespace Schneedetektion.ImagePlayground
             noSnowButton.IsChecked = true;
             dayButton.IsChecked = true;
             goodLightingButton.IsChecked = true;
-
-            var maxDate = new DateTime(2015, 1, 1);
-            var imageInfos = dataContext.Images.Where(i => i.DateTime < maxDate && i.Place == "mvk021").OrderBy(i => i.ID);
+            
+            var imageInfos = dataContext.Images.Where(i => i.Place == "mvk021" && i.Snow == null).OrderBy(i => i.ID);
             foreach (var image in imageInfos)
             {
                 images.Add(new ImageViewModel(image));
