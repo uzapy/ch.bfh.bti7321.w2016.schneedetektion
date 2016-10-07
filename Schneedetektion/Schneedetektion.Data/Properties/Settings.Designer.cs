@@ -36,7 +36,7 @@ namespace Schneedetektion.Data.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
         [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Projekte_GitHub\\ch.bfh.bti" +
-            "7302.w2015.schneedetektion\\Schneedetektion\\Schneedetektion.Data\\StrassenbilderMe" +
+            "7321.w2016.schneedetektion\\Schneedetektion\\Schneedetektion.Data\\StrassenbilderMe" +
             "ta.mdf;Integrated Security=True")]
         public string StrassenbilderMetaConnectionString {
             get {
