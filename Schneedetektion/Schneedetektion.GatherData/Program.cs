@@ -22,10 +22,11 @@ namespace Schneedetektion.GatherData
         static void Main(string[] args)
         {
             //cameraNames = dataContext.Cameras.Select(c => c.Name).ToList();
-            cameraNames = new List<string>() { "mvk021", "mvk022", "mvk050", "mvk066", "mvk099", "mvk101", "mvk102", "mvk104", "mvk105", "mvk107", "mvk108",
-                "mvk109", "mvk110", "mvk112", "mvk114", "mvk115", "mvk116", "mvk117", "mvk118", "mvk119", "mvk120", "mvk121", "mvk122", "mvk123", "mvk125",
-                "mvk126", "mvk127", "mvk128", "mvk129", "mvk131", "mvk132", "mvk134", "mvk156", "mvk157", "mvk158", "mvk159", "mvk160", "mvk161", "mvk162",
-                "mvk163", "mvk164" };
+            //cameraNames = new List<string>() { "mvk021", "mvk022", "mvk050", "mvk066", "mvk099", "mvk101", "mvk102", "mvk104", "mvk105", "mvk107", "mvk108",
+            //    "mvk109", "mvk110", "mvk112", "mvk114", "mvk115", "mvk116", "mvk117", "mvk118", "mvk119", "mvk120", "mvk121", "mvk122", "mvk123", "mvk125",
+            //    "mvk126", "mvk127", "mvk128", "mvk129", "mvk131", "mvk132", "mvk134", "mvk156", "mvk157", "mvk158", "mvk159", "mvk160", "mvk161", "mvk162",
+            //    "mvk163", "mvk164" };
+            cameraNames = new List<string>() { "mvk106" };
 
             RegisterImagesInDB();
             // UpdateDateTime();

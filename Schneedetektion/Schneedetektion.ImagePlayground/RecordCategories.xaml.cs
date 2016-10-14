@@ -29,7 +29,7 @@ namespace Schneedetektion.ImagePlayground
             dayButton.IsChecked = true;
             goodLightingButton.IsChecked = true;
             
-            var imageInfos = dataContext.Images.Where(i => i.Place == "mvk105" && i.Snow == null).OrderBy(i => i.ID);
+            var imageInfos = dataContext.Images.Where(i => i.Place == "mvk106" && i.Snow == null).OrderBy(i => i.ID);
             foreach (var image in imageInfos)
             {
                 images.Add(new ImageViewModel(image));
