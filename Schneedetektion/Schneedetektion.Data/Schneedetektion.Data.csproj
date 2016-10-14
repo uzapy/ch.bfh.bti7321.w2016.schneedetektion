@@ -103,6 +103,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Queries\coverageOfCategories.sql" />
     <Content Include="StrassenbilderMeta.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
