@@ -105,6 +105,22 @@
             </Button>
         </StackPanel>
 
-        <Image x:Name="currentImage" DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <Image x:Name="currentImage" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+
+            <WrapPanel Grid.Column="1">
+                <Image x:Name="nextImage0" Width="315" />
+                <Image x:Name="nextImage1" Width="315" />
+                <Image x:Name="nextImage2" Width="315" />
+                <Image x:Name="nextImage3" Width="315" />
+                <Image x:Name="nextImage4" Width="315" />
+                <Image x:Name="nextImage5" Width="315" />
+            </WrapPanel>
+        </Grid>
     </DockPanel>
 </UserControl>
