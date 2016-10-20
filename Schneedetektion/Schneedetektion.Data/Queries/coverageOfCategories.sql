@@ -1,1 +1,1 @@
-﻿select count(*) from [Images] where [Snow] is null and [Place] = 'mvk110';
+﻿select count(*) from [Images] where [Snow] is null and [Place] = 'mvk120';

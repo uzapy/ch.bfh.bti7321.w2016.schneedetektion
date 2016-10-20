@@ -29,7 +29,7 @@ namespace Schneedetektion.ImagePlayground
             dayButton.IsChecked = true;
             goodLightingButton.IsChecked = true;
             
-            var imageInfos = dataContext.Images.Where(i => i.Place == "mvk110" && i.Snow == null).OrderBy(i => i.ID);
+            var imageInfos = dataContext.Images.Where(i => i.Place == "mvk120" && i.Snow == null).OrderBy(i => i.ID);
             foreach (var image in imageInfos)
             {
                 images.Add(new ImageViewModel(image));
@@ -39,12 +39,12 @@ namespace Schneedetektion.ImagePlayground
             {
                 currentImage.Source = images[currentImageViewModel].Bitmap;
 
-                nextImage0.Source = images[currentImageViewModel + 1].Bitmap;
-                nextImage1.Source = images[currentImageViewModel + 2].Bitmap;
-                nextImage2.Source = images[currentImageViewModel + 3].Bitmap;
-                nextImage3.Source = images[currentImageViewModel + 4].Bitmap;
-                nextImage4.Source = images[currentImageViewModel + 5].Bitmap;
-                nextImage5.Source = images[currentImageViewModel + 6].Bitmap;
+                //nextImage0.Source = images[currentImageViewModel + 1].Bitmap;
+                //nextImage1.Source = images[currentImageViewModel + 2].Bitmap;
+                //nextImage2.Source = images[currentImageViewModel + 3].Bitmap;
+                //nextImage3.Source = images[currentImageViewModel + 4].Bitmap;
+                //nextImage4.Source = images[currentImageViewModel + 5].Bitmap;
+                //nextImage5.Source = images[currentImageViewModel + 6].Bitmap;
             }
         }
         #endregion
@@ -158,12 +158,12 @@ namespace Schneedetektion.ImagePlayground
                 currentImage.Source = images[currentImageViewModel].Bitmap;
 
 
-                nextImage0.Source = images[currentImageViewModel + 1].Bitmap;
-                nextImage1.Source = images[currentImageViewModel + 2].Bitmap;
-                nextImage2.Source = images[currentImageViewModel + 3].Bitmap;
-                nextImage3.Source = images[currentImageViewModel + 4].Bitmap;
-                nextImage4.Source = images[currentImageViewModel + 5].Bitmap;
-                nextImage5.Source = images[currentImageViewModel + 6].Bitmap;
+                //nextImage0.Source = images[currentImageViewModel + 1].Bitmap;
+                //nextImage1.Source = images[currentImageViewModel + 2].Bitmap;
+                //nextImage2.Source = images[currentImageViewModel + 3].Bitmap;
+                //nextImage3.Source = images[currentImageViewModel + 4].Bitmap;
+                //nextImage4.Source = images[currentImageViewModel + 5].Bitmap;
+                //nextImage5.Source = images[currentImageViewModel + 6].Bitmap;
             }
         }
         #endregion
