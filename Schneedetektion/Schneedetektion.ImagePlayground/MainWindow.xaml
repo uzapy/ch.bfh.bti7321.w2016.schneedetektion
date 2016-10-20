@@ -10,5 +10,8 @@
         <TabItem Header="Categories">
             <local:RecordCategories x:Name="recordCategories" />
         </TabItem>
+        <TabItem Header="Gallery">
+            <local:GalleryView x:Name="galleryView" />
+        </TabItem>
     </TabControl>
 </Window>

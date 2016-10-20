@@ -46,6 +46,8 @@ namespace Schneedetektion.ImagePlayground
             }
         }
 
+        public string Name { get { return image.Name; } }
+
         public Data.Image Image
         {
             get
