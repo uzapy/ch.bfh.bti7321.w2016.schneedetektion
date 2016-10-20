@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schneedetektion.GatherData"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schneedetektion.ImagePlayground", "Schneedetektion.ImagePlayground\Schneedetektion.ImagePlayground.csproj", "{49B7A4D8-CCF8-46B9-8467-35215A17F25F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schneedetektion.OpenCV", "Schneedetektion.OpenCV\Schneedetektion.OpenCV.csproj", "{698FF3D6-6293-4BB0-9FF6-F87669DD6B2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{49B7A4D8-CCF8-46B9-8467-35215A17F25F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49B7A4D8-CCF8-46B9-8467-35215A17F25F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49B7A4D8-CCF8-46B9-8467-35215A17F25F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{698FF3D6-6293-4BB0-9FF6-F87669DD6B2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{698FF3D6-6293-4BB0-9FF6-F87669DD6B2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{698FF3D6-6293-4BB0-9FF6-F87669DD6B2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{698FF3D6-6293-4BB0-9FF6-F87669DD6B2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

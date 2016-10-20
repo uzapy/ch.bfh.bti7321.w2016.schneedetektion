@@ -84,11 +84,19 @@
     <Compile Include="GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HistogramViewer.xaml.cs">
+      <DependentUpon>HistogramViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SendImageEventArgs.cs" />
     <Compile Include="ImageViewModel.cs" />
     <Compile Include="RecordCategories.xaml.cs">
       <DependentUpon>RecordCategories.xaml</DependentUpon>
     </Compile>
     <Page Include="GalleryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HistogramViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -175,6 +183,10 @@
     <ProjectReference Include="..\Schneedetektion.Data\Schneedetektion.Data.csproj">
       <Project>{6d89ff74-62a0-48d4-9c19-2f83cbfd112f}</Project>
       <Name>Schneedetektion.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Schneedetektion.OpenCV\Schneedetektion.OpenCV.csproj">
+      <Project>{698ff3d6-6293-4bb0-9ff6-f87669dd6b2e}</Project>
+      <Name>Schneedetektion.OpenCV</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

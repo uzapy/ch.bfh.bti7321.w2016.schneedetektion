@@ -54,6 +54,10 @@ namespace Schneedetektion.ImagePlayground
         }
         #endregion
 
+        #region Properties
+        public event EventHandler<SendImageEventArgs> SendImage;
+        #endregion
+
         #region Event Handler
         private void datePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -119,6 +123,22 @@ namespace Schneedetektion.ImagePlayground
                 {
                     selectedImage = images[imageContainer.SelectedIndex];
                 }
+            }
+        }
+
+        private void ShowImageHistogram1_Click(object sender, RoutedEventArgs e)
+        {
+            if (SendImage != null)
+            {
+                this.SendImage(this, new SendImageEventArgs(selectedImage, 1));
+            }
+        }
+
+        private void ShowImageHistogram2_Click(object sender, RoutedEventArgs e)
+        {
+            if (SendImage != null)
+            {
+                this.SendImage(this, new SendImageEventArgs(selectedImage, 2));
             }
         }
         #endregion

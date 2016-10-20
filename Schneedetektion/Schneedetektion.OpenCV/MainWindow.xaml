@@ -1,0 +1,9 @@
+﻿<Window x:Class="Schneedetektion.OpenCV.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Schneedetektion.OpenCV"
+        Title="Schneedetektion OpenCV" Height="500" Width="700" WindowState="Maximized">
+    <Grid>
+        <Image x:Name="maskedImage" />
+    </Grid>
+</Window>
