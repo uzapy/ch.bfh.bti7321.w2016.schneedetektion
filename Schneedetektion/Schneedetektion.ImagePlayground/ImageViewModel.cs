@@ -26,7 +26,7 @@ namespace Schneedetektion.ImagePlayground
                     {
                         if (Directory.Exists(folderName))
                         {
-                            bitmap = new BitmapImage(new Uri(Path.Combine(folderName, image.Place, image.Name + ".jpg")));
+                            bitmap = new BitmapImage(new Uri(this.FileName));
                         }
                         else
                         {
@@ -53,6 +53,14 @@ namespace Schneedetektion.ImagePlayground
             get
             {
                 return image;
+            }
+        }
+
+        public string FileName
+        {
+            get
+            {
+                return Path.Combine(folderName, image.Place, image.Name + ".jpg");
             }
         }
     }
