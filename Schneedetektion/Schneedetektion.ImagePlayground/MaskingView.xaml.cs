@@ -1,0 +1,94 @@
+﻿using Schneedetektion.Data;
+using System.Linq;
+using System.Windows.Controls;
+
+namespace Schneedetektion.ImagePlayground
+{
+    public partial class MaskingView : UserControl
+    {
+        #region Fields
+        private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
+        private PolygonHelper polygonHelper;
+        private ImageViewModel imageViewModel;
+        #endregion
+
+        #region Constructor
+        public MaskingView()
+        {
+            InitializeComponent();
+
+            polygonHelper = new PolygonHelper(polygonCanvas);
+            selectedArea.ItemsSource = polygonHelper.ImageAreas;
+            selectedArea.SelectedItem = selectedArea.Items[0];
+        }
+
+        #endregion
+
+        #region Event Handler
+        private void selectedArea_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            polygonHelper.SetSelectedArea(selectedArea.SelectedIndex);
+        }
+
+        private void newPolygon_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            polygonHelper.NewPolygon(selectedArea.SelectedIndex);
+        }
+
+        private void savePolygon_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Polygon p = new Polygon();
+            p.CameraName = imageViewModel.Image.Place;
+            p.ImageArea = polygonHelper.ImageAreas[selectedArea.SelectedIndex];
+            p.ImageWidth = maskToolImage.ActualWidth;
+            p.ImageHeight = maskToolImage.ActualHeight;
+            p.PolygonPointCollection = polygonHelper.GetPointCollection(maskToolImage.ActualHeight, maskToolImage.ActualWidth);
+            dataContext.Polygons.InsertOnSubmit(p);
+            dataContext.SubmitChanges();
+        }
+
+        private void deletePoint_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            polygonHelper.DeleteLastPoint();
+        }
+
+        private void maskToolImage_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            imageWidth.Text = "W: " + maskToolImage.ActualWidth.ToString("0.00");
+            imageHeight.Text = "H: " + maskToolImage.ActualHeight.ToString("0.00");
+            LoadSavedPolygons();
+        }
+
+        private void polygonCanvas_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            pointerXPosition.Text = "X: " + e.GetPosition(maskToolImage).X.ToString("0:00");
+            pointerYPosition.Text = "Y: " + e.GetPosition(maskToolImage).Y.ToString("0:00");
+        }
+
+        private void polygonCanvas_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            polygonHelper.SetPoint(e.GetPosition(maskToolImage));
+        }
+        #endregion
+
+        #region Methods
+        public void ShowImage(ImageViewModel selectedImage)
+        {
+            imageViewModel = selectedImage;
+            maskToolImage.Source = selectedImage.Bitmap;
+            imageName.Text = "Picture: " + selectedImage.Name;
+            LoadSavedPolygons();
+        }
+
+        private void LoadSavedPolygons()
+        {
+            polygonCanvas.Children.Clear();
+            var dbPolygons = dataContext.Polygons.Where(p => p.CameraName == imageViewModel.Image.Place);
+            foreach (Polygon dbPolygon in dbPolygons)
+            {
+                polygonHelper.LoadPolygon(dbPolygon.PolygonPointCollection, dbPolygon.ImageArea, maskToolImage.ActualHeight, maskToolImage.ActualWidth);
+            }
+        }
+        #endregion
+    }
+}

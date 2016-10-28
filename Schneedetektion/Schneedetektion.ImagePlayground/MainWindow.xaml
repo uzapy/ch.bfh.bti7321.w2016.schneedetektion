@@ -7,14 +7,17 @@
         KeyDown="Window_KeyDown">
 
     <TabControl>
-        <TabItem Header="Categories">
-            <local:RecordCategories x:Name="recordCategories" />
-        </TabItem>
         <TabItem Header="Gallery">
             <local:GalleryView x:Name="galleryView" />
         </TabItem>
-        <TabItem Header="Histogram">
+        <TabItem Header="Categories">
+            <local:RecordCategories x:Name="recordCategories" />
+        </TabItem>
+        <TabItem Header="Histogram" x:Name="histogramTab">
             <local:HistogramViewer x:Name="histogramViewer" />
+        </TabItem>
+        <TabItem Header="Masking-Tool" x:Name="maskingToolTab">
+            <local:MaskingView x:Name="maskingTool" />
         </TabItem>
     </TabControl>
 </Window>

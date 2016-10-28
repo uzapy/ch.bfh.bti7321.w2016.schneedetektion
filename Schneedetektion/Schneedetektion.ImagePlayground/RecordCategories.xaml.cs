@@ -1,5 +1,4 @@
 ﻿using Schneedetektion.Data;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -47,10 +46,6 @@ namespace Schneedetektion.ImagePlayground
                 nextImage5.Source = images[currentImageViewModel + 6].Bitmap;
             }
         }
-        #endregion
-
-        #region Properties
-
         #endregion
 
         #region Methods

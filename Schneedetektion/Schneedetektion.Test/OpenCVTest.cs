@@ -1,8 +1,5 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Windows.Media.Imaging;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Schneedetektion.OpenCV;
-using System.IO;
 using System.Collections.Generic;
 
 namespace Schneedetektion.Test

@@ -4,13 +4,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System;
 
 namespace Schneedetektion.ImagePlayground
 {
     public partial class HistogramViewer : UserControl
     {
-        #region MyRegion
+        #region Fields
         private OpenCVHelper openCVHelper;
         private ImageViewModel imageViewModel1;
         private ImageViewModel imageViewModel2;
@@ -27,10 +26,10 @@ namespace Schneedetektion.ImagePlayground
         }
         #endregion
 
-        #region Event Handler
-        public void ShowImage(ImageViewModel selectedImage, int panel)
+        #region Methods
+        public void ShowImage(ImageViewModel selectedImage, EPanel panel)
         {
-            if (panel == 1)
+            if (panel == EPanel.HistogramLeft)
             {
                 imageViewModel1 = selectedImage;
                 image1.Source = imageViewModel1.Bitmap;
@@ -44,14 +43,14 @@ namespace Schneedetektion.ImagePlayground
                     canvas1.Children.Add(GetLine(histogram1[2][i], Brushes.Red, i));
                 }
             }
-            else if (panel == 2)
+            else if (panel == EPanel.HistogramRight)
             {
                 imageViewModel2 = selectedImage;
                 image2.Source = imageViewModel2.Bitmap;
                 histogram2 = openCVHelper.GetHistogram(imageViewModel2.FileName);
 
                 canvas2.Children.Clear();
-                for (int i = 0; i < histogram1[0].Length; i++)
+                for (int i = 0; i < histogram2[0].Length; i++)
                 {
                     canvas2.Children.Add(GetLine(histogram2[0][i], Brushes.Blue, i));
                     canvas2.Children.Add(GetLine(histogram2[1][i], Brushes.Green, i));
@@ -59,9 +58,7 @@ namespace Schneedetektion.ImagePlayground
                 }
             }
         }
-        #endregion
 
-        #region Methods
         private Line GetLine(float value, SolidColorBrush brush, int position)
         {
             Line l = new Line();

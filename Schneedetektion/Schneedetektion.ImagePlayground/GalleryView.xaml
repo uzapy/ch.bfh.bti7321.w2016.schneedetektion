@@ -41,6 +41,7 @@
                 <ContextMenu Name="ShowHistogram" StaysOpen="True">
                     <MenuItem Header="Show Histogram 1" Click="ShowImageHistogram1_Click" />
                     <MenuItem Header="Show Histogram 2" Click="ShowImageHistogram2_Click" />
+                    <MenuItem Header="Select for Masking-Tool" Click="SelectForMaskTool_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.ItemTemplate>

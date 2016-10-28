@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="Schneedetektion.ImagePlayground.MaskingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Schneedetektion.ImagePlayground">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <TextBlock x:Name="imageName" />
+            <TextBlock x:Name="imageHeight" Width="100" TextAlignment="Center" />
+            <TextBlock x:Name="imageWidth" Width="100" TextAlignment="Center" />
+            <TextBlock x:Name="pointerXPosition" Width="100" TextAlignment="Center" />
+            <TextBlock x:Name="pointerYPosition" Width="100" TextAlignment="Center" />
+            <ComboBox x:Name="selectedArea" SelectionChanged="selectedArea_SelectionChanged" Width="150" />
+            <Button x:Name="newPolygon" Content="New" Width="50" Click="newPolygon_Click" />
+            <Button x:Name="savePolygon" Content="Save" Width="50" Click="savePolygon_Click" />
+            <Button x:Name="deletePoint" Content="Delete last Point" Width="100" Click="deletePoint_Click" />
+        </StackPanel>
+        <Grid x:Name="canvasGrid">
+            <Image x:Name="maskToolImage" HorizontalAlignment="Left" VerticalAlignment="Top" SizeChanged="maskToolImage_SizeChanged" />
+            <Canvas x:Name="polygonCanvas" MouseMove="polygonCanvas_MouseMove" MouseLeftButtonDown="polygonCanvas_MouseLeftButtonDown" Background="Transparent" />
+        </Grid>
+    </DockPanel>
+</UserControl>

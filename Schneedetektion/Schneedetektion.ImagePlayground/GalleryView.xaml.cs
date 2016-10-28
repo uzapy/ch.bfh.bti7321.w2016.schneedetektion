@@ -130,7 +130,7 @@ namespace Schneedetektion.ImagePlayground
         {
             if (SendImage != null)
             {
-                this.SendImage(this, new SendImageEventArgs(selectedImage, 1));
+                this.SendImage(this, new SendImageEventArgs(selectedImage, EPanel.HistogramLeft));
             }
         }
 
@@ -138,7 +138,15 @@ namespace Schneedetektion.ImagePlayground
         {
             if (SendImage != null)
             {
-                this.SendImage(this, new SendImageEventArgs(selectedImage, 2));
+                this.SendImage(this, new SendImageEventArgs(selectedImage, EPanel.HistogramRight));
+            }
+        }
+
+        private void SelectForMaskTool_Click(object sender, RoutedEventArgs e)
+        {
+            if (SendImage != null)
+            {
+                this.SendImage(this, new SendImageEventArgs(selectedImage, EPanel.MaskTool));
             }
         }
         #endregion
