@@ -21,7 +21,7 @@ namespace Schneedetektion.ImagePlayground
         };
         private ObservableCollection<string> categoryNames = new ObservableCollection<string>()
         {
-            "all", "snow", "no snow", "night", "dusk", "day", "fog", "precipitation", "bad light", "good light"
+            "all", "Snow", "No Snow", "Night", "Dusk", "Day", "Foggy", "Cloudy", "Precipitation", "Bad Lighting", "Good Lighting"
         };
         private ObservableCollection<ImageViewModel> images = new ObservableCollection<ImageViewModel>();
 
@@ -126,6 +126,21 @@ namespace Schneedetektion.ImagePlayground
             }
         }
 
+        private void imageContainer_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            menuItemSnow.IsChecked         = selectedImage.Image.Snow.Value;
+            menuItemNoSnow.IsChecked       = selectedImage.Image.NoSnow.Value;
+            menuItemNight.IsChecked        = selectedImage.Image.Night.Value;
+            menuItemDusk.IsChecked         = selectedImage.Image.Dusk.Value;
+            menuItemDay.IsChecked          = selectedImage.Image.Day.Value;
+            menuItemFoggy.IsChecked        = selectedImage.Image.Foggy.Value;
+            menuItemCloudy.IsChecked       = selectedImage.Image.Cloudy.Value;
+            menuItemCloudy.IsChecked       = selectedImage.Image.Cloudy.Value;
+            menuItemRainy.IsChecked        = selectedImage.Image.Rainy.Value;
+            menuItemBadLighting.IsChecked  = selectedImage.Image.BadLighting.Value;
+            menuItemGoodLighting.IsChecked = selectedImage.Image.GoodLighting.Value;
+        }
+
         private void ShowImageHistogram1_Click(object sender, RoutedEventArgs e)
         {
             if (SendImage != null)
@@ -149,6 +164,68 @@ namespace Schneedetektion.ImagePlayground
                 this.SendImage(this, new SendImageEventArgs(selectedImage, EPanel.MaskTool));
             }
         }
+
+        private void Category_Click(object sender, RoutedEventArgs e)
+        {
+            string tag = (string)((MenuItem)sender).CommandParameter;
+            bool isChecked = (bool)((MenuItem)sender).IsChecked;
+
+            switch (tag)
+            {
+                case "Snow":
+                case "NoSnow":
+                    selectedImage.Image.Snow   = !selectedImage.Image.Snow;
+                    selectedImage.Image.NoSnow = !selectedImage.Image.NoSnow;
+                    break;
+
+                case "Night":
+                    if (isChecked)
+                    {
+                        selectedImage.Image.Night = isChecked;
+                        selectedImage.Image.Dusk = !isChecked;
+                        selectedImage.Image.Day = !isChecked;
+                    }
+                    break;
+                case "Dusk":
+                    if (isChecked)
+                    {
+                        selectedImage.Image.Night = !isChecked;
+                        selectedImage.Image.Dusk = isChecked;
+                        selectedImage.Image.Day = !isChecked;
+                    }
+                    break;
+                case "Day":
+                    if (isChecked)
+                    {
+                        selectedImage.Image.Night = !isChecked;
+                        selectedImage.Image.Dusk = !isChecked;
+                        selectedImage.Image.Day = isChecked;
+                    }
+                    break;
+
+                case "Foggy":
+                    selectedImage.Image.Foggy = !selectedImage.Image.Foggy;
+                    break;
+                case "Cloudy":
+                    selectedImage.Image.Cloudy = !selectedImage.Image.Cloudy;
+                    break;
+                case "Rainy":
+                    selectedImage.Image.Rainy = !selectedImage.Image.Rainy;
+                    break;
+
+                case "BadLighting":
+                case "GoodLighting":
+                    selectedImage.Image.BadLighting = !selectedImage.Image.BadLighting;
+                    selectedImage.Image.GoodLighting = !selectedImage.Image.GoodLighting;
+                    break;
+
+                default:
+                    break;
+            }
+
+            dataContext.SubmitChanges();
+            ReloadImages();
+        }
         #endregion
 
         #region Helper Methods
@@ -159,17 +236,18 @@ namespace Schneedetektion.ImagePlayground
             int minuteSpan = 6;
             DateTime exactTime = new DateTime(year, month, day, hour, minute, 0);
 
-            // "all", "snow", "no snow", "night", "dusk", "day", "fog", "precipitation", "bad light", "good light"
+            // "all", "Snow", "No Snow", "Night", "Dusk", "Day", "Foggy", "Cloudy", "Precipitation", "Bad Lighting", "Good Lighting"
             bool all           = selectedCategories.Contains("all") || selectedCategories.Count() >= 9;
-            bool snow          = selectedCategories.Contains("snow");
-            bool noSnow        = selectedCategories.Contains("no snow");
-            bool night         = selectedCategories.Contains("night");
-            bool dusk          = selectedCategories.Contains("dusk");
-            bool dayTime       = selectedCategories.Contains("day");
-            bool fog           = selectedCategories.Contains("fog");
-            bool precipitation = selectedCategories.Contains("precipitation");
-            bool badLight      = selectedCategories.Contains("bad light");
-            bool goodLight     = selectedCategories.Contains("good light");
+            bool snow          = selectedCategories.Contains("Snow");
+            bool noSnow        = selectedCategories.Contains("No Snow");
+            bool night         = selectedCategories.Contains("Night");
+            bool dusk          = selectedCategories.Contains("Dusk");
+            bool dayTime       = selectedCategories.Contains("Day");
+            bool foggy         = selectedCategories.Contains("Foggy");
+            bool cloudy        = selectedCategories.Contains("Cloudy");
+            bool precipitation = selectedCategories.Contains("Precipitation");
+            bool badLighting   = selectedCategories.Contains("Bad Lighting");
+            bool goodLighting  = selectedCategories.Contains("Good Lighting");
 
             var loadedImages = (from i in dataContext.Images
                                 where i.DateTime.Year == year || !hasDate
@@ -182,10 +260,11 @@ namespace Schneedetektion.ImagePlayground
                                 where i.Night == night || all
                                 where i.Dusk == dusk || all
                                 where i.Day == dayTime || all
-                                where i.Foggy == fog || all
+                                where i.Foggy == foggy || all
+                                where i.Cloudy == cloudy || all
                                 where i.Rainy == precipitation || all
-                                where i.BadLighting == badLight || all
-                                where i.GoodLighting == goodLight || all
+                                where i.BadLighting == badLighting || all
+                                where i.GoodLighting == goodLighting || all
                                 where selectedCameras.Contains(i.Place) || selectedCameras.Contains("all")
                                 select i).Distinct().Take(512);
 

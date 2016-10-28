@@ -1,4 +1,5 @@
-﻿using Schneedetektion.ImagePlayground.Properties;
+﻿using Schneedetektion.Data;
+using Schneedetektion.ImagePlayground.Properties;
 using System;
 using System.IO;
 using System.Windows.Media.Imaging;
@@ -8,7 +9,7 @@ namespace Schneedetektion.ImagePlayground
     public class ImageViewModel
     {
         private static string folderName = Settings.Default.WorkingFolder;
-        private Data.Image image;
+        private Image image;
         private BitmapImage bitmap;
 
         public ImageViewModel(Data.Image i)
@@ -46,7 +47,7 @@ namespace Schneedetektion.ImagePlayground
             }
         }
 
-        public Data.Image Image { get { return image; } }
+        public Image Image { get { return image; } }
         public string Name { get { return image.Name; } }
         public int ID { get { return image.ID; } }
 

@@ -31,7 +31,9 @@
                 </StackPanel>
             </GroupBox>
         </StackPanel>
-        <ListView x:Name="imageContainer" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="imageContainer_SelectionChanged">
+        <ListView x:Name="imageContainer" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                  SelectionChanged="imageContainer_SelectionChanged" 
+                  ContextMenuOpening="imageContainer_ContextMenuOpening">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" />
@@ -41,7 +43,22 @@
                 <ContextMenu Name="ShowHistogram" StaysOpen="True">
                     <MenuItem Header="Show Histogram 1" Click="ShowImageHistogram1_Click" />
                     <MenuItem Header="Show Histogram 2" Click="ShowImageHistogram2_Click" />
+                    <Separator />
                     <MenuItem Header="Select for Masking-Tool" Click="SelectForMaskTool_Click" />
+                    <Separator />
+                    <MenuItem Header="Snow" x:Name="menuItemSnow" Click="Category_Click" CommandParameter="Snow" IsCheckable="True" />
+                    <MenuItem Header="No Snow" x:Name="menuItemNoSnow" Click="Category_Click" CommandParameter="NoSnow" IsCheckable="True" />
+                    <Separator />
+                    <MenuItem Header="Night" x:Name="menuItemNight" Click="Category_Click" CommandParameter="Night" IsCheckable="True" />
+                    <MenuItem Header="Dusk" x:Name="menuItemDusk" Click="Category_Click" CommandParameter="Dusk" IsCheckable="True" />
+                    <MenuItem Header="Day" x:Name="menuItemDay" Click="Category_Click" CommandParameter="Day" IsCheckable="True" />
+                    <Separator />
+                    <MenuItem Header="Foggy" x:Name="menuItemFoggy" Click="Category_Click" CommandParameter="Foggy" IsCheckable="True" />
+                    <MenuItem Header="Cloudy" x:Name="menuItemCloudy" Click="Category_Click" CommandParameter="Cloudy" IsCheckable="True" />
+                    <MenuItem Header="Rainy" x:Name="menuItemRainy" Click="Category_Click" CommandParameter="Rainy" IsCheckable="True" />
+                    <Separator />
+                    <MenuItem Header="Bad Lighting" x:Name="menuItemBadLighting" Click="Category_Click" CommandParameter="BadLighting" IsCheckable="True" />
+                    <MenuItem Header="Good Lighting" x:Name="menuItemGoodLighting" Click="Category_Click" CommandParameter="GoodLighting" IsCheckable="True" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.ItemTemplate>
