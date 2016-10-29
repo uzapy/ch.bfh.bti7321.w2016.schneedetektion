@@ -152,7 +152,6 @@ namespace Schneedetektion.ImagePlayground
             {
                 currentImage.Source = images[currentImageViewModel].Bitmap;
 
-
                 nextImage0.Source = images[currentImageViewModel + 1].Bitmap;
                 nextImage1.Source = images[currentImageViewModel + 2].Bitmap;
                 nextImage2.Source = images[currentImageViewModel + 3].Bitmap;
