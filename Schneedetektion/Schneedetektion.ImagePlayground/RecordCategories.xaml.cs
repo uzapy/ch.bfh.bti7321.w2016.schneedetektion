@@ -124,18 +124,21 @@ namespace Schneedetektion.ImagePlayground
 
         private void SaveCategories()
         {
-            images[currentImageViewModel].Image.SaveCategories(
-                snowButton.IsChecked,
-                noSnowButton.IsChecked,
-                nightButton.IsChecked,
-                duskButton.IsChecked,
-                dayButton.IsChecked,
-                foggyButton.IsChecked,
-                cloudyButton.IsChecked,
-                rainyButton.IsChecked,
-                badLightingButton.IsChecked,
-                goodLightingButton.IsChecked);
-            dataContext.SubmitChanges();
+            if (images.Count > currentImageViewModel)
+            {
+                images[currentImageViewModel].Image.SaveCategories(
+                    snowButton.IsChecked,
+                    noSnowButton.IsChecked,
+                    nightButton.IsChecked,
+                    duskButton.IsChecked,
+                    dayButton.IsChecked,
+                    foggyButton.IsChecked,
+                    cloudyButton.IsChecked,
+                    rainyButton.IsChecked,
+                    badLightingButton.IsChecked,
+                    goodLightingButton.IsChecked);
+                dataContext.SubmitChanges();
+            }
         }
 
         private void ChangeImage(int direction)

@@ -27,11 +27,13 @@
             <GroupBox Header="View">
                 <StackPanel Orientation="Vertical">
                     <Slider x:Name="imageSizeSlider" Minimum="100" Maximum="800" LargeChange="1" Value="100" Margin="0,0,0,10" />
-                    <Button x:Name="applyFilter" Content="Apply Filter" Click="applyFilter_Click" />
+                    <Button x:Name="applyFilter" Content="Apply Filter" Click="applyFilter_Click" Margin="0,0,0,10" />
+                    <Button x:Name="nextPage" Content="Next" Click="nextPage_Click" />
                 </StackPanel>
             </GroupBox>
         </StackPanel>
-        <ListView x:Name="imageContainer" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+        <ListView x:Name="imageContainer"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                   SelectionChanged="imageContainer_SelectionChanged" 
                   ContextMenuOpening="imageContainer_ContextMenuOpening">
             <ListView.ItemsPanel>
@@ -65,7 +67,7 @@
                 <DataTemplate>
                     <Grid>
                         <Image Source="{Binding Bitmap}" Width="{Binding ElementName=imageSizeSlider, Path=Value}" />
-                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White"
+                        <TextBlock Text="{Binding Image.Name}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White"
                                    FontSize="{Binding ElementName=imageSizeSlider, Path=Value, Converter={StaticResource SizeConverter}, ConverterParameter=15}" />
                     </Grid>
                 </DataTemplate>

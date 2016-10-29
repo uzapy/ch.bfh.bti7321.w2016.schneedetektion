@@ -76,7 +76,7 @@ namespace Schneedetektion.ImagePlayground
         {
             imageViewModel = selectedImage;
             maskToolImage.Source = selectedImage.Bitmap;
-            imageName.Text = "Picture: " + selectedImage.Name;
+            imageName.Text = "Picture: " + selectedImage.Image.Name;
             LoadSavedPolygons();
         }
 

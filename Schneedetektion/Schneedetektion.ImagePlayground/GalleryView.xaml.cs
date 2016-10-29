@@ -36,6 +36,8 @@ namespace Schneedetektion.ImagePlayground
         private int hour = 0;
         private int minute = 0;
         private bool hasTime = false;
+
+        private int skip = 0;
         #endregion
 
         #region Constructor
@@ -112,17 +114,21 @@ namespace Schneedetektion.ImagePlayground
 
         private void applyFilter_Click(object sender, RoutedEventArgs e)
         {
+            skip = 0;
+            ReloadImages();
+        }
+
+        private void nextPage_Click(object sender, RoutedEventArgs e)
+        {
+            skip += 1024;
             ReloadImages();
         }
 
         private void imageContainer_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (imageContainer.SelectedIndex >= 0)
+            if (imageContainer.SelectedValue != null)
             {
-                if (selectedImage?.Image.ID != images[imageContainer.SelectedIndex].Image.ID)
-                {
-                    selectedImage = images[imageContainer.SelectedIndex];
-                }
+                selectedImage = (ImageViewModel)imageContainer.SelectedValue;
             }
         }
 
@@ -170,57 +176,60 @@ namespace Schneedetektion.ImagePlayground
             string tag = (string)((MenuItem)sender).CommandParameter;
             bool isChecked = (bool)((MenuItem)sender).IsChecked;
 
-            switch (tag)
+            foreach (ImageViewModel selectedImage in imageContainer.SelectedItems)
             {
-                case "Snow":
-                case "NoSnow":
-                    selectedImage.Image.Snow   = !selectedImage.Image.Snow;
-                    selectedImage.Image.NoSnow = !selectedImage.Image.NoSnow;
-                    break;
+                switch (tag)
+                {
+                    case "Snow":
+                    case "NoSnow":
+                        selectedImage.Image.Snow = !selectedImage.Image.Snow;
+                        selectedImage.Image.NoSnow = !selectedImage.Image.NoSnow;
+                        break;
 
-                case "Night":
-                    if (isChecked)
-                    {
-                        selectedImage.Image.Night = isChecked;
-                        selectedImage.Image.Dusk = !isChecked;
-                        selectedImage.Image.Day = !isChecked;
-                    }
-                    break;
-                case "Dusk":
-                    if (isChecked)
-                    {
-                        selectedImage.Image.Night = !isChecked;
-                        selectedImage.Image.Dusk = isChecked;
-                        selectedImage.Image.Day = !isChecked;
-                    }
-                    break;
-                case "Day":
-                    if (isChecked)
-                    {
-                        selectedImage.Image.Night = !isChecked;
-                        selectedImage.Image.Dusk = !isChecked;
-                        selectedImage.Image.Day = isChecked;
-                    }
-                    break;
+                    case "Night":
+                        if (isChecked)
+                        {
+                            selectedImage.Image.Night = isChecked;
+                            selectedImage.Image.Dusk = !isChecked;
+                            selectedImage.Image.Day = !isChecked;
+                        }
+                        break;
+                    case "Dusk":
+                        if (isChecked)
+                        {
+                            selectedImage.Image.Night = !isChecked;
+                            selectedImage.Image.Dusk = isChecked;
+                            selectedImage.Image.Day = !isChecked;
+                        }
+                        break;
+                    case "Day":
+                        if (isChecked)
+                        {
+                            selectedImage.Image.Night = !isChecked;
+                            selectedImage.Image.Dusk = !isChecked;
+                            selectedImage.Image.Day = isChecked;
+                        }
+                        break;
 
-                case "Foggy":
-                    selectedImage.Image.Foggy = !selectedImage.Image.Foggy;
-                    break;
-                case "Cloudy":
-                    selectedImage.Image.Cloudy = !selectedImage.Image.Cloudy;
-                    break;
-                case "Rainy":
-                    selectedImage.Image.Rainy = !selectedImage.Image.Rainy;
-                    break;
+                    case "Foggy":
+                        selectedImage.Image.Foggy = !selectedImage.Image.Foggy;
+                        break;
+                    case "Cloudy":
+                        selectedImage.Image.Cloudy = !selectedImage.Image.Cloudy;
+                        break;
+                    case "Rainy":
+                        selectedImage.Image.Rainy = !selectedImage.Image.Rainy;
+                        break;
 
-                case "BadLighting":
-                case "GoodLighting":
-                    selectedImage.Image.BadLighting = !selectedImage.Image.BadLighting;
-                    selectedImage.Image.GoodLighting = !selectedImage.Image.GoodLighting;
-                    break;
+                    case "BadLighting":
+                    case "GoodLighting":
+                        selectedImage.Image.BadLighting = !selectedImage.Image.BadLighting;
+                        selectedImage.Image.GoodLighting = !selectedImage.Image.GoodLighting;
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                } 
             }
 
             dataContext.SubmitChanges();
@@ -266,7 +275,7 @@ namespace Schneedetektion.ImagePlayground
                                 where i.BadLighting == badLighting || all
                                 where i.GoodLighting == goodLighting || all
                                 where selectedCameras.Contains(i.Place) || selectedCameras.Contains("all")
-                                select i).Distinct().Take(512);
+                                select i).Distinct().Skip(skip).Take(1024);
 
             foreach (var i in loadedImages)
             {

@@ -17,7 +17,10 @@ namespace Schneedetektion.ImagePlayground
         #region Event Handler
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            recordCategories.HandleKey(e);
+            if (recordCategoriesTab.IsSelected)
+            {
+                recordCategories.HandleKey(e); 
+            }
         }
 
         private void GalleryView_SendImage(object sender, SendImageEventArgs e)

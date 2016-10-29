@@ -10,7 +10,7 @@
         <TabItem Header="Gallery">
             <local:GalleryView x:Name="galleryView" />
         </TabItem>
-        <TabItem Header="Categories">
+        <TabItem Header="Categories" x:Name="recordCategoriesTab">
             <local:RecordCategories x:Name="recordCategories" />
         </TabItem>
         <TabItem Header="Histogram" x:Name="histogramTab">
