@@ -120,8 +120,17 @@ namespace Schneedetektion.ImagePlayground
 
         private void nextPage_Click(object sender, RoutedEventArgs e)
         {
-            skip += 1024;
+            skip += 128;
             ReloadImages();
+        }
+
+        private void previousPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (skip > 0)
+            {
+                skip -= 128;
+                ReloadImages();
+            }
         }
 
         private void imageContainer_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -275,7 +284,7 @@ namespace Schneedetektion.ImagePlayground
                                 where i.BadLighting == badLighting || all
                                 where i.GoodLighting == goodLighting || all
                                 where selectedCameras.Contains(i.Place) || selectedCameras.Contains("all")
-                                select i).Distinct().Skip(skip).Take(1024);
+                                select i).Distinct().Skip(skip).Take(128);
 
             foreach (var i in loadedImages)
             {
