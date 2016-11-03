@@ -22,9 +22,7 @@
                 </ListView.ItemsPanel>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
-                            <Image Source="{Binding}" Width="{Binding PixelWidth}" Height="{Binding PixelHeight}" />
-                        </Grid>
+                        <local:PatchView Model="{Binding}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

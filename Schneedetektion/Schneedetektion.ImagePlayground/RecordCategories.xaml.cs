@@ -7,9 +7,6 @@ using System.Windows.Input;
 
 namespace Schneedetektion.ImagePlayground
 {
-    /// <summary>
-    /// Interaction logic for RecordCategories.xaml
-    /// </summary>
     public partial class RecordCategories : UserControl
     {
         #region Fields

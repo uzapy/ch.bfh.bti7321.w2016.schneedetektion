@@ -84,6 +84,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helper\HistogramHelper.cs" />
+    <Compile Include="Helper\PatchViewModel.cs" />
     <Compile Include="Helper\SizeConverter.cs" />
     <Compile Include="Helper\EPanel.cs" />
     <Compile Include="GalleryView.xaml.cs">
@@ -98,6 +100,9 @@
     <Compile Include="Helper\SendImageEventArgs.cs" />
     <Compile Include="Helper\ImageViewModel.cs" />
     <Compile Include="Helper\PolygonHelper.cs" />
+    <Compile Include="PatchView.xaml.cs">
+      <DependentUpon>PatchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RecordCategories.xaml.cs">
       <DependentUpon>RecordCategories.xaml</DependentUpon>
     </Compile>
@@ -125,6 +130,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MaskingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PatchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

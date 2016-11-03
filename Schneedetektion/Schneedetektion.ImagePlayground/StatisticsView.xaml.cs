@@ -5,26 +5,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 
 namespace Schneedetektion.ImagePlayground
 {
     public partial class StatisticsView : UserControl
     {
+        #region Fields
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private Random random = new Random();
         private PolygonHelper polygonHelper;
         private OpenCVHelper openCVHelper = new OpenCVHelper();
         private ImageViewModel imageViewModel;
+        private List<PatchViewModel> patches = new List<PatchViewModel>();
         private IEnumerable<Polygon> polygons;
+        #endregion
 
+        #region Constructor
         public StatisticsView()
         {
             InitializeComponent();
-
             polygonHelper = new PolygonHelper(polygonCanvas);
         }
+        #endregion
 
+        #region Methods
         internal void ShowImage(ImageViewModel selectedImage)
         {
             imageViewModel = selectedImage;
@@ -36,8 +40,10 @@ namespace Schneedetektion.ImagePlayground
             {
                 polygonHelper.LoadPolygon(dbPolygon.PolygonPointCollection, dbPolygon.ImageArea, 500, 409);
             }
-        }
+        } 
+        #endregion
 
+        #region Event Handler
         private void LoadRandom_Click(object sender, RoutedEventArgs e)
         {
             int count = dataContext.Images.Where(i => i.Day.Value).Count();
@@ -46,12 +52,13 @@ namespace Schneedetektion.ImagePlayground
 
         private void CropPatches_Click(object sender, RoutedEventArgs e)
         {
-            imageContainer.Items.Clear();
             foreach (var polygon in polygons)
             {
                 IEnumerable<Point> pointCollection = polygonHelper.GetPointCollection(polygon.PolygonPointCollection);
-                imageContainer.Items.Add(openCVHelper.GetMaskedImage(imageViewModel.FileName, pointCollection));
+                patches.Add(new PatchViewModel(openCVHelper.GetMaskedImage(imageViewModel.FileName, pointCollection), imageViewModel));
+                imageContainer.Items.Add(patches.Last());
             }
         }
+        #endregion
     }
 }

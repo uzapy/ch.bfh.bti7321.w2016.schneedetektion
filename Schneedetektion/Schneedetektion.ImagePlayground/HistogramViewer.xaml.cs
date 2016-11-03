@@ -10,7 +10,7 @@ namespace Schneedetektion.ImagePlayground
     public partial class HistogramViewer : UserControl
     {
         #region Fields
-        private OpenCVHelper openCVHelper;
+        private OpenCVHelper openCVHelper = new OpenCVHelper();
         private ImageViewModel imageViewModel1;
         private ImageViewModel imageViewModel2;
         private List<float[]> histogram1;
@@ -22,7 +22,6 @@ namespace Schneedetektion.ImagePlayground
         public HistogramViewer()
         {
             InitializeComponent();
-            openCVHelper = new OpenCVHelper();
         }
         #endregion
 
