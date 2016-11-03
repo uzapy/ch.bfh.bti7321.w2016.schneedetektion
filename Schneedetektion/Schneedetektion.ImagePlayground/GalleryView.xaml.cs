@@ -180,6 +180,14 @@ namespace Schneedetektion.ImagePlayground
             }
         }
 
+        private void SelectForStatisticsTool_Click(object sender, RoutedEventArgs e)
+        {
+            if (SendImage != null)
+            {
+                this.SendImage(this, new SendImageEventArgs(selectedImage, EPanel.Statistics));
+            }
+        }
+
         private void Category_Click(object sender, RoutedEventArgs e)
         {
             string tag = (string)((MenuItem)sender).CommandParameter;

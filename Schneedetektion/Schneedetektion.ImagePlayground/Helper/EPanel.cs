@@ -4,6 +4,7 @@
     {
         HistogramLeft,
         HistogramRight,
-        MaskTool
+        MaskTool,
+        Statistics
     }
 }

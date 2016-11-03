@@ -101,6 +101,9 @@
     <Compile Include="RecordCategories.xaml.cs">
       <DependentUpon>RecordCategories.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StatisticsView.xaml.cs">
+      <DependentUpon>StatisticsView.xaml</DependentUpon>
+    </Compile>
     <Page Include="GalleryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -126,6 +129,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="RecordCategories.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

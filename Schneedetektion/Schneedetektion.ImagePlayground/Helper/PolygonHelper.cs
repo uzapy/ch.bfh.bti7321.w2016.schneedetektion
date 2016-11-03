@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -41,7 +42,7 @@ namespace Schneedetektion.ImagePlayground
             }
         }
 
-        internal void LoadPolygon(string polygonPointCollection, string imageArea, double viewHeight, double viewWidth)
+        internal void LoadPolygon(string polygonPointCollection, string imageArea, double viewWidth, double viewHeight)
         {
             Polygon polygon = new Polygon();
             polygon.Stroke = fillBrushes[Array.IndexOf(imageAreas, imageArea)];
@@ -50,7 +51,15 @@ namespace Schneedetektion.ImagePlayground
             polygonCanvas.Children.Add(polygon);
             foreach (Point point in JsonConvert.DeserializeObject<PointCollection>(polygonPointCollection))
             {
-                polygon.Points.Add(new Point(point.X * viewHeight, point.Y * viewWidth));
+                polygon.Points.Add(new Point(point.X * viewWidth, point.Y * viewHeight));
+            }
+        }
+
+        internal IEnumerable<Point> GetPointCollection(string polygonPointCollection)
+        {
+            foreach (Point point in JsonConvert.DeserializeObject<PointCollection>(polygonPointCollection))
+            {
+                yield return new Point(point.X, point.Y);
             }
         }
 
@@ -82,12 +91,12 @@ namespace Schneedetektion.ImagePlayground
             }
         }
 
-        internal string GetPointCollection(double viewHeight, double viewWidth)
+        internal string GetPointCollection(double viewWidth, double viewHeight)
         {
             PointCollection pointCollection = new PointCollection();
             foreach (Point point in polygon.Points)
             {
-                pointCollection.Add(new Point(1 / viewHeight * point.X, 1 / viewWidth * point.Y));
+                pointCollection.Add(new Point(1 / viewWidth * point.X, 1 / viewHeight * point.Y));
             }
             return JsonConvert.SerializeObject(pointCollection);
         }

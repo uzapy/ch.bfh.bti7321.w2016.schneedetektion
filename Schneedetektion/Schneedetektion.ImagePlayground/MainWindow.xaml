@@ -19,5 +19,8 @@
         <TabItem Header="Masking-Tool" x:Name="maskingToolTab">
             <local:MaskingView x:Name="maskingTool" />
         </TabItem>
+        <TabItem Header="Statistics" x:Name="statisticsViewTab">
+            <local:StatisticsView x:Name="statisticsView" />
+        </TabItem>
     </TabControl>
 </Window>

@@ -25,15 +25,21 @@ namespace Schneedetektion.ImagePlayground
 
         private void GalleryView_SendImage(object sender, SendImageEventArgs e)
         {
-            if (e.Panel == EPanel.MaskTool)
+            switch (e.Panel)
             {
-                maskingTool.ShowImage(e.SelectedImage);
-                maskingToolTab.IsSelected = true;
-            }
-            else
-            {
-                histogramViewer.ShowImage(e.SelectedImage, e.Panel);
-                histogramTab.IsSelected = true;
+                case EPanel.HistogramLeft:
+                case EPanel.HistogramRight:
+                    histogramViewer.ShowImage(e.SelectedImage, e.Panel);
+                    histogramTab.IsSelected = true;
+                    break;
+                case EPanel.MaskTool:
+                    maskingTool.ShowImage(e.SelectedImage);
+                    maskingToolTab.IsSelected = true;
+                    break;
+                case EPanel.Statistics:
+                    statisticsView.ShowImage(e.SelectedImage);
+                    statisticsViewTab.IsSelected = true;
+                    break;
             }
         } 
         #endregion
