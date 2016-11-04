@@ -70,7 +70,7 @@ namespace Schneedetektion.Test
             ImageViewModel imageViewModel = new ImageViewModel(dataContext.Images.Where(i => i.Day.Value).Skip(random.Next(0, count)).First());
             Polygon polygon = dataContext.Polygons.Where(p => p.CameraName == imageViewModel.Image.Place).First();
             openCVHelper.SaveBitmask(imageViewModel.FileName,
-                @"C:\Users\uzapy\Desktop\astra2016\masks\1.png",
+                @"C:\Users\uzapy\Desktop\astra2016\bitmasks\1.png",
                 PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection));
         }
     }

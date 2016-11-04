@@ -1,4 +1,8 @@
 ﻿using Schneedetektion.Data;
+using Schneedetektion.ImagePlayground.Properties;
+using Schneedetektion.OpenCV;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +13,7 @@ namespace Schneedetektion.ImagePlayground
     public partial class MaskingView : UserControl
     {
         #region Fields
+        public static string folderName = Settings.Default.WorkingFolder;
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private PolygonHelper polygonHelper;
         private ImageViewModel imageViewModel;
@@ -70,6 +75,25 @@ namespace Schneedetektion.ImagePlayground
         private void polygonCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             polygonHelper.SetPoint(e.GetPosition(maskToolImage));
+        }
+
+        private void reloadPolygons_Click(object sender, RoutedEventArgs e)
+        {
+            ShowImage(imageViewModel);
+        }
+
+        private void createBitmasks_Click(object sender, RoutedEventArgs e)
+        {
+            IEnumerable<Polygon> polygons = dataContext.Polygons.Where(p => p.CameraName == imageViewModel.Image.Place);
+            OpenCVHelper openCVHelper = new OpenCVHelper();
+            foreach (var polygon in polygons)
+            {
+                string bitmaskFileName = Path.Combine(folderName, "bitmasks", polygon.CameraName + "_" + polygon.ID + ".png");
+                openCVHelper.SaveBitmask(imageViewModel.FileName, bitmaskFileName,
+                    PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection));
+                polygon.Bitmask = bitmaskFileName;
+                dataContext.SubmitChanges();
+            }
         }
         #endregion
 

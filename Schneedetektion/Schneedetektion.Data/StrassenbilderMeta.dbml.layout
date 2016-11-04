@@ -8,16 +8,16 @@
         <elementListCompartment Id="9098cf02-c3b8-4741-be79-3ff78c78ccb2" absoluteBounds="0.765, 1.21, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="7ad1a6e1-053a-48a1-9460-915788237014" absoluteBounds="3.75, 3.75, 2, 2.1554996744791666">
-      <DataClassMoniker Name="/StrassenbilderMetaDataContext/Image" />
-      <nestedChildShapes>
-        <elementListCompartment Id="71b82072-2e18-46f4-845e-339817d09cba" absoluteBounds="3.765, 4.21, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="3e57e06f-b354-411e-aac7-1aecb212a275" absoluteBounds="4.25, 0.5, 2, 2.3478011067708335">
+    <classShape Id="f89cf763-c116-42e3-95f1-f58fcafbcbb2" absoluteBounds="7, 1.25, 2, 2.1554996744791666">
       <DataClassMoniker Name="/StrassenbilderMetaDataContext/Polygon" />
       <nestedChildShapes>
-        <elementListCompartment Id="7df6c6ff-38c5-45f2-96e9-43d8ddf8afb2" absoluteBounds="4.265, 0.96, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="e973ab23-68ad-462a-adeb-f78f95bf924f" absoluteBounds="7.015, 1.71, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="303af9c2-c527-43ba-a280-d0f110bb5014" absoluteBounds="3.875, 0.75, 2, 3.8862125651041666">
+      <DataClassMoniker Name="/StrassenbilderMetaDataContext/Image" />
+      <nestedChildShapes>
+        <elementListCompartment Id="bf9f5bb5-c3e4-40b5-8683-361e2e4366c9" absoluteBounds="3.8899999999999997, 1.21, 1.9700000000000002, 3.3262125651041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>

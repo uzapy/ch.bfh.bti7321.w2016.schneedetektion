@@ -13,6 +13,8 @@
             <Button x:Name="newPolygon" Content="New" Width="50" Click="newPolygon_Click" />
             <Button x:Name="savePolygon" Content="Save" Width="50" Click="savePolygon_Click" />
             <Button x:Name="deletePoint" Content="Delete last Point" Width="100" Click="deletePoint_Click" />
+            <Button x:Name="reloadPolygons" Content="Reload" Width="50" Click="reloadPolygons_Click" />
+            <Button x:Name="createBitmasks" Content="Create Bitmasks" Width="100" Click="createBitmasks_Click" />
         </StackPanel>
         <Grid x:Name="canvasGrid">
             <Image x:Name="maskToolImage" HorizontalAlignment="Left" VerticalAlignment="Top" SizeChanged="maskToolImage_SizeChanged" />

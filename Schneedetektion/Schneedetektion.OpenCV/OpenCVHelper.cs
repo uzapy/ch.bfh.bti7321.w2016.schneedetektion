@@ -68,9 +68,9 @@ namespace Schneedetektion.OpenCV
             UMat uMatrix = matrix.ToUMat(AccessType.ReadWrite);
 
             // Scale Polygon
-            List<Point> scaledPoints = GetScaledPoints(pointCollection, uMatrix.Rows, uMatrix.Cols);
+            List<Point> scaledPoints = GetScaledPoints(pointCollection, uMatrix.Cols, uMatrix.Rows);
 
-            List<Drawing.Point> polygonPoints = GetInvertedPolygonPoints(scaledPoints, uMatrix.Rows, uMatrix.Cols);
+            List<Drawing.Point> polygonPoints = GetInvertedPolygonPoints(scaledPoints, uMatrix.Cols, uMatrix.Rows);
 
             // Apply Polygon
             using (VectorOfPoint vPoint = new VectorOfPoint(polygonPoints.ToArray()))
@@ -86,7 +86,7 @@ namespace Schneedetektion.OpenCV
             return OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
         }
 
-        public BitmapImage SaveBitmask(string imagePath, string bitMaskPath, IEnumerable<Point> pointCollection)
+        public void SaveBitmask(string imagePath, string bitmaskPath, IEnumerable<Point> pointCollection)
         {
             Image<Bgr, byte> image = new Image<Bgr, byte>(imagePath);
             Image<Gray, byte> bitMask = new Image<Gray, byte>(image.Cols, image.Rows, new Gray(0));
@@ -108,7 +108,7 @@ namespace Schneedetektion.OpenCV
 
             // Crop ROI
             bitMask.ROI = GetRegionOfInterest(scaledPoints);
-            return BitmapToBitmapImage(bitMask.Bitmap);
+            bitMask.Save(bitmaskPath);
         }
 
         public StatistcValue GetMean(Drawing.Bitmap bitmap)
@@ -129,21 +129,21 @@ namespace Schneedetektion.OpenCV
         #endregion
 
         #region Private Methods
-        private List<Point> GetScaledPoints(IEnumerable<Point> polygonPoints, int numberOfRows, int numberOfCols)
+        private List<Point> GetScaledPoints(IEnumerable<Point> polygonPoints, int numberOfCols, int numberOfRows)
         {
             List<Point> scaledPoints = new List<Point>();
             foreach (var point in polygonPoints)
             {
                 scaledPoints.Add(new Point()
                 {
-                    X = point.X * numberOfRows * 1.21,
-                    Y = point.Y * numberOfCols * 0.81
+                    X = point.X * numberOfCols,
+                    Y = point.Y * numberOfRows
                 });
             }
             return scaledPoints;
         }
 
-        private List<Drawing.Point> GetInvertedPolygonPoints(List<Point> scaledPoints, int numberOfRows, int numberOfCols)
+        private List<Drawing.Point> GetInvertedPolygonPoints(List<Point> scaledPoints, int numberOfCols, int numberOfRows)
         {
             // Element finden, das am nächsten zum Nullpunkt ist
             Point p0 = scaledPoints.OrderBy(p => Math.Sqrt(Math.Pow(p.X, 2) + Math.Pow(p.Y, 2))).First();
