@@ -57,8 +57,12 @@ namespace Schneedetektion.Test
             foreach (var patch in patches)
             {
                 // Aus Polygon eine Bitmaske machen
-                //patch.
-                //patch.Mean = openCVHelper.GetMean(OpenCVHelper.BitmapImageToBitmap(patch.PatchImage));
+                OpenCVColor mean;
+                OpenCVColor standardDeviation;
+                OpenCVColor variance;
+                openCVHelper.GetMean(OpenCVHelper.BitmapImageToBitmap(patch.PatchImage), patch.Polygon.Bitmask, out mean, out standardDeviation, out variance);
+
+                OpenCVColor median = openCVHelper.GetMedian(OpenCVHelper.BitmapImageToBitmap(patch.PatchImage), patch.Polygon.Bitmask);
             }
         }
 

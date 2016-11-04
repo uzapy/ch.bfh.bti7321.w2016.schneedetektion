@@ -41,7 +41,7 @@ namespace Schneedetektion.ImagePlayground
             {
                 polygonHelper.LoadPolygon(dbPolygon.PolygonPointCollection, dbPolygon.ImageArea, 500, 409);
             }
-        } 
+        }
         #endregion
 
         #region Event Handler
@@ -63,7 +63,16 @@ namespace Schneedetektion.ImagePlayground
 
                 patches.Add(patchViewModel);
 
+                OpenCVColor meanColor;
+                OpenCVColor standardDeviation;
+                OpenCVColor variance;
                 patchViewModel.HistogramValues = openCVHelper.GetHistogram(OpenCVHelper.BitmapImageToBitmap(patchViewModel.PatchImage));
+
+                openCVHelper.GetMean(OpenCVHelper.BitmapImageToBitmap(patchImage), polygon.Bitmask, out meanColor, out standardDeviation, out variance);
+
+                patchViewModel.Mean = meanColor;
+                patchViewModel.StandardDeviation = standardDeviation;
+                patchViewModel.Variance = variance;
 
                 imageContainer.Items.Add(patchViewModel);
             }

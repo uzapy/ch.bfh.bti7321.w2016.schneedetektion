@@ -20,7 +20,6 @@
             <TextBlock x:Name="standardDeviationText" Margin="5,5,5,0" />
             <TextBlock x:Name="varianceText" Margin="5,5,5,0" />
         </StackPanel>
-        <!--<Canvas Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" x:Name="canvas" />-->
         <ItemsControl Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Histogram.HistogramValues}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>

@@ -1,10 +1,9 @@
 ﻿namespace Schneedetektion.OpenCV
 {
-    public struct StatistcValue
+    public struct OpenCVColor
     {
         public double Blue;
         public double Green;
         public double Red;
-        public double Gray;
     }
 }

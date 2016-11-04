@@ -14,11 +14,11 @@ namespace Schneedetektion.ImagePlayground
         // dbPatch
         private ImageViewModel imageViewModel;
         private Histogram histogram;
-        private StatistcValue mean;
-        private StatistcValue median;
-        private StatistcValue contrast;
-        private StatistcValue standardDeviation;
-        private StatistcValue variance;
+        private OpenCVColor mean;
+        private OpenCVColor median;
+        private double contrast;
+        private OpenCVColor standardDeviation;
+        private OpenCVColor variance;
         #endregion
 
         #region Constructor
@@ -35,6 +35,10 @@ namespace Schneedetektion.ImagePlayground
         {
             get { return patchImage; }
         }
+        public Polygon Polygon
+        {
+            get { return polygon; }
+        }
         public Histogram Histogram
         {
             get { return histogram; }
@@ -43,27 +47,27 @@ namespace Schneedetektion.ImagePlayground
         {
             set { histogram = new Histogram(value); }
         }
-        public StatistcValue Mean
+        public OpenCVColor Mean
         {
             get { return mean; }
             set { mean = value; }
         }
-        public StatistcValue Median
+        public OpenCVColor Median
         {
             get { return median; }
             set { median = value; }
         }
-        public StatistcValue Contrast
+        public double Contrast
         {
             get { return contrast; }
             set { contrast = value; }
         }
-        public StatistcValue StandardDeviation
+        public OpenCVColor StandardDeviation
         {
             get { return standardDeviation; }
             set { standardDeviation = value; }
         }
-        public StatistcValue Variance
+        public OpenCVColor Variance
         {
             get { return variance; }
             set { variance = value; }

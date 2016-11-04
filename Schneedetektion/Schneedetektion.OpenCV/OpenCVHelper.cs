@@ -111,20 +111,48 @@ namespace Schneedetektion.OpenCV
             bitMask.Save(bitmaskPath);
         }
 
-        public StatistcValue GetMean(Drawing.Bitmap bitmap)
+        public void GetMean(Drawing.Bitmap bitmap, string bitmaskPath, out OpenCVColor color, out OpenCVColor sdtDev, out OpenCVColor variance)
         {
-            StatistcValue result = new StatistcValue();
             Image<Bgr, byte> image = new Image<Bgr, byte>(bitmap);
+            Image<Gray, byte> bitmask = new Image<Gray, byte>(bitmaskPath);
 
-            // Durchschnitt Berechnen
-            for (int i = 0; i < image.Width; i++) // zuerst X
+            Bgr average;
+            MCvScalar standardDeviation;
+            image.AvgSdv(out average, out standardDeviation, bitmask);
+
+            color.Blue     = average.Blue;
+            color.Green    = average.Green;
+            color.Red      = average.Red;
+            sdtDev.Blue    = standardDeviation.V0;
+            sdtDev.Green   = standardDeviation.V1;
+            sdtDev.Red     = standardDeviation.V2;
+            variance.Blue  = Math.Pow(standardDeviation.V0, 2);
+            variance.Green = Math.Pow(standardDeviation.V1, 2);
+            variance.Red   = Math.Pow(standardDeviation.V2, 2);
+        }
+
+        public OpenCVColor GetMedian(Drawing.Bitmap bitmap, string bitmaskPath)
+        {
+            OpenCVColor median = new OpenCVColor();
+            Image<Bgr, byte> image = new Image<Bgr, byte>(bitmap);
+            Image<Gray, byte> bitmask = new Image<Gray, byte>(bitmaskPath);
+
+            List<double> blue = new List<double>();
+
+            for (int i = 0; i < image.Cols; i++)
             {
-                for (int j = 0; j < image.Height; j++) // dann Y
+                for (int j = 0; j < image.Rows; j++)
                 {
-                    result.Blue += image[i, j].Blue > 0 ? image[i, j].Blue : 0;
+                    if (bitmask[j, i].MCvScalar.V0 > 0)
+                    {
+                        blue.Add(image[j, i].Blue);
+                    }
                 }
             }
-            return result;
+            
+            //double mean = blue.Sum() / blue.Count();
+
+            return median;
         }
         #endregion
 
