@@ -15,32 +15,51 @@ namespace Schneedetektion.OpenCV
 {
     public class OpenCVHelper
     {
+        #region Static Methods
+        public static BitmapImage BitmapToBitmapImage(Drawing.Bitmap bitmap)
+        {
+            BitmapImage resultImage;
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                bitmap.Save(stream, ImageFormat.Bmp);
+
+                stream.Position = 0;
+                resultImage = new BitmapImage();
+                resultImage.BeginInit();
+                resultImage.StreamSource = stream;
+                resultImage.CacheOption = BitmapCacheOption.OnLoad;
+                resultImage.EndInit();
+            }
+            return resultImage;
+        }
+
+        public static Drawing.Bitmap BitmapImageToBitmap(BitmapImage bitmapImage)
+        {
+            Drawing.Bitmap bitmap;
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                encoder.Save(stream);
+                bitmap = new Drawing.Bitmap(stream);
+            }
+            return bitmap;
+        }
+        #endregion
+
+        #region Public Methods
         public List<float[]> GetHistogram(string fileName)
         {
             Image<Bgr, byte> image = new Image<Bgr, byte>(fileName);
-            // http://docs.opencv.org/2.4/doc/tutorials/imgproc/histograms/histogram_calculation/histogram_calculation.html
-            // Split into RGB
-            Image<Gray, byte> imageBlue  = image[0];
-            Image<Gray, byte> imageGreen = image[1];
-            Image<Gray, byte> imageRed   = image[2];
+            return GetHistogram(image);
+        }
 
-            List<float[]> histogramValues = new List<float[]>();
-
-            // Histogram per Color
-            DenseHistogram histogram = new DenseHistogram(256, new RangeF(0.0f, 256.0f));
-
-            histogram.Calculate(new Image<Gray, byte>[] { imageBlue }, false, null);
-            histogramValues.Add(histogram.GetBinValues());
-            histogram.Clear();
-
-            histogram.Calculate(new Image<Gray, byte>[] { imageGreen }, false, null);
-            histogramValues.Add(histogram.GetBinValues());
-            histogram.Clear();
-
-            histogram.Calculate(new Image<Gray, byte>[] { imageRed }, false, null);
-            histogramValues.Add(histogram.GetBinValues());
-
-            return histogramValues;
+        public List<float[]> GetHistogram(Drawing.Bitmap bitmap)
+        {
+            Image<Bgr, byte> image = new Image<Bgr, byte>(bitmap);
+            return GetHistogram(image);
         }
 
         public BitmapImage GetMaskedImage(string imagePath, IEnumerable<Point> pointCollection)
@@ -69,41 +88,28 @@ namespace Schneedetektion.OpenCV
             Image<Bgr, byte> image = new Image<Bgr, byte>(uMatrix.Bitmap);
             image.ROI = new Drawing.Rectangle(left, top, width, height);
 
-            return BitmapToBitmapImage(image.Bitmap);
+            return OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
         }
 
-        private BitmapImage BitmapToBitmapImage(Drawing.Bitmap bitmap)
+        public StatistcValue GetMean(Drawing.Bitmap bitmap)
         {
-            BitmapImage resultImage;
+            StatistcValue result = new StatistcValue();
+            Image<Bgr, byte> image = new Image<Bgr, byte>(bitmap);
 
-            using (MemoryStream stream = new MemoryStream())
+            // Durchschnitt Berechnen
+            for (int i = 0; i < image.Width; i++) // zuerst X
             {
-                bitmap.Save(stream, ImageFormat.Bmp);
-
-                stream.Position = 0;
-                resultImage = new BitmapImage();
-                resultImage.BeginInit();
-                resultImage.StreamSource = stream;
-                resultImage.CacheOption = BitmapCacheOption.OnLoad;
-                resultImage.EndInit();
+                for (int j = 0; j < image.Height; j++) // dann Y
+                {
+                    result.Blue += image[i, j].Blue > 0 ? image[i, j].Blue : 0;
+                }
             }
-            return resultImage;
+
+            return result;
         }
+        #endregion
 
-        private Drawing.Bitmap BitmapImageToBitmap(BitmapImage bitmapImage)
-        {
-            Drawing.Bitmap bitmap;
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
-
-            using (MemoryStream stream = new MemoryStream())
-            {
-                encoder.Save(stream);
-                bitmap = new Drawing.Bitmap(stream);
-            }
-            return bitmap;
-        }
-
+        #region Private Methods
         private List<Point> GetScaledPoints(IEnumerable<Point> polygonPoints, int numberOfRows, int numberOfCols)
         {
             List<Point> scaledPoints = new List<Point>();
@@ -152,5 +158,33 @@ namespace Schneedetektion.OpenCV
 
             return polygon;
         }
+
+        private List<float[]> GetHistogram(Image<Bgr, byte> image)
+        {
+            // http://docs.opencv.org/2.4/doc/tutorials/imgproc/histograms/histogram_calculation/histogram_calculation.html
+            // Split into RGB
+            Image<Gray, byte> imageBlue = image[0];
+            Image<Gray, byte> imageGreen = image[1];
+            Image<Gray, byte> imageRed = image[2];
+
+            List<float[]> histogramValues = new List<float[]>();
+
+            // Histogram per Color
+            DenseHistogram histogram = new DenseHistogram(256, new RangeF(0.0f, 256.0f));
+
+            histogram.Calculate(new Image<Gray, byte>[] { imageBlue }, false, null);
+            histogramValues.Add(histogram.GetBinValues());
+            histogram.Clear();
+
+            histogram.Calculate(new Image<Gray, byte>[] { imageGreen }, false, null);
+            histogramValues.Add(histogram.GetBinValues());
+            histogram.Clear();
+
+            histogram.Calculate(new Image<Gray, byte>[] { imageRed }, false, null);
+            histogramValues.Add(histogram.GetBinValues());
+
+            return histogramValues;
+        }
+        #endregion
     }
 }

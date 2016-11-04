@@ -104,13 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Queries\coverageOfCategories.sql" />
-    <Content Include="StrassenbilderMeta.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="StrassenbilderMeta_log.ldf">
-      <DependentUpon>StrassenbilderMeta.mdf</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

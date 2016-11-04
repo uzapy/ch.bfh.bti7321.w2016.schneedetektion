@@ -38,6 +38,7 @@ namespace Schneedetektion.ImagePlayground
         private bool hasTime = false;
 
         private int skip = 0;
+        private int page = 130;
         #endregion
 
         #region Constructor
@@ -49,7 +50,7 @@ namespace Schneedetektion.ImagePlayground
             categoryList.ItemsSource = categoryNames;
 
             imageContainer.ItemsSource = images;
-            foreach (var i in dataContext.Images.Take(265))
+            foreach (var i in dataContext.Images.Take(page))
             {
                 images.Add(new ImageViewModel(i));
             }
@@ -120,7 +121,7 @@ namespace Schneedetektion.ImagePlayground
 
         private void nextPage_Click(object sender, RoutedEventArgs e)
         {
-            skip += 128;
+            skip += page;
             ReloadImages();
         }
 
@@ -128,7 +129,7 @@ namespace Schneedetektion.ImagePlayground
         {
             if (skip > 0)
             {
-                skip -= 128;
+                skip -= page;
                 ReloadImages();
             }
         }
@@ -292,7 +293,7 @@ namespace Schneedetektion.ImagePlayground
                                 where i.BadLighting == badLighting || all
                                 where i.GoodLighting == goodLighting || all
                                 where selectedCameras.Contains(i.Place) || selectedCameras.Contains("all")
-                                select i).Distinct().Skip(skip).Take(128);
+                                select i).Distinct().Skip(skip).Take(page);
 
             foreach (var i in loadedImages)
             {

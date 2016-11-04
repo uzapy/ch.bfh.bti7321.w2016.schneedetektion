@@ -54,9 +54,13 @@ namespace Schneedetektion.ImagePlayground
         {
             foreach (var polygon in polygons)
             {
-                IEnumerable<Point> pointCollection = polygonHelper.GetPointCollection(polygon.PolygonPointCollection);
-                patches.Add(new PatchViewModel(openCVHelper.GetMaskedImage(imageViewModel.FileName, pointCollection), imageViewModel));
-                imageContainer.Items.Add(patches.Last());
+                IEnumerable<Point> pointCollection = PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection);
+                PatchViewModel patchViewModel = new PatchViewModel(openCVHelper.GetMaskedImage(imageViewModel.FileName, pointCollection), imageViewModel);
+                patches.Add(patchViewModel);
+
+                patchViewModel.HistogramValues = openCVHelper.GetHistogram(OpenCVHelper.BitmapImageToBitmap(patchViewModel.PatchImage));
+
+                imageContainer.Items.Add(patchViewModel);
             }
         }
         #endregion

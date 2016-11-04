@@ -26,7 +26,7 @@
             </GroupBox>
             <GroupBox Header="View">
                 <StackPanel Orientation="Vertical">
-                    <Slider x:Name="imageSizeSlider" Minimum="100" Maximum="800" LargeChange="1" Value="100" Margin="0,0,0,10" />
+                    <Slider x:Name="imageSizeSlider" Minimum="100" Maximum="800" LargeChange="1" Value="125" Margin="0,0,0,10" />
                     <Button x:Name="applyFilter" Content="Apply Filter" Click="applyFilter_Click" Margin="0,0,0,10" />
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="previousPage" Content="Previous" Click="previousPage_Click" Width="68" Margin="0,0,2,0" />

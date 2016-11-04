@@ -5,7 +5,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="165" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="100" />
@@ -14,8 +14,19 @@
 
         <Image Grid.Column="0" Grid.Row="0" x:Name="patchImage" Source="{Binding PatchImage}" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <StackPanel Grid.Column="1" Grid.Row="0">
-            
+            <TextBlock x:Name="meanText" Margin="5,5,5,0" />
+            <TextBlock x:Name="medianText" Margin="5,5,5,0" />
+            <TextBlock x:Name="contrastText" Margin="5,5,5,0" />
+            <TextBlock x:Name="standardDeviationText" Margin="5,5,5,0" />
+            <TextBlock x:Name="varianceText" Margin="5,5,5,0" />
         </StackPanel>
-        <Canvas Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" />
+        <!--<Canvas Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" x:Name="canvas" />-->
+        <ItemsControl Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Histogram.HistogramValues}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Background="Transparent" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
     </Grid>
 </UserControl>

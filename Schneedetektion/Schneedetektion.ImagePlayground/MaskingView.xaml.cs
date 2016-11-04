@@ -44,7 +44,7 @@ namespace Schneedetektion.ImagePlayground
             p.ImageArea = polygonHelper.ImageAreas[selectedArea.SelectedIndex];
             p.ImageWidth = maskToolImage.ActualWidth;
             p.ImageHeight = maskToolImage.ActualHeight;
-            p.PolygonPointCollection = polygonHelper.GetPointCollection(maskToolImage.ActualWidth, maskToolImage.ActualHeight);
+            p.PolygonPointCollection = PolygonHelper.SerializePointCollection(polygonHelper.CurrentPolygon, maskToolImage.ActualWidth, maskToolImage.ActualHeight);
             dataContext.Polygons.InsertOnSubmit(p);
             dataContext.SubmitChanges();
         }

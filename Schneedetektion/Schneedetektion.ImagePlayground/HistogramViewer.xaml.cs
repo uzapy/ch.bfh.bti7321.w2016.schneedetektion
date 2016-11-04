@@ -13,9 +13,9 @@ namespace Schneedetektion.ImagePlayground
         private OpenCVHelper openCVHelper = new OpenCVHelper();
         private ImageViewModel imageViewModel1;
         private ImageViewModel imageViewModel2;
+        private static Thickness thickness = new Thickness(2);
         private List<float[]> histogram1;
         private List<float[]> histogram2;
-        private Thickness thickness = new Thickness(2);
         #endregion
 
         #region Constructor
@@ -68,7 +68,7 @@ namespace Schneedetektion.ImagePlayground
             l.Y1 = 333;
             l.X2 = position * 3 + 100;
             l.Y2 = 333d - (333d / 3000d * value);
-            l.Opacity = .66;
+            l.Opacity = .55;
             return l;
         }
         #endregion

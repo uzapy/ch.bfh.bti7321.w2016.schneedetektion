@@ -37,6 +37,8 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <Choose>
@@ -47,7 +49,9 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -56,6 +60,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Schneedetektion.Data\Schneedetektion.Data.csproj">
+      <Project>{6D89FF74-62A0-48D4-9C19-2F83CBFD112F}</Project>
+      <Name>Schneedetektion.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Schneedetektion.ImagePlayground\Schneedetektion.ImagePlayground.csproj">
+      <Project>{49b7a4d8-ccf8-46b9-8467-35215a17f25f}</Project>
+      <Name>Schneedetektion.ImagePlayground</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Schneedetektion.OpenCV\Schneedetektion.OpenCV.csproj">
       <Project>{698ff3d6-6293-4bb0-9ff6-f87669dd6b2e}</Project>
       <Name>Schneedetektion.OpenCV</Name>

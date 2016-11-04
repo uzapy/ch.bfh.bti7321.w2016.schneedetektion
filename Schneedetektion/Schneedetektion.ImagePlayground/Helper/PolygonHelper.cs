@@ -11,7 +11,7 @@ namespace Schneedetektion.ImagePlayground
     public class PolygonHelper
     {
         #region Fields
-        private Polygon polygon;
+        private Polygon currentPolygon;
         private Canvas polygonCanvas;
 
         private int selectedAreaIndex = 0;
@@ -21,6 +21,7 @@ namespace Schneedetektion.ImagePlayground
         #endregion
 
         #region Constructor
+        public PolygonHelper() { }
         public PolygonHelper(Canvas polygonCanvas)
         {
             this.polygonCanvas = polygonCanvas;
@@ -29,16 +30,17 @@ namespace Schneedetektion.ImagePlayground
 
         #region Properties
         public string[] ImageAreas { get { return imageAreas; } }
+        public Polygon CurrentPolygon { get { return currentPolygon; } }
         #endregion
 
         #region Methods
         internal void SetSelectedArea(int areaIndex)
         {
-            if (polygon != null)
+            if (currentPolygon != null)
             {
                 selectedAreaIndex = areaIndex;
-                polygon.Stroke = fillBrushes[selectedAreaIndex];
-                polygon.Fill = strokeBrushes[selectedAreaIndex];
+                currentPolygon.Stroke = fillBrushes[selectedAreaIndex];
+                currentPolygon.Fill = strokeBrushes[selectedAreaIndex];
             }
         }
 
@@ -48,14 +50,44 @@ namespace Schneedetektion.ImagePlayground
             polygon.Stroke = fillBrushes[Array.IndexOf(imageAreas, imageArea)];
             polygon.Fill = strokeBrushes[Array.IndexOf(imageAreas, imageArea)];
             polygon.Opacity = 0.33d;
-            polygonCanvas.Children.Add(polygon);
+            polygonCanvas?.Children.Add(polygon);
             foreach (Point point in JsonConvert.DeserializeObject<PointCollection>(polygonPointCollection))
             {
                 polygon.Points.Add(new Point(point.X * viewWidth, point.Y * viewHeight));
             }
         }
 
-        internal IEnumerable<Point> GetPointCollection(string polygonPointCollection)
+        internal void NewPolygon(int areaIndex)
+        {
+            polygonCanvas?.Children.Remove(currentPolygon);
+            selectedAreaIndex = areaIndex;
+
+            currentPolygon = new Polygon();
+            currentPolygon.Stroke = fillBrushes[selectedAreaIndex];
+            currentPolygon.Fill = strokeBrushes[selectedAreaIndex];
+            currentPolygon.Opacity = 0.33d;
+            polygonCanvas?.Children.Add(currentPolygon);
+        }
+
+        internal void SetPoint(Point point)
+        {
+            if (currentPolygon != null)
+            {
+                currentPolygon.Points.Add(point);
+            }
+        }
+
+        internal void DeleteLastPoint()
+        {
+            if (currentPolygon != null && currentPolygon.Points.Count > 0)
+            {
+                currentPolygon.Points.RemoveAt(currentPolygon.Points.Count - 1);
+            }
+        }
+        #endregion
+
+        #region Static Methods
+        public static IEnumerable<Point> DeserializePointCollection(string polygonPointCollection)
         {
             foreach (Point point in JsonConvert.DeserializeObject<PointCollection>(polygonPointCollection))
             {
@@ -63,35 +95,7 @@ namespace Schneedetektion.ImagePlayground
             }
         }
 
-        internal void NewPolygon(int areaIndex)
-        {
-            polygonCanvas.Children.Remove(polygon);
-            selectedAreaIndex = areaIndex;
-
-            polygon = new Polygon();
-            polygon.Stroke = fillBrushes[selectedAreaIndex];
-            polygon.Fill = strokeBrushes[selectedAreaIndex];
-            polygon.Opacity = 0.33d;
-            polygonCanvas.Children.Add(polygon);
-        }
-
-        internal void SetPoint(Point point)
-        {
-            if (polygon != null)
-            {
-                polygon.Points.Add(point);
-            }
-        }
-
-        internal void DeleteLastPoint()
-        {
-            if (polygon != null && polygon.Points.Count > 0)
-            {
-                polygon.Points.RemoveAt(polygon.Points.Count - 1);
-            }
-        }
-
-        internal string GetPointCollection(double viewWidth, double viewHeight)
+        public static string SerializePointCollection(Polygon polygon, double viewWidth, double viewHeight)
         {
             PointCollection pointCollection = new PointCollection();
             foreach (Point point in polygon.Points)
@@ -99,7 +103,7 @@ namespace Schneedetektion.ImagePlayground
                 pointCollection.Add(new Point(1 / viewWidth * point.X, 1 / viewHeight * point.Y));
             }
             return JsonConvert.SerializeObject(pointCollection);
-        }
+        } 
         #endregion
     }
 }
