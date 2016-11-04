@@ -70,7 +70,7 @@ namespace Schneedetektion.OpenCV
             // Scale Polygon
             List<Point> scaledPoints = GetScaledPoints(pointCollection, uMatrix.Rows, uMatrix.Cols);
 
-            List<Drawing.Point> polygonPoints = GetPolygonPoints(scaledPoints, uMatrix.Rows, uMatrix.Cols);
+            List<Drawing.Point> polygonPoints = GetInvertedPolygonPoints(scaledPoints, uMatrix.Rows, uMatrix.Cols);
 
             // Apply Polygon
             using (VectorOfPoint vPoint = new VectorOfPoint(polygonPoints.ToArray()))
@@ -79,16 +79,36 @@ namespace Schneedetektion.OpenCV
                 CvInvoke.FillPoly(uMatrix, vvPoint, new Bgr(0, 0, 0).MCvScalar);
             }
 
-            // Crop Bitmap
-            int left = (int)scaledPoints.Min(p => p.X);
-            int top = (int)scaledPoints.Min(p => p.Y);
-            int width = (int)scaledPoints.Max(p => p.X) - left;
-            int height = (int)scaledPoints.Max(p => p.Y) - top;
-
             Image<Bgr, byte> image = new Image<Bgr, byte>(uMatrix.Bitmap);
-            image.ROI = new Drawing.Rectangle(left, top, width, height);
+            // Crop Bitmap
+            image.ROI = GetRegionOfInterest(scaledPoints);
 
             return OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
+        }
+
+        public BitmapImage SaveBitmask(string imagePath, string bitMaskPath, IEnumerable<Point> pointCollection)
+        {
+            Image<Bgr, byte> image = new Image<Bgr, byte>(imagePath);
+            Image<Gray, byte> bitMask = new Image<Gray, byte>(image.Cols, image.Rows, new Gray(0));
+
+            // Point to Drawing.Point
+            List<Point> scaledPoints = GetScaledPoints(pointCollection, image.Cols, image.Rows);
+            List<Drawing.Point> scaledDrawingPoints = new List<Drawing.Point>();
+            foreach (var point in scaledPoints)
+            {
+                scaledDrawingPoints.Add(new Drawing.Point((int)point.X, (int)point.Y));
+            }
+
+            // Apply Polygon
+            using (VectorOfPoint vPoint = new VectorOfPoint(scaledDrawingPoints.ToArray()))
+            using (VectorOfVectorOfPoint vvPoint = new VectorOfVectorOfPoint(vPoint))
+            {
+                CvInvoke.FillPoly(bitMask, vvPoint, new Gray(255).MCvScalar);
+            }
+
+            // Crop ROI
+            bitMask.ROI = GetRegionOfInterest(scaledPoints);
+            return BitmapToBitmapImage(bitMask.Bitmap);
         }
 
         public StatistcValue GetMean(Drawing.Bitmap bitmap)
@@ -104,7 +124,6 @@ namespace Schneedetektion.OpenCV
                     result.Blue += image[i, j].Blue > 0 ? image[i, j].Blue : 0;
                 }
             }
-
             return result;
         }
         #endregion
@@ -124,7 +143,7 @@ namespace Schneedetektion.OpenCV
             return scaledPoints;
         }
 
-        private List<Drawing.Point> GetPolygonPoints(List<Point> scaledPoints, int numberOfRows, int numberOfCols)
+        private List<Drawing.Point> GetInvertedPolygonPoints(List<Point> scaledPoints, int numberOfRows, int numberOfCols)
         {
             // Element finden, das am nächsten zum Nullpunkt ist
             Point p0 = scaledPoints.OrderBy(p => Math.Sqrt(Math.Pow(p.X, 2) + Math.Pow(p.Y, 2))).First();
@@ -157,6 +176,16 @@ namespace Schneedetektion.OpenCV
             polygon.Add(new Drawing.Point(0, 0));
 
             return polygon;
+        }
+
+        private Drawing.Rectangle GetRegionOfInterest(List<Point> points)
+        {
+            int left = (int)points.Min(p => p.X);
+            int top = (int)points.Min(p => p.Y);
+            int width = (int)points.Max(p => p.X) - left;
+            int height = (int)points.Max(p => p.Y) - top;
+
+            return new Drawing.Rectangle(left, top, width, height);
         }
 
         private List<float[]> GetHistogram(Image<Bgr, byte> image)

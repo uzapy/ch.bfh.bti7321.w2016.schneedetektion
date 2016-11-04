@@ -18,34 +18,34 @@ namespace Schneedetektion.ImagePlayground
                 histogramValues.Add(new Line()
                 {
                     Margin = thickness,
-                    StrokeThickness = 2,
+                    StrokeThickness = 1,
                     Stroke = Brushes.Blue,
                     Opacity = .55,
-                    X1 = i * 2,
+                    X1 = i * 1,
                     Y1 = 100,
-                    X2 = i * 2,
+                    X2 = i * 1,
                     Y2 = 100 - values.ElementAt(0)[i]
                 });
                 histogramValues.Add(new Line()
                 {
                     Margin = thickness,
-                    StrokeThickness = 2,
+                    StrokeThickness = 1,
                     Stroke = Brushes.Green,
                     Opacity = .55,
-                    X1 = i * 2,
+                    X1 = i * 1,
                     Y1 = 100,
-                    X2 = i * 2,
+                    X2 = i * 1,
                     Y2 = 100 - values.ElementAt(1)[i]
                 });
                 histogramValues.Add(new Line()
                 {
                     Margin = thickness,
-                    StrokeThickness = 2,
+                    StrokeThickness = 1,
                     Stroke = Brushes.Red,
                     Opacity = .55,
-                    X1 = i * 2,
+                    X1 = i * 1,
                     Y1 = 100,
-                    X2 = i * 2,
+                    X2 = i * 1,
                     Y2 = 100 - values.ElementAt(2)[i]
                 });
             }

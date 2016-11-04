@@ -10,6 +10,7 @@ namespace Schneedetektion.ImagePlayground
         #region Fields
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private BitmapImage patchImage;
+        private Polygon polygon;
         // dbPatch
         private ImageViewModel imageViewModel;
         private Histogram histogram;
@@ -21,10 +22,11 @@ namespace Schneedetektion.ImagePlayground
         #endregion
 
         #region Constructor
-        public PatchViewModel(BitmapImage bitmapImage, ImageViewModel imageViewModel)
+        public PatchViewModel(BitmapImage bitmapImage, ImageViewModel imageViewModel, Polygon polygon)
         {
             this.patchImage = bitmapImage;
             this.imageViewModel = imageViewModel;
+            this.polygon = polygon;
         }
         #endregion
 

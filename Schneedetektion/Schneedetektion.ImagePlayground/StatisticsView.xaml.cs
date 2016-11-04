@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace Schneedetektion.ImagePlayground
 {
@@ -55,7 +56,11 @@ namespace Schneedetektion.ImagePlayground
             foreach (var polygon in polygons)
             {
                 IEnumerable<Point> pointCollection = PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection);
-                PatchViewModel patchViewModel = new PatchViewModel(openCVHelper.GetMaskedImage(imageViewModel.FileName, pointCollection), imageViewModel);
+
+                BitmapImage patchImage = openCVHelper.GetMaskedImage(imageViewModel.FileName, pointCollection);
+
+                PatchViewModel patchViewModel = new PatchViewModel(patchImage, imageViewModel, polygon);
+
                 patches.Add(patchViewModel);
 
                 patchViewModel.HistogramValues = openCVHelper.GetHistogram(OpenCVHelper.BitmapImageToBitmap(patchViewModel.PatchImage));

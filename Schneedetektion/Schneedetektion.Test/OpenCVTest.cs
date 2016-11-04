@@ -50,14 +50,28 @@ namespace Schneedetektion.Test
             foreach (var polygon in polygons)
             {
                 IEnumerable<Point> pointCollection = PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection);
-                patches.Add(new PatchViewModel(openCVHelper.GetMaskedImage(imageViewModel.FileName, pointCollection), imageViewModel));
+                patches.Add(new PatchViewModel(openCVHelper.GetMaskedImage(imageViewModel.FileName, pointCollection), imageViewModel, polygon));
             }
 
             // Statistiken berechnen
             foreach (var patch in patches)
             {
-                patch.Mean = openCVHelper.GetMean(OpenCVHelper.BitmapImageToBitmap(patch.PatchImage));
+                // Aus Polygon eine Bitmaske machen
+                //patch.
+                //patch.Mean = openCVHelper.GetMean(OpenCVHelper.BitmapImageToBitmap(patch.PatchImage));
             }
+        }
+
+        [TestMethod]
+        public void PolygonToBitMask()
+        {
+            // Zufälliges Bild auswählen
+            int count = dataContext.Images.Where(i => i.Day.Value).Count();
+            ImageViewModel imageViewModel = new ImageViewModel(dataContext.Images.Where(i => i.Day.Value).Skip(random.Next(0, count)).First());
+            Polygon polygon = dataContext.Polygons.Where(p => p.CameraName == imageViewModel.Image.Place).First();
+            openCVHelper.SaveBitmask(imageViewModel.FileName,
+                @"C:\Users\uzapy\Desktop\astra2016\masks\1.png",
+                PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection));
         }
     }
 }
