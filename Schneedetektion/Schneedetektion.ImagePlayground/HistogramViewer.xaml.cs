@@ -68,7 +68,7 @@ namespace Schneedetektion.ImagePlayground
             l.Y1 = 333;
             l.X2 = position * 3 + 100;
             l.Y2 = 333d - (333d / 3000d * value);
-            l.Opacity = .55;
+            l.Opacity = .5;
             return l;
         }
         #endregion

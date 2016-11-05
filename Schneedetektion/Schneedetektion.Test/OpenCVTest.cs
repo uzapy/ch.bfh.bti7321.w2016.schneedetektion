@@ -60,9 +60,13 @@ namespace Schneedetektion.Test
                 OpenCVColor mean;
                 OpenCVColor standardDeviation;
                 OpenCVColor variance;
-                openCVHelper.GetMean(OpenCVHelper.BitmapImageToBitmap(patch.PatchImage), patch.Polygon.Bitmask, out mean, out standardDeviation, out variance);
+                openCVHelper.GetMeanSdandardDeviationAndVariance(OpenCVHelper.BitmapImageToBitmap(patch.PatchImage), patch.Polygon.Bitmask, out mean, out standardDeviation, out variance);
 
-                OpenCVColor median = openCVHelper.GetMedian(OpenCVHelper.BitmapImageToBitmap(patch.PatchImage), patch.Polygon.Bitmask);
+                OpenCVColor median;
+                OpenCVColor min;
+                OpenCVColor max;
+                OpenCVColor contrast;
+                openCVHelper.GetMinMaxMedianAndContrast(OpenCVHelper.BitmapImageToBitmap(patch.PatchImage), patch.Polygon.Bitmask, out median, out min, out max, out contrast);
             }
         }
 

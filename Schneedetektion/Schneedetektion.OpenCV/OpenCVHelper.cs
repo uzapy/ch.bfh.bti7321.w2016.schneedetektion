@@ -111,7 +111,7 @@ namespace Schneedetektion.OpenCV
             bitMask.Save(bitmaskPath);
         }
 
-        public void GetMean(Drawing.Bitmap bitmap, string bitmaskPath, out OpenCVColor color, out OpenCVColor sdtDev, out OpenCVColor variance)
+        public void GetMeanSdandardDeviationAndVariance(Drawing.Bitmap bitmap, string bitmaskPath, out OpenCVColor color, out OpenCVColor sdtDev, out OpenCVColor variance)
         {
             Image<Bgr, byte> image = new Image<Bgr, byte>(bitmap);
             Image<Gray, byte> bitmask = new Image<Gray, byte>(bitmaskPath);
@@ -131,13 +131,15 @@ namespace Schneedetektion.OpenCV
             variance.Red   = Math.Pow(standardDeviation.V2, 2);
         }
 
-        public OpenCVColor GetMedian(Drawing.Bitmap bitmap, string bitmaskPath)
+        public void GetMinMaxMedianAndContrast(Drawing.Bitmap bitmap, string bitmaskPath,
+            out OpenCVColor min, out OpenCVColor max, out OpenCVColor median, out OpenCVColor contrast)
         {
-            OpenCVColor median = new OpenCVColor();
             Image<Bgr, byte> image = new Image<Bgr, byte>(bitmap);
             Image<Gray, byte> bitmask = new Image<Gray, byte>(bitmaskPath);
 
             List<double> blue = new List<double>();
+            List<double> green = new List<double>();
+            List<double> red = new List<double>();
 
             for (int i = 0; i < image.Cols; i++)
             {
@@ -145,14 +147,41 @@ namespace Schneedetektion.OpenCV
                 {
                     if (bitmask[j, i].MCvScalar.V0 > 0)
                     {
-                        blue.Add(image[j, i].Blue);
+                        blue.Add(image[j, i].MCvScalar.V0);
+                        green.Add(image[j, i].MCvScalar.V1);
+                        red.Add(image[j, i].MCvScalar.V2);
                     }
                 }
             }
-            
-            //double mean = blue.Sum() / blue.Count();
 
-            return median;
+            blue.Sort();
+            green.Sort();
+            red.Sort();
+
+            int count = blue.Count();
+            int middle = count / 2;
+            if (count % 2 == 0) // Gerade Anzahl
+            {
+                median.Blue = blue.ElementAt(middle) + blue.ElementAt(middle - 1) / 2;
+                median.Green = green.ElementAt(middle) + green.ElementAt(middle - 1) / 2;
+                median.Red = red.ElementAt(middle) + red.ElementAt(middle - 1) / 2;
+            }
+            else // Ungerade Anzahl
+            {
+                median.Blue = blue.ElementAt(middle);
+                median.Green = green.ElementAt(middle);
+                median.Red = red.ElementAt(middle);
+            }
+
+            min.Blue       = blue.First();
+            min.Green      = green.First();
+            min.Red        = red.First();
+            max.Blue       = blue.Last();
+            max.Green      = green.Last();
+            max.Red        = red.Last();
+            contrast.Blue  = (max.Blue - min.Blue) / (max.Blue + min.Blue);
+            contrast.Green = (max.Green - min.Green) / (max.Green + min.Green);
+            contrast.Red   = (max.Red - min.Red) / (max.Red + min.Red);
         }
         #endregion
 

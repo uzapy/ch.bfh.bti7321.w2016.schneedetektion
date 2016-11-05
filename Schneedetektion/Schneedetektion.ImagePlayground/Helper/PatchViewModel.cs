@@ -1,6 +1,7 @@
 ﻿using Schneedetektion.Data;
 using Schneedetektion.OpenCV;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Media.Imaging;
 
 namespace Schneedetektion.ImagePlayground
@@ -14,11 +15,14 @@ namespace Schneedetektion.ImagePlayground
         // dbPatch
         private ImageViewModel imageViewModel;
         private Histogram histogram;
+        private OpenCVColor mode;
         private OpenCVColor mean;
-        private OpenCVColor median;
-        private double contrast;
         private OpenCVColor standardDeviation;
         private OpenCVColor variance;
+        private OpenCVColor median;
+        private OpenCVColor minimum;
+        private OpenCVColor maximum;
+        private OpenCVColor contrast;
         #endregion
 
         #region Constructor
@@ -45,22 +49,18 @@ namespace Schneedetektion.ImagePlayground
         }
         public List<float[]> HistogramValues
         {
-            set { histogram = new Histogram(value); }
+            set
+            {
+                histogram = new Histogram(value);
+                mode.Blue = histogram.Blue.Max();
+                mode.Green = histogram.Green.Max();
+                mode.Red = histogram.Red.Max();
+            }
         }
         public OpenCVColor Mean
         {
             get { return mean; }
             set { mean = value; }
-        }
-        public OpenCVColor Median
-        {
-            get { return median; }
-            set { median = value; }
-        }
-        public double Contrast
-        {
-            get { return contrast; }
-            set { contrast = value; }
         }
         public OpenCVColor StandardDeviation
         {
@@ -71,7 +71,27 @@ namespace Schneedetektion.ImagePlayground
         {
             get { return variance; }
             set { variance = value; }
-        } 
+        }
+        public OpenCVColor Median
+        {
+            get { return median; }
+            set { median = value; }
+        }
+        public OpenCVColor Minimum
+        {
+            get { return minimum; }
+            set { minimum = value; }
+        }
+        public OpenCVColor Maximum
+        {
+            get { return maximum; }
+            set { maximum = value; }
+        }
+        public OpenCVColor Contrast
+        {
+            get { return contrast; }
+            set { contrast = value; }
+        }
         #endregion
     }
 }
