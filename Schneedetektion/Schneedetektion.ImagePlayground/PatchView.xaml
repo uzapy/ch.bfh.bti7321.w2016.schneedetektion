@@ -5,7 +5,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="156" />
+            <ColumnDefinition Width="260" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="100" />
@@ -13,14 +13,62 @@
         </Grid.RowDefinitions>
 
         <Image Grid.Column="0" Grid.Row="0" x:Name="patchImage" Source="{Binding PatchImage}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <StackPanel Grid.Column="1" Grid.Row="0">
-            <TextBlock x:Name="meanText" Margin="5,5,5,0" />
-            <TextBlock x:Name="medianText" Margin="5,5,5,0" />
-            <TextBlock x:Name="contrastText" Margin="5,5,5,0" />
-            <TextBlock x:Name="standardDeviationText" Margin="5,5,5,0" />
-            <TextBlock x:Name="varianceText" Margin="5,5,5,0" />
+        <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Mode: " Width="60" />
+                <TextBlock Text="{Binding ModeBlueText}" Background="{Binding ModeBlueBrush}" Foreground="White" Width="50" />
+                <TextBlock Text="{Binding ModeGreenText}" Background="{Binding ModeGreenBrush}" Foreground="White" Width="50" />
+                <TextBlock Text="{Binding ModeRedText}" Background="{Binding ModeRedBrush}" Foreground="White" Width="50" />
+                <TextBlock Width="50" Background="{Binding ModeBrush}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Mean: " Width="60" />
+                <TextBlock Text="{Binding MeanBlueText}" Background="{Binding MeanBlueBrush}" Foreground="White" Width="50" />
+                <TextBlock Text="{Binding MeanGreenText}" Background="{Binding MeanGreenBrush}" Foreground="White" Width="50" />
+                <TextBlock Text="{Binding MeanRedText}" Background="{Binding MeanRedBrush}" Foreground="White" Width="50" />
+                <TextBlock Width="50" Background="{Binding MeanBrush}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Median: " Width="60" />
+                <TextBlock Text="{Binding MedianBlueText}" Background="{Binding MedianBlueBrush}" Foreground="White" Width="50" />
+                <TextBlock Text="{Binding MedianGreenText}" Background="{Binding MedianGreenBrush}" Foreground="White" Width="50" />
+                <TextBlock Text="{Binding MedianRedText}" Background="{Binding MedianRedBrush}" Foreground="White" Width="50" />
+                <TextBlock Width="50" Background="{Binding MedianBrush}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Minimum: " Width="60" />
+                <TextBlock Text="{Binding MinimumBlueText}" Background="{Binding MinimumBlueBrush}" Foreground="White" Width="50" />
+                <TextBlock Text="{Binding MinimumGreenText}" Background="{Binding MinimumGreenBrush}" Foreground="White" Width="50" />
+                <TextBlock Text="{Binding MinimumRedText}" Background="{Binding MinimumRedBrush}" Foreground="White" Width="50" />
+                <TextBlock Width="50" Background="{Binding MinimumBrush}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Maximum: " Width="60" />
+                <TextBlock Text="{Binding MaximumBlueText}" Background="{Binding MaximumBlueBrush}" Foreground="White" Width="50" />
+                <TextBlock Text="{Binding MaximumGreenText}" Background="{Binding MaximumGreenBrush}" Foreground="White" Width="50" />
+                <TextBlock Text="{Binding MaximumRedText}" Background="{Binding MaximumRedBrush}" Foreground="White" Width="50" />
+                <TextBlock Width="50" Background="{Binding MaximumBrush}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="StdDev: " Width="60" />
+                <TextBlock Text="{Binding StandardDeviationBlueText}" Width="50"/>
+                <TextBlock Text="{Binding StandardDeviationGreenText}" Width="50" />
+                <TextBlock Text="{Binding StandardDeviationRedText}" Width="50" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Variance: " Width="60" />
+                <TextBlock Text="{Binding VarianceBlueText}" Width="50" />
+                <TextBlock Text="{Binding VarianceGreenText}" Width="50" />
+                <TextBlock Text="{Binding VarianceRedText}" Width="50" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Contrast: " Width="60" />
+                <TextBlock Text="{Binding ContrastBlueText}" Width="50" />
+                <TextBlock Text="{Binding ContrastGreenText}" Width="50" />
+                <TextBlock Text="{Binding ContrastRedText}" Width="50" />
+            </StackPanel>
         </StackPanel>
-        <ItemsControl Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Histogram.HistogramValues}">
+        <ItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Histogram.HistogramValues}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas Background="Transparent" />
