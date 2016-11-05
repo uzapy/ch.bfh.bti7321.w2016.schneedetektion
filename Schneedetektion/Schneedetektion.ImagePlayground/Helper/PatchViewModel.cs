@@ -17,11 +17,11 @@ namespace Schneedetektion.ImagePlayground
         private Histogram histogram;
         private OpenCVColor mode;
         private OpenCVColor mean;
-        private OpenCVColor standardDeviation;
-        private OpenCVColor variance;
         private OpenCVColor median;
         private OpenCVColor minimum;
         private OpenCVColor maximum;
+        private OpenCVColor standardDeviation;
+        private OpenCVColor variance;
         private OpenCVColor contrast;
         #endregion
 
@@ -62,16 +62,6 @@ namespace Schneedetektion.ImagePlayground
             get { return mean; }
             set { mean = value; }
         }
-        public OpenCVColor StandardDeviation
-        {
-            get { return standardDeviation; }
-            set { standardDeviation = value; }
-        }
-        public OpenCVColor Variance
-        {
-            get { return variance; }
-            set { variance = value; }
-        }
         public OpenCVColor Median
         {
             get { return median; }
@@ -86,6 +76,16 @@ namespace Schneedetektion.ImagePlayground
         {
             get { return maximum; }
             set { maximum = value; }
+        }
+        public OpenCVColor StandardDeviation
+        {
+            get { return standardDeviation; }
+            set { standardDeviation = value; }
+        }
+        public OpenCVColor Variance
+        {
+            get { return variance; }
+            set { variance = value; }
         }
         public OpenCVColor Contrast
         {

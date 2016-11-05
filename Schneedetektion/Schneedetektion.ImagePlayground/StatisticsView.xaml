@@ -9,7 +9,7 @@
         </StackPanel>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="500" />
+                <ColumnDefinition Width="352" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Image x:Name="statisticsImage" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" />

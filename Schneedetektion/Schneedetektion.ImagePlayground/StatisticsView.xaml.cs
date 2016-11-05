@@ -39,7 +39,7 @@ namespace Schneedetektion.ImagePlayground
             polygons = dataContext.Polygons.Where(p => p.CameraName == imageViewModel.Image.Place);
             foreach (Polygon dbPolygon in polygons)
             {
-                polygonHelper.LoadPolygon(dbPolygon.PolygonPointCollection, dbPolygon.ImageArea, 500, 409);
+                polygonHelper.LoadPolygon(dbPolygon.PolygonPointCollection, dbPolygon.ImageArea, 352, 288);
             }
         }
         #endregion

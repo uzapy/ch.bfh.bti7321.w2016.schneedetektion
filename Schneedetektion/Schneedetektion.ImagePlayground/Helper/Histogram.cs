@@ -20,6 +20,7 @@ namespace Schneedetektion.ImagePlayground
             blue.AddRange(values.ElementAt(0));
             green.AddRange(values.ElementAt(1));
             red.AddRange(values.ElementAt(2));
+            // Nuller nicht mitnehmen - wir starten bei 1
             for (int i = 1; i < values.ElementAt(0).Count(); i++)
             {
                 histogramValues.Add(new Line()
