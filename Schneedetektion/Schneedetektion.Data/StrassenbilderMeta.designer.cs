@@ -39,15 +39,12 @@ namespace Schneedetektion.Data
     partial void InsertImage(Image instance);
     partial void UpdateImage(Image instance);
     partial void DeleteImage(Image instance);
-        #endregion
-
-        public StrassenbilderMetaDataContext() :
-        base(global::Schneedetektion.Data.Properties.Settings.Default.StrassenbilderMetaConnectionString, mappingSource)
-        {
-            OnCreated();
-        }
-
-        public StrassenbilderMetaDataContext(string connection) : 
+    partial void InsertPatch(Patch instance);
+    partial void UpdatePatch(Patch instance);
+    partial void DeletePatch(Patch instance);
+    #endregion
+		
+		public StrassenbilderMetaDataContext(string connection) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
@@ -92,6 +89,14 @@ namespace Schneedetektion.Data
 			get
 			{
 				return this.GetTable<Image>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Patch> Patches
+		{
+			get
+			{
+				return this.GetTable<Patch>();
 			}
 		}
 	}
@@ -953,6 +958,764 @@ namespace Schneedetektion.Data
 					this._GoodLighting = value;
 					this.SendPropertyChanged("GoodLighting");
 					this.OnGoodLightingChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Patches")]
+	public partial class Patch : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _ID;
+		
+		private int _Image_ID;
+		
+		private int _Polygon_ID;
+		
+		private string _BlueHistogram;
+		
+		private string _GreenHistogram;
+		
+		private string _RedHistogram;
+		
+		private System.Nullable<double> _ModeBlue;
+		
+		private System.Nullable<double> _ModeGreen;
+		
+		private System.Nullable<double> _ModeRed;
+		
+		private System.Nullable<double> _MeanBlue;
+		
+		private System.Nullable<double> _MeanGreen;
+		
+		private System.Nullable<double> _MeanRed;
+		
+		private System.Nullable<double> _MedianBlue;
+		
+		private System.Nullable<double> _MedianGreen;
+		
+		private System.Nullable<double> _MedianRed;
+		
+		private System.Nullable<double> _MinimumBlue;
+		
+		private System.Nullable<double> _MinimumGreen;
+		
+		private System.Nullable<double> _MinimumRed;
+		
+		private System.Nullable<double> _MaximumBlue;
+		
+		private System.Nullable<double> _MaximumGreen;
+		
+		private System.Nullable<double> _MaximumRed;
+		
+		private System.Nullable<double> _StandardDeviationBlue;
+		
+		private System.Nullable<double> _StandardDeviationGreen;
+		
+		private System.Nullable<double> _StandardDeviationRed;
+		
+		private System.Nullable<double> _VarianceBlue;
+		
+		private System.Nullable<double> _VarianceGreen;
+		
+		private System.Nullable<double> _VarianceRed;
+		
+		private System.Nullable<double> _ContrastBlue;
+		
+		private System.Nullable<double> _ContrastGreen;
+		
+		private System.Nullable<double> _ContrastRed;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIDChanging(int value);
+    partial void OnIDChanged();
+    partial void OnImage_IDChanging(int value);
+    partial void OnImage_IDChanged();
+    partial void OnPolygon_IDChanging(int value);
+    partial void OnPolygon_IDChanged();
+    partial void OnBlueHistogramChanging(string value);
+    partial void OnBlueHistogramChanged();
+    partial void OnGreenHistogramChanging(string value);
+    partial void OnGreenHistogramChanged();
+    partial void OnRedHistogramChanging(string value);
+    partial void OnRedHistogramChanged();
+    partial void OnModeBlueChanging(System.Nullable<double> value);
+    partial void OnModeBlueChanged();
+    partial void OnModeGreenChanging(System.Nullable<double> value);
+    partial void OnModeGreenChanged();
+    partial void OnModeRedChanging(System.Nullable<double> value);
+    partial void OnModeRedChanged();
+    partial void OnMeanBlueChanging(System.Nullable<double> value);
+    partial void OnMeanBlueChanged();
+    partial void OnMeanGreenChanging(System.Nullable<double> value);
+    partial void OnMeanGreenChanged();
+    partial void OnMeanRedChanging(System.Nullable<double> value);
+    partial void OnMeanRedChanged();
+    partial void OnMedianBlueChanging(System.Nullable<double> value);
+    partial void OnMedianBlueChanged();
+    partial void OnMedianGreenChanging(System.Nullable<double> value);
+    partial void OnMedianGreenChanged();
+    partial void OnMedianRedChanging(System.Nullable<double> value);
+    partial void OnMedianRedChanged();
+    partial void OnMinimumBlueChanging(System.Nullable<double> value);
+    partial void OnMinimumBlueChanged();
+    partial void OnMinimumGreenChanging(System.Nullable<double> value);
+    partial void OnMinimumGreenChanged();
+    partial void OnMinimumRedChanging(System.Nullable<double> value);
+    partial void OnMinimumRedChanged();
+    partial void OnMaximumBlueChanging(System.Nullable<double> value);
+    partial void OnMaximumBlueChanged();
+    partial void OnMaximumGreenChanging(System.Nullable<double> value);
+    partial void OnMaximumGreenChanged();
+    partial void OnMaximumRedChanging(System.Nullable<double> value);
+    partial void OnMaximumRedChanged();
+    partial void OnStandardDeviationBlueChanging(System.Nullable<double> value);
+    partial void OnStandardDeviationBlueChanged();
+    partial void OnStandardDeviationGreenChanging(System.Nullable<double> value);
+    partial void OnStandardDeviationGreenChanged();
+    partial void OnStandardDeviationRedChanging(System.Nullable<double> value);
+    partial void OnStandardDeviationRedChanged();
+    partial void OnVarianceBlueChanging(System.Nullable<double> value);
+    partial void OnVarianceBlueChanged();
+    partial void OnVarianceGreenChanging(System.Nullable<double> value);
+    partial void OnVarianceGreenChanged();
+    partial void OnVarianceRedChanging(System.Nullable<double> value);
+    partial void OnVarianceRedChanged();
+    partial void OnContrastBlueChanging(System.Nullable<double> value);
+    partial void OnContrastBlueChanged();
+    partial void OnContrastGreenChanging(System.Nullable<double> value);
+    partial void OnContrastGreenChanged();
+    partial void OnContrastRedChanging(System.Nullable<double> value);
+    partial void OnContrastRedChanged();
+    #endregion
+		
+		public Patch()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int ID
+		{
+			get
+			{
+				return this._ID;
+			}
+			set
+			{
+				if ((this._ID != value))
+				{
+					this.OnIDChanging(value);
+					this.SendPropertyChanging();
+					this._ID = value;
+					this.SendPropertyChanged("ID");
+					this.OnIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Image_ID", DbType="Int NOT NULL")]
+		public int Image_ID
+		{
+			get
+			{
+				return this._Image_ID;
+			}
+			set
+			{
+				if ((this._Image_ID != value))
+				{
+					this.OnImage_IDChanging(value);
+					this.SendPropertyChanging();
+					this._Image_ID = value;
+					this.SendPropertyChanged("Image_ID");
+					this.OnImage_IDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Polygon_ID", DbType="Int NOT NULL")]
+		public int Polygon_ID
+		{
+			get
+			{
+				return this._Polygon_ID;
+			}
+			set
+			{
+				if ((this._Polygon_ID != value))
+				{
+					this.OnPolygon_IDChanging(value);
+					this.SendPropertyChanging();
+					this._Polygon_ID = value;
+					this.SendPropertyChanged("Polygon_ID");
+					this.OnPolygon_IDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BlueHistogram", DbType="NVarChar(MAX)")]
+		public string BlueHistogram
+		{
+			get
+			{
+				return this._BlueHistogram;
+			}
+			set
+			{
+				if ((this._BlueHistogram != value))
+				{
+					this.OnBlueHistogramChanging(value);
+					this.SendPropertyChanging();
+					this._BlueHistogram = value;
+					this.SendPropertyChanged("BlueHistogram");
+					this.OnBlueHistogramChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_GreenHistogram", DbType="NVarChar(MAX)")]
+		public string GreenHistogram
+		{
+			get
+			{
+				return this._GreenHistogram;
+			}
+			set
+			{
+				if ((this._GreenHistogram != value))
+				{
+					this.OnGreenHistogramChanging(value);
+					this.SendPropertyChanging();
+					this._GreenHistogram = value;
+					this.SendPropertyChanged("GreenHistogram");
+					this.OnGreenHistogramChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RedHistogram", DbType="NVarChar(MAX)")]
+		public string RedHistogram
+		{
+			get
+			{
+				return this._RedHistogram;
+			}
+			set
+			{
+				if ((this._RedHistogram != value))
+				{
+					this.OnRedHistogramChanging(value);
+					this.SendPropertyChanging();
+					this._RedHistogram = value;
+					this.SendPropertyChanged("RedHistogram");
+					this.OnRedHistogramChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModeBlue", DbType="Float")]
+		public System.Nullable<double> ModeBlue
+		{
+			get
+			{
+				return this._ModeBlue;
+			}
+			set
+			{
+				if ((this._ModeBlue != value))
+				{
+					this.OnModeBlueChanging(value);
+					this.SendPropertyChanging();
+					this._ModeBlue = value;
+					this.SendPropertyChanged("ModeBlue");
+					this.OnModeBlueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModeGreen", DbType="Float")]
+		public System.Nullable<double> ModeGreen
+		{
+			get
+			{
+				return this._ModeGreen;
+			}
+			set
+			{
+				if ((this._ModeGreen != value))
+				{
+					this.OnModeGreenChanging(value);
+					this.SendPropertyChanging();
+					this._ModeGreen = value;
+					this.SendPropertyChanged("ModeGreen");
+					this.OnModeGreenChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModeRed", DbType="Float")]
+		public System.Nullable<double> ModeRed
+		{
+			get
+			{
+				return this._ModeRed;
+			}
+			set
+			{
+				if ((this._ModeRed != value))
+				{
+					this.OnModeRedChanging(value);
+					this.SendPropertyChanging();
+					this._ModeRed = value;
+					this.SendPropertyChanged("ModeRed");
+					this.OnModeRedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MeanBlue", DbType="Float")]
+		public System.Nullable<double> MeanBlue
+		{
+			get
+			{
+				return this._MeanBlue;
+			}
+			set
+			{
+				if ((this._MeanBlue != value))
+				{
+					this.OnMeanBlueChanging(value);
+					this.SendPropertyChanging();
+					this._MeanBlue = value;
+					this.SendPropertyChanged("MeanBlue");
+					this.OnMeanBlueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MeanGreen", DbType="Float")]
+		public System.Nullable<double> MeanGreen
+		{
+			get
+			{
+				return this._MeanGreen;
+			}
+			set
+			{
+				if ((this._MeanGreen != value))
+				{
+					this.OnMeanGreenChanging(value);
+					this.SendPropertyChanging();
+					this._MeanGreen = value;
+					this.SendPropertyChanged("MeanGreen");
+					this.OnMeanGreenChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MeanRed", DbType="Float")]
+		public System.Nullable<double> MeanRed
+		{
+			get
+			{
+				return this._MeanRed;
+			}
+			set
+			{
+				if ((this._MeanRed != value))
+				{
+					this.OnMeanRedChanging(value);
+					this.SendPropertyChanging();
+					this._MeanRed = value;
+					this.SendPropertyChanged("MeanRed");
+					this.OnMeanRedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MedianBlue", DbType="Float")]
+		public System.Nullable<double> MedianBlue
+		{
+			get
+			{
+				return this._MedianBlue;
+			}
+			set
+			{
+				if ((this._MedianBlue != value))
+				{
+					this.OnMedianBlueChanging(value);
+					this.SendPropertyChanging();
+					this._MedianBlue = value;
+					this.SendPropertyChanged("MedianBlue");
+					this.OnMedianBlueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MedianGreen", DbType="Float")]
+		public System.Nullable<double> MedianGreen
+		{
+			get
+			{
+				return this._MedianGreen;
+			}
+			set
+			{
+				if ((this._MedianGreen != value))
+				{
+					this.OnMedianGreenChanging(value);
+					this.SendPropertyChanging();
+					this._MedianGreen = value;
+					this.SendPropertyChanged("MedianGreen");
+					this.OnMedianGreenChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MedianRed", DbType="Float")]
+		public System.Nullable<double> MedianRed
+		{
+			get
+			{
+				return this._MedianRed;
+			}
+			set
+			{
+				if ((this._MedianRed != value))
+				{
+					this.OnMedianRedChanging(value);
+					this.SendPropertyChanging();
+					this._MedianRed = value;
+					this.SendPropertyChanged("MedianRed");
+					this.OnMedianRedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MinimumBlue", DbType="Float")]
+		public System.Nullable<double> MinimumBlue
+		{
+			get
+			{
+				return this._MinimumBlue;
+			}
+			set
+			{
+				if ((this._MinimumBlue != value))
+				{
+					this.OnMinimumBlueChanging(value);
+					this.SendPropertyChanging();
+					this._MinimumBlue = value;
+					this.SendPropertyChanged("MinimumBlue");
+					this.OnMinimumBlueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MinimumGreen", DbType="Float")]
+		public System.Nullable<double> MinimumGreen
+		{
+			get
+			{
+				return this._MinimumGreen;
+			}
+			set
+			{
+				if ((this._MinimumGreen != value))
+				{
+					this.OnMinimumGreenChanging(value);
+					this.SendPropertyChanging();
+					this._MinimumGreen = value;
+					this.SendPropertyChanged("MinimumGreen");
+					this.OnMinimumGreenChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MinimumRed", DbType="Float")]
+		public System.Nullable<double> MinimumRed
+		{
+			get
+			{
+				return this._MinimumRed;
+			}
+			set
+			{
+				if ((this._MinimumRed != value))
+				{
+					this.OnMinimumRedChanging(value);
+					this.SendPropertyChanging();
+					this._MinimumRed = value;
+					this.SendPropertyChanged("MinimumRed");
+					this.OnMinimumRedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MaximumBlue", DbType="Float")]
+		public System.Nullable<double> MaximumBlue
+		{
+			get
+			{
+				return this._MaximumBlue;
+			}
+			set
+			{
+				if ((this._MaximumBlue != value))
+				{
+					this.OnMaximumBlueChanging(value);
+					this.SendPropertyChanging();
+					this._MaximumBlue = value;
+					this.SendPropertyChanged("MaximumBlue");
+					this.OnMaximumBlueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MaximumGreen", DbType="Float")]
+		public System.Nullable<double> MaximumGreen
+		{
+			get
+			{
+				return this._MaximumGreen;
+			}
+			set
+			{
+				if ((this._MaximumGreen != value))
+				{
+					this.OnMaximumGreenChanging(value);
+					this.SendPropertyChanging();
+					this._MaximumGreen = value;
+					this.SendPropertyChanged("MaximumGreen");
+					this.OnMaximumGreenChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MaximumRed", DbType="Float")]
+		public System.Nullable<double> MaximumRed
+		{
+			get
+			{
+				return this._MaximumRed;
+			}
+			set
+			{
+				if ((this._MaximumRed != value))
+				{
+					this.OnMaximumRedChanging(value);
+					this.SendPropertyChanging();
+					this._MaximumRed = value;
+					this.SendPropertyChanged("MaximumRed");
+					this.OnMaximumRedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StandardDeviationBlue", DbType="Float")]
+		public System.Nullable<double> StandardDeviationBlue
+		{
+			get
+			{
+				return this._StandardDeviationBlue;
+			}
+			set
+			{
+				if ((this._StandardDeviationBlue != value))
+				{
+					this.OnStandardDeviationBlueChanging(value);
+					this.SendPropertyChanging();
+					this._StandardDeviationBlue = value;
+					this.SendPropertyChanged("StandardDeviationBlue");
+					this.OnStandardDeviationBlueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StandardDeviationGreen", DbType="Float")]
+		public System.Nullable<double> StandardDeviationGreen
+		{
+			get
+			{
+				return this._StandardDeviationGreen;
+			}
+			set
+			{
+				if ((this._StandardDeviationGreen != value))
+				{
+					this.OnStandardDeviationGreenChanging(value);
+					this.SendPropertyChanging();
+					this._StandardDeviationGreen = value;
+					this.SendPropertyChanged("StandardDeviationGreen");
+					this.OnStandardDeviationGreenChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StandardDeviationRed", DbType="Float")]
+		public System.Nullable<double> StandardDeviationRed
+		{
+			get
+			{
+				return this._StandardDeviationRed;
+			}
+			set
+			{
+				if ((this._StandardDeviationRed != value))
+				{
+					this.OnStandardDeviationRedChanging(value);
+					this.SendPropertyChanging();
+					this._StandardDeviationRed = value;
+					this.SendPropertyChanged("StandardDeviationRed");
+					this.OnStandardDeviationRedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VarianceBlue", DbType="Float")]
+		public System.Nullable<double> VarianceBlue
+		{
+			get
+			{
+				return this._VarianceBlue;
+			}
+			set
+			{
+				if ((this._VarianceBlue != value))
+				{
+					this.OnVarianceBlueChanging(value);
+					this.SendPropertyChanging();
+					this._VarianceBlue = value;
+					this.SendPropertyChanged("VarianceBlue");
+					this.OnVarianceBlueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VarianceGreen", DbType="Float")]
+		public System.Nullable<double> VarianceGreen
+		{
+			get
+			{
+				return this._VarianceGreen;
+			}
+			set
+			{
+				if ((this._VarianceGreen != value))
+				{
+					this.OnVarianceGreenChanging(value);
+					this.SendPropertyChanging();
+					this._VarianceGreen = value;
+					this.SendPropertyChanged("VarianceGreen");
+					this.OnVarianceGreenChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VarianceRed", DbType="Float")]
+		public System.Nullable<double> VarianceRed
+		{
+			get
+			{
+				return this._VarianceRed;
+			}
+			set
+			{
+				if ((this._VarianceRed != value))
+				{
+					this.OnVarianceRedChanging(value);
+					this.SendPropertyChanging();
+					this._VarianceRed = value;
+					this.SendPropertyChanged("VarianceRed");
+					this.OnVarianceRedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ContrastBlue", DbType="Float")]
+		public System.Nullable<double> ContrastBlue
+		{
+			get
+			{
+				return this._ContrastBlue;
+			}
+			set
+			{
+				if ((this._ContrastBlue != value))
+				{
+					this.OnContrastBlueChanging(value);
+					this.SendPropertyChanging();
+					this._ContrastBlue = value;
+					this.SendPropertyChanged("ContrastBlue");
+					this.OnContrastBlueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ContrastGreen", DbType="Float")]
+		public System.Nullable<double> ContrastGreen
+		{
+			get
+			{
+				return this._ContrastGreen;
+			}
+			set
+			{
+				if ((this._ContrastGreen != value))
+				{
+					this.OnContrastGreenChanging(value);
+					this.SendPropertyChanging();
+					this._ContrastGreen = value;
+					this.SendPropertyChanged("ContrastGreen");
+					this.OnContrastGreenChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ContrastRed", DbType="Float")]
+		public System.Nullable<double> ContrastRed
+		{
+			get
+			{
+				return this._ContrastRed;
+			}
+			set
+			{
+				if ((this._ContrastRed != value))
+				{
+					this.OnContrastRedChanging(value);
+					this.SendPropertyChanging();
+					this._ContrastRed = value;
+					this.SendPropertyChanged("ContrastRed");
+					this.OnContrastRedChanged();
 				}
 			}
 		}

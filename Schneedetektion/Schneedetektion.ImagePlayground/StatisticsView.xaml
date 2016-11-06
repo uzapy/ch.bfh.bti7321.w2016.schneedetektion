@@ -6,6 +6,7 @@
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <Button Content="Load Random" Width="100" Click="LoadRandom_Click" />
             <Button Content="Crop Patches" Width="100" Click="CropPatches_Click" />
+            <Button Content="Clear" Width="100" Click="Clear_Click" />
         </StackPanel>
         <Grid>
             <Grid.ColumnDefinitions>

@@ -43,4 +43,38 @@
       <Column Name="GoodLighting" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
     </Type>
   </Table>
+  <Table Name="dbo.Patches" Member="Patches">
+    <Type Name="Patch">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Image_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Polygon_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="BlueHistogram" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="GreenHistogram" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="RedHistogram" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="ModeBlue" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="ModeGreen" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="ModeRed" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MeanBlue" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MeanGreen" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MeanRed" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MedianBlue" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MedianGreen" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MedianRed" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MinimumBlue" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MinimumGreen" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MinimumRed" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MaximumBlue" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MaximumGreen" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MaximumRed" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="StandardDeviationBlue" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="StandardDeviationGreen" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="StandardDeviationRed" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="VarianceBlue" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="VarianceGreen" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="VarianceRed" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="ContrastBlue" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="ContrastGreen" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="ContrastRed" Type="System.Double" DbType="Float" CanBeNull="true" />
+    </Type>
+  </Table>
 </Database>

@@ -1,5 +1,4 @@
-﻿using Schneedetektion.OpenCV;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -20,11 +19,12 @@ namespace Schneedetektion.ImagePlayground
             blue.AddRange(values.ElementAt(0));
             green.AddRange(values.ElementAt(1));
             red.AddRange(values.ElementAt(2));
+            // TODO: Nuller nicht mitnehmen - wir starten bei 1
             blue.RemoveAt(0);
             green.RemoveAt(0);
             red.RemoveAt(0);
-            // Nuller nicht mitnehmen - wir starten bei 1
-            for (int i = 1; i < blue.Count(); i++)
+
+            for (int i = 0; i < blue.Count(); i++)
             {
                 histogramValues.Add(new Line()
                 {

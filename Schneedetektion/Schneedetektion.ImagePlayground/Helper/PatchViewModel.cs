@@ -13,8 +13,8 @@ namespace Schneedetektion.ImagePlayground
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private BrushConverter brushConverter = new BrushConverter();
         private BitmapImage patchImage;
-        private Polygon polygon;
         // dbPatch
+        private Polygon polygon;
         private ImageViewModel imageViewModel;
         private Histogram histogram;
         private OpenCVColor mode;

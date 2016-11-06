@@ -2,6 +2,7 @@
 using Schneedetektion.OpenCV;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,7 +18,7 @@ namespace Schneedetektion.ImagePlayground
         private PolygonHelper polygonHelper;
         private OpenCVHelper openCVHelper = new OpenCVHelper();
         private ImageViewModel imageViewModel;
-        private List<PatchViewModel> patches = new List<PatchViewModel>();
+        private ObservableCollection<PatchViewModel> patches = new ObservableCollection<PatchViewModel>();
         private IEnumerable<Polygon> polygons;
         #endregion
 
@@ -34,6 +35,7 @@ namespace Schneedetektion.ImagePlayground
         {
             imageViewModel = selectedImage;
             statisticsImage.Source = imageViewModel.Bitmap;
+            imageContainer.ItemsSource = patches;
 
             polygonCanvas.Children.Clear();
             polygons = dataContext.Polygons.Where(p => p.CameraName == imageViewModel.Image.Place);
@@ -59,8 +61,6 @@ namespace Schneedetektion.ImagePlayground
                 BitmapImage patchImage = openCVHelper.GetMaskedImage(imageViewModel.FileName, pointCollection);
                 PatchViewModel patchViewModel = new PatchViewModel(patchImage, imageViewModel, polygon);
 
-                patches.Add(patchViewModel);
-
                 patchViewModel.HistogramValues = openCVHelper.GetHistogram(OpenCVHelper.BitmapImageToBitmap(patchViewModel.PatchImage));
 
                 OpenCVColor meanColor;
@@ -81,8 +81,12 @@ namespace Schneedetektion.ImagePlayground
                 patchViewModel.Median = median;
                 patchViewModel.Contrast = contrast;
 
-                imageContainer.Items.Add(patchViewModel);
+                patches.Add(patchViewModel);
             }
+        }
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+            patches.Clear();
         }
         #endregion
     }

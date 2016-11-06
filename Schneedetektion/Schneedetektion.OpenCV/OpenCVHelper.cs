@@ -106,7 +106,7 @@ namespace Schneedetektion.OpenCV
                 CvInvoke.FillPoly(bitMask, vvPoint, new Gray(255).MCvScalar);
             }
 
-            // Crop ROI
+            // Crop of Bitmask ROI
             bitMask.ROI = GetRegionOfInterest(scaledPoints);
 
             // TODO: Alle Werte hier berechnen (auch Histogram)
