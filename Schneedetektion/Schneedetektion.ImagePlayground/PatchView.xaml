@@ -12,7 +12,7 @@
             <RowDefinition Height="100" />
         </Grid.RowDefinitions>
 
-        <Image Grid.Column="0" Grid.Row="0" x:Name="patchImage" Source="{Binding PatchImage}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <Image Grid.Column="0" Grid.Row="0" Source="{Binding PatchBitmap}" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Mode: " Width="60" />

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace Schneedetektion.Test
 {
@@ -50,32 +51,35 @@ namespace Schneedetektion.Test
             foreach (var polygon in polygons)
             {
                 IEnumerable<Point> pointCollection = PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection);
-                patches.Add(new PatchViewModel(openCVHelper.GetMaskedImage(imageViewModel.FileName, pointCollection), imageViewModel, polygon));
+                BitmapImage patchImage = new BitmapImage();
+                Patch patch = openCVHelper.GetPatch(imageViewModel.FileName, pointCollection, out patchImage);
+                patches.Add(new PatchViewModel(patch, patchImage, imageViewModel, polygon));
             }
 
             // Statistiken berechnen
             foreach (var patch in patches)
             {
-                // Aus Polygon eine Bitmaske machen
+                List<float[]> histogram = openCVHelper.GetHistogram(OpenCVHelper.BitmapImageToBitmap(patch.PatchBitmap));
+
                 OpenCVColor mean;
                 OpenCVColor standardDeviation;
                 OpenCVColor variance;
-                openCVHelper.GetMeanSdandardDeviationAndVariance(OpenCVHelper.BitmapImageToBitmap(patch.PatchImage), patch.Polygon.Bitmask, out mean, out standardDeviation, out variance);
+                openCVHelper.GetMeanSdandardDeviationAndVariance(OpenCVHelper.BitmapImageToBitmap(patch.PatchBitmap), patch.Polygon.Bitmask, out mean, out standardDeviation, out variance);
 
                 OpenCVColor median;
                 OpenCVColor min;
                 OpenCVColor max;
                 OpenCVColor contrast;
-                openCVHelper.GetMinMaxMedianAndContrast(OpenCVHelper.BitmapImageToBitmap(patch.PatchImage), patch.Polygon.Bitmask, out median, out min, out max, out contrast);
+                openCVHelper.GetMinMaxMedianAndContrast(OpenCVHelper.BitmapImageToBitmap(patch.PatchBitmap), patch.Polygon.Bitmask, out median, out min, out max, out contrast);
             }
         }
 
         [TestMethod]
         public void PolygonToBitMask()
         {
-            // Zufälliges Bild auswählen
             int count = dataContext.Images.Where(i => i.Day.Value).Count();
             ImageViewModel imageViewModel = new ImageViewModel(dataContext.Images.Where(i => i.Day.Value).Skip(random.Next(0, count)).First());
+
             Polygon polygon = dataContext.Polygons.Where(p => p.CameraName == imageViewModel.Image.Place).First();
             openCVHelper.SaveBitmask(imageViewModel.FileName,
                 @"C:\Users\uzapy\Desktop\astra2016\bitmasks\1.png",

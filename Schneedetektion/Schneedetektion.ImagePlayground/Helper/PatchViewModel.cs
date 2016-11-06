@@ -1,7 +1,4 @@
 ﻿using Schneedetektion.Data;
-using Schneedetektion.OpenCV;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -12,137 +9,136 @@ namespace Schneedetektion.ImagePlayground
         #region Fields
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private BrushConverter brushConverter = new BrushConverter();
-        private BitmapImage patchImage;
-        // dbPatch
-        private Polygon polygon;
+        private Patch patch;
+        private BitmapImage patchBitmap;
         private ImageViewModel imageViewModel;
+        private Polygon polygon;
         private Histogram histogram;
-        private OpenCVColor mode;
-        private OpenCVColor mean;
-        private OpenCVColor median;
-        private OpenCVColor minimum;
-        private OpenCVColor maximum;
-        private OpenCVColor standardDeviation;
-        private OpenCVColor variance;
-        private OpenCVColor contrast;
         #endregion
 
         #region Constructor
-        public PatchViewModel(BitmapImage bitmapImage, ImageViewModel imageViewModel, Polygon polygon)
+        public PatchViewModel(Patch patch, BitmapImage patchBitmap, ImageViewModel imageViewModel, Polygon polygon)
         {
-            this.patchImage = bitmapImage;
+            this.patch = patch;
+            this.patchBitmap = patchBitmap;
             this.imageViewModel = imageViewModel;
             this.polygon = polygon;
+
+            histogram = new Histogram(patch.BlueHistogramList, patch.GreenHistogramList, patch.RedHistogramList);
         }
         #endregion
 
         #region Properties
-        public BitmapImage PatchImage
+        public Patch Patch
         {
-            get { return patchImage; }
+            get { return patch; }
         }
+
+        public BitmapImage PatchBitmap
+        {
+            get { return patchBitmap; }
+        }
+
         public Polygon Polygon
         {
             get { return polygon; }
         }
+
+        // Histogram
         public Histogram Histogram
         {
             get { return histogram; }
         }
-        public List<float[]> HistogramValues
+
+        // Mode
+        public string ModeBlueText { get { return " B " + patch.ModeBlue + " "; } }
+        public string ModeGreenText { get { return " G " + patch.ModeGreen + " "; } }
+        public string ModeRedText { get { return " R " + patch.ModeRed + " "; } }
+        public SolidColorBrush ModeBlueBrush { get { return new SolidColorBrush(Color.FromRgb(0, 0, (byte)patch.ModeBlue)); } }
+        public SolidColorBrush ModeGreenBrush { get { return new SolidColorBrush(Color.FromRgb(0, (byte)patch.ModeGreen, 0)); } }
+        public SolidColorBrush ModeRedBrush { get { return new SolidColorBrush(Color.FromRgb((byte)patch.ModeRed, 0, 0)); } }
+        public SolidColorBrush ModeBrush
         {
-            set
+            get
             {
-                histogram = new Histogram(value);
-                mode.Blue = histogram.Blue.IndexOf(histogram.Blue.Max());
-                mode.Green = histogram.Green.IndexOf(histogram.Green.Max());
-                mode.Red = histogram.Red.IndexOf(histogram.Red.Max());
+                return new SolidColorBrush(Color.FromRgb((byte)patch.ModeRed, (byte)patch.ModeGreen, (byte)patch.ModeBlue));
             }
         }
-        public OpenCVColor Mode
+
+        // Mean
+        public string MeanBlueText { get { return " B " + patch.MeanBlue.Value.ToString("0.00") + " "; } }
+        public string MeanGreenText { get { return " G " + patch.MeanGreen.Value.ToString("0.00") + " "; } }
+        public string MeanRedText { get { return " R " + patch.MeanRed.Value.ToString("0.00") + " "; } }
+        public SolidColorBrush MeanBlueBrush { get { return new SolidColorBrush(Color.FromRgb(0, 0, (byte)patch.MeanBlue)); } }
+        public SolidColorBrush MeanGreenBrush { get { return new SolidColorBrush(Color.FromRgb(0, (byte)patch.MeanGreen, 0)); } }
+        public SolidColorBrush MeanRedBrush { get { return new SolidColorBrush(Color.FromRgb((byte)patch.MeanRed, 0, 0)); } }
+        public SolidColorBrush MeanBrush
         {
-            get { return mode; }
-            set { mode = value; }
+            get
+            {
+                return new SolidColorBrush(Color.FromRgb((byte)patch.MeanRed, (byte)patch.MeanGreen, (byte)patch.MeanBlue));
+            }
         }
-        public string ModeBlueText { get { return " B " + Mode.Blue.ToString("0.00") + " "; } }
-        public string ModeGreenText { get { return " G " + Mode.Green.ToString("0.00") + " "; } }
-        public string ModeRedText { get { return " R " + Mode.Red.ToString("0.00") + " "; } }
-        public SolidColorBrush ModeBlueBrush { get { return new SolidColorBrush(Color.FromRgb(0, 0, (byte)Mode.Blue)); } }
-        public SolidColorBrush ModeGreenBrush { get { return new SolidColorBrush(Color.FromRgb(0, (byte)Mode.Green, 0)); } }
-        public SolidColorBrush ModeRedBrush { get { return new SolidColorBrush(Color.FromRgb((byte)Mode.Red, 0, 0)); } }
-        public SolidColorBrush ModeBrush { get { return new SolidColorBrush(Color.FromRgb((byte)Mode.Red, (byte)Mode.Green, (byte)Mode.Blue)); } }
-        public OpenCVColor Mean
+
+        // Median
+        public string MedianBlueText { get { return " B " + patch.MedianBlue.Value.ToString("0.00") + " "; } }
+        public string MedianGreenText { get { return " G " + patch.MedianGreen.Value.ToString("0.00") + " "; } }
+        public string MedianRedText { get { return " R " + patch.MedianRed.Value.ToString("0.00") + " "; } }
+        public SolidColorBrush MedianBlueBrush { get { return new SolidColorBrush(Color.FromRgb(0, 0, (byte)patch.MedianBlue)); } }
+        public SolidColorBrush MedianGreenBrush { get { return new SolidColorBrush(Color.FromRgb(0, (byte)patch.MedianGreen, 0)); } }
+        public SolidColorBrush MedianRedBrush { get { return new SolidColorBrush(Color.FromRgb((byte)patch.MedianRed, 0, 0)); } }
+        public SolidColorBrush MedianBrush
         {
-            get { return mean; }
-            set { mean = value; }
+            get
+            {
+                return new SolidColorBrush(Color.FromRgb((byte)patch.MedianRed, (byte)patch.MedianGreen, (byte)patch.MedianBlue));
+            }
         }
-        public string MeanBlueText { get { return " B " + Mean.Blue.ToString("0.00") + " "; } }
-        public string MeanGreenText { get { return " G " + Mean.Green.ToString("0.00") + " "; } }
-        public string MeanRedText { get { return " R " + Mean.Red.ToString("0.00") + " "; } }
-        public SolidColorBrush MeanBlueBrush { get { return new SolidColorBrush(Color.FromRgb(0, 0, (byte)Mean.Blue)); } }
-        public SolidColorBrush MeanGreenBrush { get { return new SolidColorBrush(Color.FromRgb(0, (byte)Mean.Green, 0)); } }
-        public SolidColorBrush MeanRedBrush { get { return new SolidColorBrush(Color.FromRgb((byte)Mean.Red, 0, 0)); } }
-        public SolidColorBrush MeanBrush { get { return new SolidColorBrush(Color.FromRgb((byte)Mean.Red, (byte)Mean.Green, (byte)Mean.Blue)); } }
-        public OpenCVColor Median
+
+        // Minimum
+        public string MinimumBlueText { get { return " B " + patch.MinimumBlue + " "; } }
+        public string MinimumGreenText { get { return " G " + patch.MinimumGreen + " "; } }
+        public string MinimumRedText { get { return " R " + patch.MinimumRed + " "; } }
+        public SolidColorBrush MinimumBlueBrush { get { return new SolidColorBrush(Color.FromRgb(0, 0, (byte)patch.MinimumBlue)); } }
+        public SolidColorBrush MinimumGreenBrush { get { return new SolidColorBrush(Color.FromRgb(0, (byte)patch.MinimumGreen, 0)); } }
+        public SolidColorBrush MinimumRedBrush { get { return new SolidColorBrush(Color.FromRgb((byte)patch.MinimumRed, 0, 0)); } }
+        public SolidColorBrush MinimumBrush
         {
-            get { return median; }
-            set { median = value; }
+            get
+            {
+                return new SolidColorBrush(Color.FromRgb((byte)patch.MinimumRed, (byte)patch.MinimumGreen, (byte)patch.MinimumBlue));
+            }
         }
-        public string MedianBlueText { get { return " B " + Median.Blue.ToString("0.00") + " "; } }
-        public string MedianGreenText { get { return " G " + Median.Green.ToString("0.00") + " "; } }
-        public string MedianRedText { get { return " R " + Median.Red.ToString("0.00") + " "; } }
-        public SolidColorBrush MedianBlueBrush { get { return new SolidColorBrush(Color.FromRgb(0, 0, (byte)Median.Blue)); } }
-        public SolidColorBrush MedianGreenBrush { get { return new SolidColorBrush(Color.FromRgb(0, (byte)Median.Green, 0)); } }
-        public SolidColorBrush MedianRedBrush { get { return new SolidColorBrush(Color.FromRgb((byte)Median.Red, 0, 0)); } }
-        public SolidColorBrush MedianBrush { get { return new SolidColorBrush(Color.FromRgb((byte)Median.Red, (byte)Median.Green, (byte)Median.Blue)); } }
-        public OpenCVColor Minimum
+
+        // Maximum
+        public string MaximumBlueText { get { return " B " + patch.MaximumBlue + " "; } }
+        public string MaximumGreenText { get { return " G " + patch.MaximumGreen + " "; } }
+        public string MaximumRedText { get { return " R " + patch.MaximumRed + " "; } }
+        public SolidColorBrush MaximumBlueBrush { get { return new SolidColorBrush(Color.FromRgb(0, 0, (byte)patch.MaximumBlue)); } }
+        public SolidColorBrush MaximumGreenBrush { get { return new SolidColorBrush(Color.FromRgb(0, (byte)patch.MaximumGreen, 0)); } }
+        public SolidColorBrush MaximumRedBrush { get { return new SolidColorBrush(Color.FromRgb((byte)patch.MaximumRed, 0, 0)); } }
+        public SolidColorBrush MaximumBrush
         {
-            get { return minimum; }
-            set { minimum = value; }
+            get
+            {
+                return new SolidColorBrush(Color.FromRgb((byte)patch.MaximumRed, (byte)patch.MaximumGreen, (byte)patch.MaximumBlue));
+            }
         }
-        public string MinimumBlueText { get { return " B " + Minimum.Blue.ToString("0.00") + " "; } }
-        public string MinimumGreenText { get { return " G " + Minimum.Green.ToString("0.00") + " "; } }
-        public string MinimumRedText { get { return " R " + Minimum.Red.ToString("0.00") + " "; } }
-        public SolidColorBrush MinimumBlueBrush { get { return new SolidColorBrush(Color.FromRgb(0, 0, (byte)Minimum.Blue)); } }
-        public SolidColorBrush MinimumGreenBrush { get { return new SolidColorBrush(Color.FromRgb(0, (byte)Minimum.Green, 0)); } }
-        public SolidColorBrush MinimumRedBrush { get { return new SolidColorBrush(Color.FromRgb((byte)Minimum.Red, 0, 0)); } }
-        public SolidColorBrush MinimumBrush { get { return new SolidColorBrush(Color.FromRgb((byte)Minimum.Red, (byte)Minimum.Green, (byte)Minimum.Blue)); } }
-        public OpenCVColor Maximum
-        {
-            get { return maximum; }
-            set { maximum = value; }
-        }
-        public string MaximumBlueText { get { return " B " + Maximum.Blue.ToString("0.00") + " "; } }
-        public string MaximumGreenText { get { return " G " + Maximum.Green.ToString("0.00") + " "; } }
-        public string MaximumRedText { get { return " R " + Maximum.Red.ToString("0.00") + " "; } }
-        public SolidColorBrush MaximumBlueBrush { get { return new SolidColorBrush(Color.FromRgb(0, 0, (byte)Maximum.Blue)); } }
-        public SolidColorBrush MaximumGreenBrush { get { return new SolidColorBrush(Color.FromRgb(0, (byte)Maximum.Green, 0)); } }
-        public SolidColorBrush MaximumRedBrush { get { return new SolidColorBrush(Color.FromRgb((byte)Maximum.Red, 0, 0)); } }
-        public SolidColorBrush MaximumBrush { get { return new SolidColorBrush(Color.FromRgb((byte)Maximum.Red, (byte)Maximum.Green, (byte)Maximum.Blue)); } }
-        public OpenCVColor StandardDeviation
-        {
-            get { return standardDeviation; }
-            set { standardDeviation = value; }
-        }
-        public string StandardDeviationBlueText { get { return " B " + StandardDeviation.Blue.ToString("0.00") + " "; } }
-        public string StandardDeviationGreenText { get { return " G " + StandardDeviation.Green.ToString("0.00") + " "; } }
-        public string StandardDeviationRedText { get { return " R " + StandardDeviation.Red.ToString("0.00") + " "; } }
-        public OpenCVColor Variance
-        {
-            get { return variance; }
-            set { variance = value; }
-        }
-        public string VarianceBlueText { get { return " B " + Variance.Blue.ToString("0.00") + " "; } }
-        public string VarianceGreenText { get { return " G " + Variance.Green.ToString("0.00") + " "; } }
-        public string VarianceRedText { get { return " R " + Variance.Red.ToString("0.00") + " "; } }
-        public OpenCVColor Contrast
-        {
-            get { return contrast; }
-            set { contrast = value; }
-        }
-        public string ContrastBlueText { get { return " B " + Contrast.Blue.ToString("0.00") + " "; } }
-        public string ContrastGreenText { get { return " G " + Contrast.Green.ToString("0.00") + " "; } }
-        public string ContrastRedText { get { return " R " + Contrast.Red.ToString("0.00") + " "; } }
+
+        // Standard Deviation
+        public string StandardDeviationBlueText { get { return " B " + patch.StandardDeviationBlue.Value.ToString("0.00") + " "; } }
+        public string StandardDeviationGreenText { get { return " G " + patch.StandardDeviationGreen.Value.ToString("0.00") + " "; } }
+        public string StandardDeviationRedText { get { return " R " + patch.StandardDeviationRed.Value.ToString("0.00") + " "; } }
+
+        // Variance
+        public string VarianceBlueText { get { return " B " + patch.VarianceBlue.Value.ToString("0.00") + " "; } }
+        public string VarianceGreenText { get { return " G " + patch.VarianceGreen.Value.ToString("0.00") + " "; } }
+        public string VarianceRedText { get { return " R " + patch.VarianceRed.Value.ToString("0.00") + " "; } }
+
+        // Contrast
+        public string ContrastBlueText { get { return " B " + patch.ContrastBlue.Value.ToString("0.00") + " "; } }
+        public string ContrastGreenText { get { return " G " + patch.ContrastGreen.Value.ToString("0.00") + " "; } }
+        public string ContrastRedText { get { return " R " + patch.ContrastRed.Value.ToString("0.00") + " "; } }
         #endregion
     }
 }

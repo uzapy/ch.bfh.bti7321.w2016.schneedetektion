@@ -58,28 +58,9 @@ namespace Schneedetektion.ImagePlayground
             foreach (var polygon in polygons)
             {
                 IEnumerable<Point> pointCollection = PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection);
-                BitmapImage patchImage = openCVHelper.GetMaskedImage(imageViewModel.FileName, pointCollection);
-                PatchViewModel patchViewModel = new PatchViewModel(patchImage, imageViewModel, polygon);
-
-                patchViewModel.HistogramValues = openCVHelper.GetHistogram(OpenCVHelper.BitmapImageToBitmap(patchViewModel.PatchImage));
-
-                OpenCVColor meanColor;
-                OpenCVColor standardDeviation;
-                OpenCVColor variance;
-                openCVHelper.GetMeanSdandardDeviationAndVariance(OpenCVHelper.BitmapImageToBitmap(patchImage), polygon.Bitmask, out meanColor, out standardDeviation, out variance);
-                patchViewModel.Mean = meanColor;
-                patchViewModel.StandardDeviation = standardDeviation;
-                patchViewModel.Variance = variance;
-
-                OpenCVColor min;
-                OpenCVColor max;
-                OpenCVColor median;
-                OpenCVColor contrast;
-                openCVHelper.GetMinMaxMedianAndContrast(OpenCVHelper.BitmapImageToBitmap(patchImage), polygon.Bitmask, out min, out max, out median, out contrast);
-                patchViewModel.Minimum = min;
-                patchViewModel.Maximum = max;
-                patchViewModel.Median = median;
-                patchViewModel.Contrast = contrast;
+                BitmapImage patchImage = new BitmapImage();
+                Patch patch = openCVHelper.GetPatch(imageViewModel.FileName, pointCollection, out patchImage);
+                PatchViewModel patchViewModel = new PatchViewModel(patch, patchImage, imageViewModel, polygon);
 
                 patches.Add(patchViewModel);
             }

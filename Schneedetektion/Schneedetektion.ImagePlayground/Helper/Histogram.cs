@@ -8,21 +8,17 @@ namespace Schneedetektion.ImagePlayground
 {
     public class Histogram
     {
-        private List<float> blue = new List<float>();
-        private List<float> green = new List<float>();
-        private List<float> red = new List<float>();
+        private List<int> blue;
+        private List<int> green;
+        private List<int> red;
         private List<Line> histogramValues = new List<Line>();
         private static Thickness thickness = new Thickness(2);
 
-        public Histogram(IEnumerable<float[]> values)
+        public Histogram(List<int> blueHistogram, List<int> greenHistogram, List<int> redHistogram)
         {
-            blue.AddRange(values.ElementAt(0));
-            green.AddRange(values.ElementAt(1));
-            red.AddRange(values.ElementAt(2));
-            // TODO: Nuller nicht mitnehmen - wir starten bei 1
-            blue.RemoveAt(0);
-            green.RemoveAt(0);
-            red.RemoveAt(0);
+            blue = blueHistogram;
+            green = greenHistogram;
+            red = redHistogram;
 
             for (int i = 0; i < blue.Count(); i++)
             {
@@ -63,8 +59,8 @@ namespace Schneedetektion.ImagePlayground
         }
 
         public List<Line> HistogramValues { get { return histogramValues; } }
-        public List<float> Blue { get { return blue; } }
-        public List<float> Green { get { return green; } }
-        public List<float> Red { get { return red; } }
+        public List<int> Blue { get { return blue; } }
+        public List<int> Green { get { return green; } }
+        public List<int> Red { get { return red; } }
     }
 }

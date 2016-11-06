@@ -2,6 +2,7 @@
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using Schneedetektion.Data;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
@@ -56,34 +57,143 @@ namespace Schneedetektion.OpenCV
             return GetHistogram(image);
         }
 
+        [Obsolete]
         public List<float[]> GetHistogram(Drawing.Bitmap bitmap)
         {
             Image<Bgr, byte> image = new Image<Bgr, byte>(bitmap);
             return GetHistogram(image);
         }
 
-        public BitmapImage GetMaskedImage(string imagePath, IEnumerable<Point> pointCollection)
+        public Patch GetPatch(string imagePath, IEnumerable<Point> pointCollection, out BitmapImage patchImage)
         {
+            // Create Matrix 
             Mat matrix = new Mat(imagePath, LoadImageType.AnyColor);
             UMat uMatrix = matrix.ToUMat(AccessType.ReadWrite);
+            // Create Bitmask
+            Image<Gray, byte> bitmask = new Image<Gray, byte>(uMatrix.Cols, uMatrix.Rows, new Gray(0));
 
-            // Scale Polygon
+            // Scale and Transform Polygon
             List<Point> scaledPoints = GetScaledPoints(pointCollection, uMatrix.Cols, uMatrix.Rows);
-
             List<Drawing.Point> polygonPoints = GetInvertedPolygonPoints(scaledPoints, uMatrix.Cols, uMatrix.Rows);
 
             // Apply Polygon
             using (VectorOfPoint vPoint = new VectorOfPoint(polygonPoints.ToArray()))
             using (VectorOfVectorOfPoint vvPoint = new VectorOfVectorOfPoint(vPoint))
             {
+                // Alles schwarz anmalen, dass nicht im Polygon ist
                 CvInvoke.FillPoly(uMatrix, vvPoint, new Bgr(0, 0, 0).MCvScalar);
+                // Alles weiss anmalen, dass nicht im Polygon ist
+                CvInvoke.FillPoly(bitmask, vvPoint, new Gray(255).MCvScalar);
             }
 
+            // Create Image from uMatrix
             Image<Bgr, byte> image = new Image<Bgr, byte>(uMatrix.Bitmap);
-            // Crop Bitmap
-            image.ROI = GetRegionOfInterest(scaledPoints);
 
-            return OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
+            // Crop Bitmaps
+            image.ROI = GetRegionOfInterest(scaledPoints);
+            bitmask.ROI = GetRegionOfInterest(scaledPoints);
+
+            // Pro Kanal ein Grauwert-Bild erstellen
+            Image<Gray, byte> blueChannel  = image[(int)EChannel.Blue];
+            Image<Gray, byte> greenChannel = image[(int)EChannel.Green];
+            Image<Gray, byte> redChannel   = image[(int)EChannel.Red];
+
+            // Pro Kanal eine Liste der Länge 256
+            List<int> blueHistogram = new List<int>();
+            blueHistogram.AddRange(new int[256]);
+            List<int> greenHistogram = new List<int>();
+            greenHistogram.AddRange(new int[256]);
+            List<int> redHistogram = new List<int>();
+            redHistogram.AddRange(new int[256]);
+
+            // List for other Statistic Values
+            List<double> bluePixels  = new List<double>();
+            List<double> greenPixels = new List<double>();
+            List<double> redPixels   = new List<double>();
+
+            // Ein Loop für alles
+            for (int i = 0; i < image.Cols; i++)
+            {
+                for (int j = 0; j < image.Rows; j++)
+                {
+                    if (bitmask[j, i].MCvScalar.V0 == 0)
+                    {
+                        // Histogram abfüllen
+                        blueHistogram[(int)blueChannel[j, i].MCvScalar.V0]++;
+                        greenHistogram[(int)greenChannel[j, i].MCvScalar.V0]++;
+                        redHistogram[(int)redChannel[j, i].MCvScalar.V0]++;
+
+                        // Pixel in Listen abspitzen
+                        bluePixels.Add(blueChannel[j, i].MCvScalar.V0);
+                        greenPixels.Add(greenChannel[j, i].MCvScalar.V0);
+                        redPixels.Add(redChannel[j, i].MCvScalar.V0);
+                    }
+                }
+            }
+
+            Patch patch = new Patch();
+            
+            // Histogram
+            patch.SetHistogram(blueHistogram, EChannel.Blue);
+            patch.SetHistogram(greenHistogram, EChannel.Green);
+            patch.SetHistogram(redHistogram, EChannel.Red);
+
+            // Mode
+            patch.ModeBlue  = blueHistogram.IndexOf(blueHistogram.Max());
+            patch.ModeGreen = greenHistogram.IndexOf(greenHistogram.Max());
+            patch.ModeRed   = redHistogram.IndexOf(redHistogram.Max());
+
+            // Mean
+            patch.MeanBlue  = bluePixels.Average();
+            patch.MeanGreen = greenPixels.Average();
+            patch.MeanRed   = redPixels.Average();
+
+            // Variance
+            patch.VarianceBlue  = bluePixels.Sum(i => Math.Pow(i - patch.MeanBlue.Value, 2)) / (double)bluePixels.Count;
+            patch.VarianceGreen = greenPixels.Sum(i => Math.Pow(i - patch.MeanGreen.Value, 2)) / (double)greenPixels.Count;
+            patch.VarianceRed   = redPixels.Sum(i => Math.Pow(i - patch.MeanRed.Value, 2)) / (double)redPixels.Count;
+
+            // Standard Deviation
+            patch.StandardDeviationBlue  = Math.Sqrt(patch.VarianceBlue.Value);
+            patch.StandardDeviationGreen = Math.Sqrt(patch.VarianceGreen.Value);
+            patch.StandardDeviationRed   = Math.Sqrt(patch.VarianceRed.Value);
+
+            // Minimum
+            patch.MinimumBlue  = bluePixels.Min();
+            patch.MinimumGreen = greenPixels.Min();
+            patch.MinimumRed   = redPixels.Min();
+
+            // Maximum
+            patch.MaximumBlue  = bluePixels.Max();
+            patch.MaximumGreen = greenPixels.Max();
+            patch.MaximumRed   = redPixels.Max();
+
+            // Contrast
+            patch.ContrastBlue  = (patch.MaximumBlue.Value - patch.MinimumBlue.Value) / (patch.MaximumBlue.Value + patch.MinimumBlue.Value);
+            patch.ContrastGreen = (patch.MaximumGreen.Value - patch.MinimumGreen.Value) / (patch.MaximumGreen.Value + patch.MinimumGreen.Value);
+            patch.ContrastRed  = (patch.MaximumRed.Value - patch.MinimumRed.Value) / (patch.MaximumRed.Value + patch.MinimumRed.Value);
+
+            // Median
+            bluePixels.Sort();
+            greenPixels.Sort();
+            redPixels.Sort();
+            int middle = bluePixels.Count / 2;
+            if (bluePixels.Count % 2 == 0) // Gerade Anzahl
+            {
+                patch.MedianBlue = (bluePixels.ElementAt(middle) + bluePixels.ElementAt(middle - 1)) / 2d;
+                patch.MedianGreen = (greenPixels.ElementAt(middle) + greenPixels.ElementAt(middle - 1)) / 2d;
+                patch.MedianRed = (redPixels.ElementAt(middle) + redPixels.ElementAt(middle - 1)) / 2d;
+            }
+            else // Ungerade Anzahl
+            {
+                patch.MedianBlue  = bluePixels.ElementAt(middle);
+                patch.MedianGreen = greenPixels.ElementAt(middle);
+                patch.MedianRed   = redPixels.ElementAt(middle);
+            }
+
+            // Return
+            patchImage = OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
+            return patch;
         }
 
         public void SaveBitmask(string imagePath, string bitmaskPath, IEnumerable<Point> pointCollection)
@@ -114,6 +224,7 @@ namespace Schneedetektion.OpenCV
             bitMask.Save(bitmaskPath);
         }
 
+        [Obsolete]
         public void GetMeanSdandardDeviationAndVariance(Drawing.Bitmap bitmap, string bitmaskPath, out OpenCVColor color, out OpenCVColor sdtDev, out OpenCVColor variance)
         {
             Image<Bgr, byte> image = new Image<Bgr, byte>(bitmap);
@@ -134,6 +245,7 @@ namespace Schneedetektion.OpenCV
             variance.Red   = Math.Pow(standardDeviation.V2, 2);
         }
 
+        [Obsolete]
         public void GetMinMaxMedianAndContrast(Drawing.Bitmap bitmap, string bitmaskPath,
             out OpenCVColor min, out OpenCVColor max, out OpenCVColor median, out OpenCVColor contrast)
         {
@@ -258,9 +370,9 @@ namespace Schneedetektion.OpenCV
 
             List<float[]> histogramValues = new List<float[]>();
 
-            // Histogram per Color
             DenseHistogram histogram = new DenseHistogram(256, new RangeF(0.0f, 256.0f));
 
+            // Histogram per Color
             histogram.Calculate(new Image<Gray, byte>[] { imageBlue }, false, null);
             histogramValues.Add(histogram.GetBinValues());
             histogram.Clear();
