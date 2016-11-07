@@ -599,6 +599,8 @@ namespace Schneedetektion.Data
 		
 		private System.Nullable<bool> _GoodLighting;
 		
+		private EntityRef<Patch> _Patch;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -639,6 +641,7 @@ namespace Schneedetektion.Data
 		
 		public Image()
 		{
+			this._Patch = default(EntityRef<Patch>);
 			OnCreated();
 		}
 		
@@ -962,6 +965,35 @@ namespace Schneedetektion.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Image_Patch", Storage="_Patch", ThisKey="ID", OtherKey="ID", IsUnique=true, IsForeignKey=false)]
+		public Patch Patch
+		{
+			get
+			{
+				return this._Patch.Entity;
+			}
+			set
+			{
+				Patch previousValue = this._Patch.Entity;
+				if (((previousValue != value) 
+							|| (this._Patch.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Patch.Entity = null;
+						previousValue.Image = null;
+					}
+					this._Patch.Entity = value;
+					if ((value != null))
+					{
+						value.Image = this;
+					}
+					this.SendPropertyChanged("Patch");
+				}
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -1049,6 +1081,8 @@ namespace Schneedetektion.Data
 		
 		private System.Nullable<double> _ContrastRed;
 		
+		private EntityRef<Image> _Image;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -1117,10 +1151,11 @@ namespace Schneedetektion.Data
 		
 		public Patch()
 		{
+			this._Image = default(EntityRef<Image>);
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
 		public int ID
 		{
 			get
@@ -1131,6 +1166,10 @@ namespace Schneedetektion.Data
 			{
 				if ((this._ID != value))
 				{
+					if (this._Image.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnIDChanging(value);
 					this.SendPropertyChanging();
 					this._ID = value;
@@ -1716,6 +1755,40 @@ namespace Schneedetektion.Data
 					this._ContrastRed = value;
 					this.SendPropertyChanged("ContrastRed");
 					this.OnContrastRedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Image_Patch", Storage="_Image", ThisKey="ID", OtherKey="ID", IsForeignKey=true)]
+		public Image Image
+		{
+			get
+			{
+				return this._Image.Entity;
+			}
+			set
+			{
+				Image previousValue = this._Image.Entity;
+				if (((previousValue != value) 
+							|| (this._Image.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Image.Entity = null;
+						previousValue.Patch = null;
+					}
+					this._Image.Entity = value;
+					if ((value != null))
+					{
+						value.Patch = this;
+						this._ID = value.ID;
+					}
+					else
+					{
+						this._ID = default(int);
+					}
+					this.SendPropertyChanged("Image");
 				}
 			}
 		}

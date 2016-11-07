@@ -20,11 +20,18 @@
         <elementListCompartment Id="bf9f5bb5-c3e4-40b5-8683-361e2e4366c9" absoluteBounds="3.8899999999999997, 1.21, 1.9700000000000002, 3.3262125651041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="0e645b88-2f64-411b-ba83-0fcbd768280b" absoluteBounds="9.875, 0.5, 2, 6.5784326171875">
+    <classShape Id="396dd03f-7606-4c36-8220-45f84f0ddeff" absoluteBounds="9.875, 0.625, 2, 6.5784326171875">
       <DataClassMoniker Name="/StrassenbilderMetaDataContext/Patch" />
       <nestedChildShapes>
-        <elementListCompartment Id="6ea2e555-2d25-481d-a24c-9126d3381328" absoluteBounds="9.89, 0.96, 1.9700000000000002, 6.0184326171875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="90de66b7-a206-44db-8971-ea037c776356" absoluteBounds="9.89, 1.085, 1.9700000000000002, 6.0184326171875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
+    <associationConnector edgePoints="[(5.875 : 3.80210611979167); (9.875 : 3.80210611979167)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/StrassenbilderMetaDataContext/Image/Image_Patch" />
+      <nodes>
+        <classShapeMoniker Id="303af9c2-c527-43ba-a280-d0f110bb5014" />
+        <classShapeMoniker Id="396dd03f-7606-4c36-8220-45f84f0ddeff" />
+      </nodes>
+    </associationConnector>
   </nestedChildShapes>
 </ordesignerObjectsDiagram>

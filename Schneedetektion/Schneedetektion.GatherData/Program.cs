@@ -1,5 +1,7 @@
-﻿using Schneedetektion.Data;
+﻿using Newtonsoft.Json;
+using Schneedetektion.Data;
 using Schneedetektion.GatherData.Properties;
+using Schneedetektion.OpenCV;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -7,6 +9,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Schneedetektion.GatherData
 {
@@ -18,6 +23,7 @@ namespace Schneedetektion.GatherData
         private static string[] subDirectories;
         private static string[] fileNames;
         private static StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
+        private static OpenCVHelper openCVHelper = new OpenCVHelper();
 
         static void Main(string[] args)
         {
@@ -28,11 +34,48 @@ namespace Schneedetektion.GatherData
             //    "mvk163", "mvk164" };
             cameraNames = new List<string>() { "mvk106" };
 
-            RegisterImagesInDB();
+            CalculatePatches();
+            // RegisterImagesInDB();
             // UpdateDateTime();
             // RemoveDataWithoutFile();
             // GetLiveImage();
             // MoveOldPictures();
+        }
+
+        private static void CalculatePatches()
+        {
+            IEnumerable<Image> images = from i in dataContext.Images
+                                        where i.Place == "mvk021"
+                                        where i.Day == true
+                                        where i.Patch == null
+                                        select i;
+
+            IEnumerable<Polygon> polygons = dataContext.Polygons.Where(p => p.CameraName == "mvk021");
+
+            BitmapImage patchImage = new BitmapImage();
+            int count = 0;
+
+            foreach (var polygon in polygons)
+            {
+                IEnumerable<Point> polygonPoints = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
+                foreach (var image in images)
+                {
+                    Patch patch = openCVHelper.GetPatch(Path.Combine(folderName, image.Place, image.Name + ".jpg"), polygonPoints, out patchImage);
+                    patch.Image_ID = image.ID;
+                    patch.Polygon_ID = polygon.ID;
+
+                    Console.WriteLine(image.ID + " - " + image.Name);
+                    dataContext.Patches.InsertOnSubmit(patch);
+
+                    count++;
+                    if (count % 100 == 0 && count > 0)
+                    {
+                        dataContext.SubmitChanges();
+                        Console.WriteLine("Saved!");
+                    }
+                }
+            }
+            Console.ReadLine();
         }
 
         private static void MoveOldPictures()
