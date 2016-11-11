@@ -21,6 +21,7 @@
       <Column Name="ImageHeight" Type="System.Double" DbType="Float" CanBeNull="true" />
       <Column Name="PolygonPointCollection" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="Bitmask" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Association Name="Polygon_Entity_Statistic" Member="Entity_Statistics" ThisKey="ID" OtherKey="Polygon_ID" Type="Entity_Statistic" />
     </Type>
   </Table>
   <Table Name="dbo.Images" Member="Images">
@@ -41,14 +42,12 @@
       <Column Name="Rainy" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="BadLighting" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="GoodLighting" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Association Name="Image_Patch" Member="Patch" ThisKey="ID" OtherKey="ID" Type="Patch" Cardinality="One" />
+      <Association Name="Image_Entity_Statistic" Member="Entity_Statistics" ThisKey="ID" OtherKey="Image_ID" Type="Entity_Statistic" />
     </Type>
   </Table>
-  <Table Name="dbo.Patches" Member="Patches">
-    <Type Name="Patch">
+  <Table Name="dbo.[Statistics]" Member="Statistics">
+    <Type Name="Statistic">
       <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Image_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Polygon_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="BlueHistogram" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="GreenHistogram" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="RedHistogram" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
@@ -76,7 +75,18 @@
       <Column Name="ContrastBlue" Type="System.Double" DbType="Float" CanBeNull="true" />
       <Column Name="ContrastGreen" Type="System.Double" DbType="Float" CanBeNull="true" />
       <Column Name="ContrastRed" Type="System.Double" DbType="Float" CanBeNull="true" />
-      <Association Name="Image_Patch" Member="Image" ThisKey="ID" OtherKey="ID" Type="Image" IsForeignKey="true" />
+      <Association Name="Statistic_Entity_Statistic" Member="Entity_Statistics" ThisKey="ID" OtherKey="Statistics_ID" Type="Entity_Statistic" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Entity_Statistics" Member="Entity_Statistics">
+    <Type Name="Entity_Statistic">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Statistics_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Image_ID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Polygon_ID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Image_Entity_Statistic" Member="Image" ThisKey="Image_ID" OtherKey="ID" Type="Image" IsForeignKey="true" />
+      <Association Name="Statistic_Entity_Statistic" Member="Statistic" ThisKey="Statistics_ID" OtherKey="ID" Type="Statistic" IsForeignKey="true" />
+      <Association Name="Polygon_Entity_Statistic" Member="Polygon" ThisKey="Polygon_ID" OtherKey="ID" Type="Polygon" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

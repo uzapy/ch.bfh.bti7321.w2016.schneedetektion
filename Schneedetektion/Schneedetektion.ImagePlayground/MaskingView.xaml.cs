@@ -84,7 +84,9 @@ namespace Schneedetektion.ImagePlayground
 
         private void createBitmasks_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<Polygon> polygons = dataContext.Polygons.Where(p => p.CameraName == imageViewModel.Image.Place);
+            IEnumerable<Polygon> polygons = dataContext.Polygons
+                .Where(p => p.CameraName == imageViewModel.Image.Place)
+                .Where(p => p.Bitmask == null);
             OpenCVHelper openCVHelper = new OpenCVHelper();
             foreach (var polygon in polygons)
             {

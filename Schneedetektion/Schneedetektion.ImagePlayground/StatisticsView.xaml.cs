@@ -59,8 +59,8 @@ namespace Schneedetektion.ImagePlayground
             {
                 IEnumerable<Point> pointCollection = PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection);
                 BitmapImage patchImage = new BitmapImage();
-                Patch patch = openCVHelper.GetPatch(imageViewModel.FileName, pointCollection, out patchImage);
-                PatchViewModel patchViewModel = new PatchViewModel(patch, patchImage, imageViewModel, polygon);
+                Statistic statistic = openCVHelper.GetStatistic(imageViewModel.FileName, pointCollection, out patchImage);
+                PatchViewModel patchViewModel = new PatchViewModel(statistic, patchImage, imageViewModel, polygon);
 
                 patches.Add(patchViewModel);
             }

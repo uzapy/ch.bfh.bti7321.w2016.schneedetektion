@@ -64,7 +64,7 @@ namespace Schneedetektion.OpenCV
             return GetHistogram(image);
         }
 
-        public Patch GetPatch(string imagePath, IEnumerable<Point> pointCollection, out BitmapImage patchImage)
+        public Statistic GetStatistic(string imagePath, IEnumerable<Point> pointCollection, out BitmapImage patchImage)
         {
             // Create Matrix 
             Mat matrix = new Mat(imagePath, LoadImageType.AnyColor);
@@ -131,47 +131,47 @@ namespace Schneedetektion.OpenCV
                 }
             }
 
-            Patch patch = new Patch();
+            Statistic statistic = new Statistic();
             
             // Histogram
-            patch.SetHistogram(blueHistogram, EChannel.Blue);
-            patch.SetHistogram(greenHistogram, EChannel.Green);
-            patch.SetHistogram(redHistogram, EChannel.Red);
+            statistic.SetHistogram(blueHistogram, EChannel.Blue);
+            statistic.SetHistogram(greenHistogram, EChannel.Green);
+            statistic.SetHistogram(redHistogram, EChannel.Red);
 
             // Mode
-            patch.ModeBlue  = blueHistogram.IndexOf(blueHistogram.Max());
-            patch.ModeGreen = greenHistogram.IndexOf(greenHistogram.Max());
-            patch.ModeRed   = redHistogram.IndexOf(redHistogram.Max());
+            statistic.ModeBlue  = blueHistogram.IndexOf(blueHistogram.Max());
+            statistic.ModeGreen = greenHistogram.IndexOf(greenHistogram.Max());
+            statistic.ModeRed   = redHistogram.IndexOf(redHistogram.Max());
 
             // Mean
-            patch.MeanBlue  = bluePixels.Average();
-            patch.MeanGreen = greenPixels.Average();
-            patch.MeanRed   = redPixels.Average();
+            statistic.MeanBlue  = bluePixels.Average();
+            statistic.MeanGreen = greenPixels.Average();
+            statistic.MeanRed   = redPixels.Average();
 
             // Variance
-            patch.VarianceBlue  = bluePixels.Sum(i => Math.Pow(i - patch.MeanBlue.Value, 2)) / (double)bluePixels.Count;
-            patch.VarianceGreen = greenPixels.Sum(i => Math.Pow(i - patch.MeanGreen.Value, 2)) / (double)greenPixels.Count;
-            patch.VarianceRed   = redPixels.Sum(i => Math.Pow(i - patch.MeanRed.Value, 2)) / (double)redPixels.Count;
+            statistic.VarianceBlue  = bluePixels.Sum(i => Math.Pow(i - statistic.MeanBlue.Value, 2)) / (double)bluePixels.Count;
+            statistic.VarianceGreen = greenPixels.Sum(i => Math.Pow(i - statistic.MeanGreen.Value, 2)) / (double)greenPixels.Count;
+            statistic.VarianceRed   = redPixels.Sum(i => Math.Pow(i - statistic.MeanRed.Value, 2)) / (double)redPixels.Count;
 
             // Standard Deviation
-            patch.StandardDeviationBlue  = Math.Sqrt(patch.VarianceBlue.Value);
-            patch.StandardDeviationGreen = Math.Sqrt(patch.VarianceGreen.Value);
-            patch.StandardDeviationRed   = Math.Sqrt(patch.VarianceRed.Value);
+            statistic.StandardDeviationBlue  = Math.Sqrt(statistic.VarianceBlue.Value);
+            statistic.StandardDeviationGreen = Math.Sqrt(statistic.VarianceGreen.Value);
+            statistic.StandardDeviationRed   = Math.Sqrt(statistic.VarianceRed.Value);
 
             // Minimum
-            patch.MinimumBlue  = bluePixels.Min();
-            patch.MinimumGreen = greenPixels.Min();
-            patch.MinimumRed   = redPixels.Min();
+            statistic.MinimumBlue  = bluePixels.Min();
+            statistic.MinimumGreen = greenPixels.Min();
+            statistic.MinimumRed   = redPixels.Min();
 
             // Maximum
-            patch.MaximumBlue  = bluePixels.Max();
-            patch.MaximumGreen = greenPixels.Max();
-            patch.MaximumRed   = redPixels.Max();
+            statistic.MaximumBlue  = bluePixels.Max();
+            statistic.MaximumGreen = greenPixels.Max();
+            statistic.MaximumRed   = redPixels.Max();
 
             // Contrast
-            patch.ContrastBlue  = (patch.MaximumBlue.Value - patch.MinimumBlue.Value) / (patch.MaximumBlue.Value + patch.MinimumBlue.Value);
-            patch.ContrastGreen = (patch.MaximumGreen.Value - patch.MinimumGreen.Value) / (patch.MaximumGreen.Value + patch.MinimumGreen.Value);
-            patch.ContrastRed  = (patch.MaximumRed.Value - patch.MinimumRed.Value) / (patch.MaximumRed.Value + patch.MinimumRed.Value);
+            statistic.ContrastBlue  = (statistic.MaximumBlue.Value - statistic.MinimumBlue.Value) / (statistic.MaximumBlue.Value + statistic.MinimumBlue.Value);
+            statistic.ContrastGreen = (statistic.MaximumGreen.Value - statistic.MinimumGreen.Value) / (statistic.MaximumGreen.Value + statistic.MinimumGreen.Value);
+            statistic.ContrastRed  = (statistic.MaximumRed.Value - statistic.MinimumRed.Value) / (statistic.MaximumRed.Value + statistic.MinimumRed.Value);
 
             // Median
             bluePixels.Sort();
@@ -180,20 +180,20 @@ namespace Schneedetektion.OpenCV
             int middle = bluePixels.Count / 2;
             if (bluePixels.Count % 2 == 0) // Gerade Anzahl
             {
-                patch.MedianBlue = (bluePixels.ElementAt(middle) + bluePixels.ElementAt(middle - 1)) / 2d;
-                patch.MedianGreen = (greenPixels.ElementAt(middle) + greenPixels.ElementAt(middle - 1)) / 2d;
-                patch.MedianRed = (redPixels.ElementAt(middle) + redPixels.ElementAt(middle - 1)) / 2d;
+                statistic.MedianBlue = (bluePixels.ElementAt(middle) + bluePixels.ElementAt(middle - 1)) / 2d;
+                statistic.MedianGreen = (greenPixels.ElementAt(middle) + greenPixels.ElementAt(middle - 1)) / 2d;
+                statistic.MedianRed = (redPixels.ElementAt(middle) + redPixels.ElementAt(middle - 1)) / 2d;
             }
             else // Ungerade Anzahl
             {
-                patch.MedianBlue  = bluePixels.ElementAt(middle);
-                patch.MedianGreen = greenPixels.ElementAt(middle);
-                patch.MedianRed   = redPixels.ElementAt(middle);
+                statistic.MedianBlue  = bluePixels.ElementAt(middle);
+                statistic.MedianGreen = greenPixels.ElementAt(middle);
+                statistic.MedianRed   = redPixels.ElementAt(middle);
             }
 
             // Return
             patchImage = OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
-            return patch;
+            return statistic;
         }
 
         public void SaveBitmask(string imagePath, string bitmaskPath, IEnumerable<Point> pointCollection)

@@ -52,8 +52,8 @@ namespace Schneedetektion.Test
             {
                 IEnumerable<Point> pointCollection = PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection);
                 BitmapImage patchImage = new BitmapImage();
-                Patch patch = openCVHelper.GetPatch(imageViewModel.FileName, pointCollection, out patchImage);
-                patches.Add(new PatchViewModel(patch, patchImage, imageViewModel, polygon));
+                Statistic statistic = openCVHelper.GetStatistic(imageViewModel.FileName, pointCollection, out patchImage);
+                patches.Add(new PatchViewModel(statistic, patchImage, imageViewModel, polygon));
             }
 
             // Statistiken berechnen

@@ -34,7 +34,7 @@ namespace Schneedetektion.GatherData
             //    "mvk163", "mvk164" };
             cameraNames = new List<string>() { "mvk106" };
 
-            CalculatePatches();
+            CalculateStatistics();
             // RegisterImagesInDB();
             // UpdateDateTime();
             // RemoveDataWithoutFile();
@@ -42,12 +42,12 @@ namespace Schneedetektion.GatherData
             // MoveOldPictures();
         }
 
-        private static void CalculatePatches()
+        private static void CalculateStatistics()
         {
             IEnumerable<Image> images = from i in dataContext.Images
                                         where i.Place == "mvk021"
                                         where i.Day == true
-                                        where i.Patch == null
+                                        //where i.Entity_Statistics == null
                                         select i;
 
             IEnumerable<Polygon> polygons = dataContext.Polygons.Where(p => p.CameraName == "mvk021");
@@ -60,12 +60,12 @@ namespace Schneedetektion.GatherData
                 IEnumerable<Point> polygonPoints = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
                 foreach (var image in images)
                 {
-                    Patch patch = openCVHelper.GetPatch(Path.Combine(folderName, image.Place, image.Name + ".jpg"), polygonPoints, out patchImage);
-                    patch.Image_ID = image.ID;
-                    patch.Polygon_ID = polygon.ID;
+                    Statistic statistic = openCVHelper.GetStatistic(Path.Combine(folderName, image.Place, image.Name + ".jpg"), polygonPoints, out patchImage);
+                    //statistic.Image_ID = image.ID;
+                    //statistic.Polygon_ID = polygon.ID;
 
                     Console.WriteLine(image.ID + " - " + image.Name);
-                    dataContext.Patches.InsertOnSubmit(patch);
+                    dataContext.Statistics.InsertOnSubmit(statistic);
 
                     count++;
                     if (count % 100 == 0 && count > 0)

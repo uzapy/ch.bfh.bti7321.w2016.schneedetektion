@@ -39,9 +39,12 @@ namespace Schneedetektion.Data
     partial void InsertImage(Image instance);
     partial void UpdateImage(Image instance);
     partial void DeleteImage(Image instance);
-    partial void InsertPatch(Patch instance);
-    partial void UpdatePatch(Patch instance);
-    partial void DeletePatch(Patch instance);
+    partial void InsertStatistic(Statistic instance);
+    partial void UpdateStatistic(Statistic instance);
+    partial void DeleteStatistic(Statistic instance);
+    partial void InsertEntity_Statistic(Entity_Statistic instance);
+    partial void UpdateEntity_Statistic(Entity_Statistic instance);
+    partial void DeleteEntity_Statistic(Entity_Statistic instance);
     #endregion
 		
 		public StrassenbilderMetaDataContext(string connection) : 
@@ -92,11 +95,19 @@ namespace Schneedetektion.Data
 			}
 		}
 		
-		public System.Data.Linq.Table<Patch> Patches
+		public System.Data.Linq.Table<Statistic> Statistics
 		{
 			get
 			{
-				return this.GetTable<Patch>();
+				return this.GetTable<Statistic>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Entity_Statistic> Entity_Statistics
+		{
+			get
+			{
+				return this.GetTable<Entity_Statistic>();
 			}
 		}
 	}
@@ -375,6 +386,8 @@ namespace Schneedetektion.Data
 		
 		private string _Bitmask;
 		
+		private EntitySet<Entity_Statistic> _Entity_Statistics;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -397,6 +410,7 @@ namespace Schneedetektion.Data
 		
 		public Polygon()
 		{
+			this._Entity_Statistics = new EntitySet<Entity_Statistic>(new Action<Entity_Statistic>(this.attach_Entity_Statistics), new Action<Entity_Statistic>(this.detach_Entity_Statistics));
 			OnCreated();
 		}
 		
@@ -540,6 +554,19 @@ namespace Schneedetektion.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Polygon_Entity_Statistic", Storage="_Entity_Statistics", ThisKey="ID", OtherKey="Polygon_ID")]
+		public EntitySet<Entity_Statistic> Entity_Statistics
+		{
+			get
+			{
+				return this._Entity_Statistics;
+			}
+			set
+			{
+				this._Entity_Statistics.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -558,6 +585,18 @@ namespace Schneedetektion.Data
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Entity_Statistics(Entity_Statistic entity)
+		{
+			this.SendPropertyChanging();
+			entity.Polygon = this;
+		}
+		
+		private void detach_Entity_Statistics(Entity_Statistic entity)
+		{
+			this.SendPropertyChanging();
+			entity.Polygon = null;
 		}
 	}
 	
@@ -599,7 +638,7 @@ namespace Schneedetektion.Data
 		
 		private System.Nullable<bool> _GoodLighting;
 		
-		private EntityRef<Patch> _Patch;
+		private EntitySet<Entity_Statistic> _Entity_Statistics;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -641,7 +680,7 @@ namespace Schneedetektion.Data
 		
 		public Image()
 		{
-			this._Patch = default(EntityRef<Patch>);
+			this._Entity_Statistics = new EntitySet<Entity_Statistic>(new Action<Entity_Statistic>(this.attach_Entity_Statistics), new Action<Entity_Statistic>(this.detach_Entity_Statistics));
 			OnCreated();
 		}
 		
@@ -965,32 +1004,16 @@ namespace Schneedetektion.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Image_Patch", Storage="_Patch", ThisKey="ID", OtherKey="ID", IsUnique=true, IsForeignKey=false)]
-		public Patch Patch
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Image_Entity_Statistic", Storage="_Entity_Statistics", ThisKey="ID", OtherKey="Image_ID")]
+		public EntitySet<Entity_Statistic> Entity_Statistics
 		{
 			get
 			{
-				return this._Patch.Entity;
+				return this._Entity_Statistics;
 			}
 			set
 			{
-				Patch previousValue = this._Patch.Entity;
-				if (((previousValue != value) 
-							|| (this._Patch.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Patch.Entity = null;
-						previousValue.Image = null;
-					}
-					this._Patch.Entity = value;
-					if ((value != null))
-					{
-						value.Image = this;
-					}
-					this.SendPropertyChanged("Patch");
-				}
+				this._Entity_Statistics.Assign(value);
 			}
 		}
 		
@@ -1013,19 +1036,27 @@ namespace Schneedetektion.Data
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
+		
+		private void attach_Entity_Statistics(Entity_Statistic entity)
+		{
+			this.SendPropertyChanging();
+			entity.Image = this;
+		}
+		
+		private void detach_Entity_Statistics(Entity_Statistic entity)
+		{
+			this.SendPropertyChanging();
+			entity.Image = null;
+		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Patches")]
-	public partial class Patch : INotifyPropertyChanging, INotifyPropertyChanged
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.[Statistics]")]
+	public partial class Statistic : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		private int _ID;
-		
-		private int _Image_ID;
-		
-		private int _Polygon_ID;
 		
 		private string _BlueHistogram;
 		
@@ -1081,7 +1112,7 @@ namespace Schneedetektion.Data
 		
 		private System.Nullable<double> _ContrastRed;
 		
-		private EntityRef<Image> _Image;
+		private EntitySet<Entity_Statistic> _Entity_Statistics;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1089,10 +1120,6 @@ namespace Schneedetektion.Data
     partial void OnCreated();
     partial void OnIDChanging(int value);
     partial void OnIDChanged();
-    partial void OnImage_IDChanging(int value);
-    partial void OnImage_IDChanged();
-    partial void OnPolygon_IDChanging(int value);
-    partial void OnPolygon_IDChanged();
     partial void OnBlueHistogramChanging(string value);
     partial void OnBlueHistogramChanged();
     partial void OnGreenHistogramChanging(string value);
@@ -1149,9 +1176,9 @@ namespace Schneedetektion.Data
     partial void OnContrastRedChanged();
     #endregion
 		
-		public Patch()
+		public Statistic()
 		{
-			this._Image = default(EntityRef<Image>);
+			this._Entity_Statistics = new EntitySet<Entity_Statistic>(new Action<Entity_Statistic>(this.attach_Entity_Statistics), new Action<Entity_Statistic>(this.detach_Entity_Statistics));
 			OnCreated();
 		}
 		
@@ -1166,55 +1193,11 @@ namespace Schneedetektion.Data
 			{
 				if ((this._ID != value))
 				{
-					if (this._Image.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
 					this.OnIDChanging(value);
 					this.SendPropertyChanging();
 					this._ID = value;
 					this.SendPropertyChanged("ID");
 					this.OnIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Image_ID", DbType="Int NOT NULL")]
-		public int Image_ID
-		{
-			get
-			{
-				return this._Image_ID;
-			}
-			set
-			{
-				if ((this._Image_ID != value))
-				{
-					this.OnImage_IDChanging(value);
-					this.SendPropertyChanging();
-					this._Image_ID = value;
-					this.SendPropertyChanged("Image_ID");
-					this.OnImage_IDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Polygon_ID", DbType="Int NOT NULL")]
-		public int Polygon_ID
-		{
-			get
-			{
-				return this._Polygon_ID;
-			}
-			set
-			{
-				if ((this._Polygon_ID != value))
-				{
-					this.OnPolygon_IDChanging(value);
-					this.SendPropertyChanging();
-					this._Polygon_ID = value;
-					this.SendPropertyChanged("Polygon_ID");
-					this.OnPolygon_IDChanged();
 				}
 			}
 		}
@@ -1759,7 +1742,187 @@ namespace Schneedetektion.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Image_Patch", Storage="_Image", ThisKey="ID", OtherKey="ID", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Statistic_Entity_Statistic", Storage="_Entity_Statistics", ThisKey="ID", OtherKey="Statistics_ID")]
+		public EntitySet<Entity_Statistic> Entity_Statistics
+		{
+			get
+			{
+				return this._Entity_Statistics;
+			}
+			set
+			{
+				this._Entity_Statistics.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Entity_Statistics(Entity_Statistic entity)
+		{
+			this.SendPropertyChanging();
+			entity.Statistic = this;
+		}
+		
+		private void detach_Entity_Statistics(Entity_Statistic entity)
+		{
+			this.SendPropertyChanging();
+			entity.Statistic = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Entity_Statistics")]
+	public partial class Entity_Statistic : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _ID;
+		
+		private int _Statistics_ID;
+		
+		private System.Nullable<int> _Image_ID;
+		
+		private System.Nullable<int> _Polygon_ID;
+		
+		private EntityRef<Image> _Image;
+		
+		private EntityRef<Statistic> _Statistic;
+		
+		private EntityRef<Polygon> _Polygon;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIDChanging(int value);
+    partial void OnIDChanged();
+    partial void OnStatistics_IDChanging(int value);
+    partial void OnStatistics_IDChanged();
+    partial void OnImage_IDChanging(System.Nullable<int> value);
+    partial void OnImage_IDChanged();
+    partial void OnPolygon_IDChanging(System.Nullable<int> value);
+    partial void OnPolygon_IDChanged();
+    #endregion
+		
+		public Entity_Statistic()
+		{
+			this._Image = default(EntityRef<Image>);
+			this._Statistic = default(EntityRef<Statistic>);
+			this._Polygon = default(EntityRef<Polygon>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int ID
+		{
+			get
+			{
+				return this._ID;
+			}
+			set
+			{
+				if ((this._ID != value))
+				{
+					this.OnIDChanging(value);
+					this.SendPropertyChanging();
+					this._ID = value;
+					this.SendPropertyChanged("ID");
+					this.OnIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Statistics_ID", DbType="Int NOT NULL")]
+		public int Statistics_ID
+		{
+			get
+			{
+				return this._Statistics_ID;
+			}
+			set
+			{
+				if ((this._Statistics_ID != value))
+				{
+					if (this._Statistic.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnStatistics_IDChanging(value);
+					this.SendPropertyChanging();
+					this._Statistics_ID = value;
+					this.SendPropertyChanged("Statistics_ID");
+					this.OnStatistics_IDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Image_ID", DbType="Int")]
+		public System.Nullable<int> Image_ID
+		{
+			get
+			{
+				return this._Image_ID;
+			}
+			set
+			{
+				if ((this._Image_ID != value))
+				{
+					if (this._Image.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnImage_IDChanging(value);
+					this.SendPropertyChanging();
+					this._Image_ID = value;
+					this.SendPropertyChanged("Image_ID");
+					this.OnImage_IDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Polygon_ID", DbType="Int")]
+		public System.Nullable<int> Polygon_ID
+		{
+			get
+			{
+				return this._Polygon_ID;
+			}
+			set
+			{
+				if ((this._Polygon_ID != value))
+				{
+					if (this._Polygon.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPolygon_IDChanging(value);
+					this.SendPropertyChanging();
+					this._Polygon_ID = value;
+					this.SendPropertyChanged("Polygon_ID");
+					this.OnPolygon_IDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Image_Entity_Statistic", Storage="_Image", ThisKey="Image_ID", OtherKey="ID", IsForeignKey=true)]
 		public Image Image
 		{
 			get
@@ -1776,19 +1939,87 @@ namespace Schneedetektion.Data
 					if ((previousValue != null))
 					{
 						this._Image.Entity = null;
-						previousValue.Patch = null;
+						previousValue.Entity_Statistics.Remove(this);
 					}
 					this._Image.Entity = value;
 					if ((value != null))
 					{
-						value.Patch = this;
-						this._ID = value.ID;
+						value.Entity_Statistics.Add(this);
+						this._Image_ID = value.ID;
 					}
 					else
 					{
-						this._ID = default(int);
+						this._Image_ID = default(Nullable<int>);
 					}
 					this.SendPropertyChanged("Image");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Statistic_Entity_Statistic", Storage="_Statistic", ThisKey="Statistics_ID", OtherKey="ID", IsForeignKey=true)]
+		public Statistic Statistic
+		{
+			get
+			{
+				return this._Statistic.Entity;
+			}
+			set
+			{
+				Statistic previousValue = this._Statistic.Entity;
+				if (((previousValue != value) 
+							|| (this._Statistic.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Statistic.Entity = null;
+						previousValue.Entity_Statistics.Remove(this);
+					}
+					this._Statistic.Entity = value;
+					if ((value != null))
+					{
+						value.Entity_Statistics.Add(this);
+						this._Statistics_ID = value.ID;
+					}
+					else
+					{
+						this._Statistics_ID = default(int);
+					}
+					this.SendPropertyChanged("Statistic");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Polygon_Entity_Statistic", Storage="_Polygon", ThisKey="Polygon_ID", OtherKey="ID", IsForeignKey=true)]
+		public Polygon Polygon
+		{
+			get
+			{
+				return this._Polygon.Entity;
+			}
+			set
+			{
+				Polygon previousValue = this._Polygon.Entity;
+				if (((previousValue != value) 
+							|| (this._Polygon.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Polygon.Entity = null;
+						previousValue.Entity_Statistics.Remove(this);
+					}
+					this._Polygon.Entity = value;
+					if ((value != null))
+					{
+						value.Entity_Statistics.Add(this);
+						this._Polygon_ID = value.ID;
+					}
+					else
+					{
+						this._Polygon_ID = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("Polygon");
 				}
 			}
 		}

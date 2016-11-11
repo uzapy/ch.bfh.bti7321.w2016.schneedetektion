@@ -15,9 +15,16 @@ namespace Schneedetektion.ImagePlayground
         private Canvas polygonCanvas;
 
         private int selectedAreaIndex = 0;
-        private string[] imageAreas = new string[] { "Lane", "Emergency Lane", "Median", "Marking", "Grass", "Tree", "Background", "Sky" };
-        private Brush[] fillBrushes = { Brushes.Blue, Brushes.Red, Brushes.Yellow, Brushes.Brown, Brushes.Violet, Brushes.Orange, Brushes.Magenta, Brushes.Gold };
-        private Brush[] strokeBrushes = { Brushes.LightBlue, Brushes.OrangeRed, Brushes.Khaki, Brushes.Sienna, Brushes.Pink, Brushes.SandyBrown, Brushes.Orchid, Brushes.Wheat };
+        private string[] imageAreas = new string[]
+        {
+            "Lane", "Emergency Lane", "Median", "Marking", "Grass", "Tree", "Background", "Sky", "Reflection"
+        };
+        private Brush[] fillBrushes = {
+            Brushes.Blue, Brushes.Red, Brushes.Yellow, Brushes.Brown, Brushes.Violet, Brushes.Orange, Brushes.Magenta, Brushes.Gold, Brushes.Silver
+        };
+        private Brush[] strokeBrushes = {
+            Brushes.LightBlue, Brushes.OrangeRed, Brushes.Khaki, Brushes.Sienna, Brushes.Pink, Brushes.SandyBrown, Brushes.Orchid, Brushes.Wheat, Brushes.DarkGray
+        };
         #endregion
 
         #region Constructor
