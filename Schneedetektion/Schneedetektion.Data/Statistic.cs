@@ -5,11 +5,11 @@ namespace Schneedetektion.Data
 {
     public partial class Statistic
     {
-        private List<int> blueHistogram = new List<int>();
-        private List<int> greenHistogram = new List<int>();
-        private List<int> redHistogram = new List<int>();
+        private List<double> blueHistogram = new List<double>();
+        private List<double> greenHistogram = new List<double>();
+        private List<double> redHistogram = new List<double>();
 
-        public void SetHistogram(List<int> histogram, EChannel channel)
+        public void SetHistogram(List<double> histogram, EChannel channel)
         {
             switch (channel)
             {
@@ -28,8 +28,8 @@ namespace Schneedetektion.Data
             }
         }
 
-        public List<int> BlueHistogramList { get { return blueHistogram; } }
-        public List<int> GreenHistogramList { get { return greenHistogram; } }
-        public List<int> RedHistogramList { get { return redHistogram; } }
+        public List<double> BlueHistogramList { get { return blueHistogram; } }
+        public List<double> GreenHistogramList { get { return greenHistogram; } }
+        public List<double> RedHistogramList { get { return redHistogram; } }
     }
 }

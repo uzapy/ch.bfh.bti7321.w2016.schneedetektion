@@ -55,7 +55,7 @@ namespace Schneedetektion.ImagePlayground
 
         private void CropPatches_Click(object sender, RoutedEventArgs e)
         {
-            Statistic completeImageStatistic = openCVHelper.GetStatisticForImage(imageViewModel.FileName);
+            Statistic completeImageStatistic = openCVHelper.GetStatisticForImage(imageViewModel.FileName, true);
             PatchViewModel completeImagePatchViewModel = new PatchViewModel(completeImageStatistic, imageViewModel);
             patches.Add(completeImagePatchViewModel);
 

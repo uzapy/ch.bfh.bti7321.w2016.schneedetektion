@@ -8,13 +8,13 @@ namespace Schneedetektion.ImagePlayground
 {
     public class Histogram
     {
-        private List<int> blue;
-        private List<int> green;
-        private List<int> red;
+        private List<double> blue;
+        private List<double> green;
+        private List<double> red;
         private List<Line> histogramValues = new List<Line>();
         private static Thickness thickness = new Thickness(2);
 
-        public Histogram(List<int> blueHistogram, List<int> greenHistogram, List<int> redHistogram)
+        public Histogram(List<double> blueHistogram, List<double> greenHistogram, List<double> redHistogram)
         {
             blue = blueHistogram;
             green = greenHistogram;
@@ -59,8 +59,8 @@ namespace Schneedetektion.ImagePlayground
         }
 
         public List<Line> HistogramValues { get { return histogramValues; } }
-        public List<int> Blue { get { return blue; } }
-        public List<int> Green { get { return green; } }
-        public List<int> Red { get { return red; } }
+        public List<double> Blue { get { return blue; } }
+        public List<double> Green { get { return green; } }
+        public List<double> Red { get { return red; } }
     }
 }

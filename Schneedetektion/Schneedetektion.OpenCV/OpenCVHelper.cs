@@ -99,12 +99,12 @@ namespace Schneedetektion.OpenCV
             Image<Gray, byte> redChannel   = image[(int)EChannel.Red];
 
             // Pro Kanal eine Liste der Länge 256
-            List<int> blueHistogram = new List<int>();
-            blueHistogram.AddRange(new int[256]);
-            List<int> greenHistogram = new List<int>();
-            greenHistogram.AddRange(new int[256]);
-            List<int> redHistogram = new List<int>();
-            redHistogram.AddRange(new int[256]);
+            List<double> blueHistogram = new List<double>();
+            blueHistogram.AddRange(new double[256]);
+            List<double> greenHistogram = new List<double>();
+            greenHistogram.AddRange(new double[256]);
+            List<double> redHistogram = new List<double>();
+            redHistogram.AddRange(new double[256]);
 
             // List for other Statistic Values
             List<double> bluePixels  = new List<double>();
@@ -196,9 +196,9 @@ namespace Schneedetektion.OpenCV
             return statistic;
         }
 
-        public Statistic GetStatisticForImage(string fileName)
+        public Statistic GetStatisticForImage(string fileName, bool normalizeHistogram = false)
         {
-            return GetStatistic(new Image<Bgr, byte>(fileName));
+            return GetStatistic(new Image<Bgr, byte>(fileName), null, normalizeHistogram);
         }
 
         public void SaveBitmask(string imagePath, string bitmaskPath, IEnumerable<Point> pointCollection)
@@ -392,7 +392,7 @@ namespace Schneedetektion.OpenCV
             return histogramValues;
         }
 
-        private Statistic GetStatistic(Image<Bgr, byte> image, Image<Gray, byte> bitmask = null)
+        private Statistic GetStatistic(Image<Bgr, byte> image, Image<Gray, byte> bitmask, bool normalizeHistogram)
         {
             // Pro Kanal ein Grauwert-Bild erstellen
             Image<Gray, byte> blueChannel = image[(int)EChannel.Blue];
@@ -400,12 +400,12 @@ namespace Schneedetektion.OpenCV
             Image<Gray, byte> redChannel = image[(int)EChannel.Red];
 
             // Pro Kanal eine Liste der Länge 256
-            List<int> blueHistogram = new List<int>();
-            blueHistogram.AddRange(new int[256]);
-            List<int> greenHistogram = new List<int>();
-            greenHistogram.AddRange(new int[256]);
-            List<int> redHistogram = new List<int>();
-            redHistogram.AddRange(new int[256]);
+            List<double> blueHistogram = new List<double>();
+            blueHistogram.AddRange(new double[256]);
+            List<double> greenHistogram = new List<double>();
+            greenHistogram.AddRange(new double[256]);
+            List<double> redHistogram = new List<double>();
+            redHistogram.AddRange(new double[256]);
 
             // List for other Statistic Values
             List<double> bluePixels = new List<double>();
@@ -434,6 +434,19 @@ namespace Schneedetektion.OpenCV
             }
 
             Statistic statistic = new Statistic();
+
+            // Normalize Histogram
+            if (normalizeHistogram)
+            {
+                double maxIntensity = (new double[3] { blueHistogram.Max(), greenHistogram.Max(), redHistogram.Max() }).Max();
+
+                for (int i = 0; i < blueHistogram.Count; i++)
+                {
+                    blueHistogram[i] = blueHistogram[i] / blueHistogram.Max() * 100;
+                    greenHistogram[i] = greenHistogram[i] / greenHistogram.Max() * 100;
+                    redHistogram[i] = redHistogram[i] / redHistogram.Max() * 100;
+                }
+            }
 
             // Histogram
             statistic.SetHistogram(blueHistogram, EChannel.Blue);
