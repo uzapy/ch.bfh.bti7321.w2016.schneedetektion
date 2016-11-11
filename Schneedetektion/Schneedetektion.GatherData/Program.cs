@@ -60,7 +60,7 @@ namespace Schneedetektion.GatherData
                 IEnumerable<Point> polygonPoints = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
                 foreach (var image in images)
                 {
-                    Statistic statistic = openCVHelper.GetStatistic(Path.Combine(folderName, image.Place, image.Name + ".jpg"), polygonPoints, out patchImage);
+                    Statistic statistic = openCVHelper.GetStatisticForPatch(Path.Combine(folderName, image.Place, image.Name + ".jpg"), polygonPoints, out patchImage);
                     //statistic.Image_ID = image.ID;
                     //statistic.Polygon_ID = polygon.ID;
 

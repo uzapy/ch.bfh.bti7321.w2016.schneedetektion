@@ -26,6 +26,15 @@ namespace Schneedetektion.ImagePlayground
 
             histogram = new Histogram(statistic.BlueHistogramList, statistic.GreenHistogramList, statistic.RedHistogramList);
         }
+
+        public PatchViewModel(Statistic completeImageStatistic, ImageViewModel imageViewModel)
+        {
+            this.statistic = completeImageStatistic;
+            this.patchBitmap = imageViewModel.Bitmap;
+            this.imageViewModel = imageViewModel;
+
+            histogram = new Histogram(statistic.BlueHistogramList, statistic.GreenHistogramList, statistic.RedHistogramList);
+        }
         #endregion
 
         #region Properties

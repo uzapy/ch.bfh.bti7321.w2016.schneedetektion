@@ -64,7 +64,7 @@ namespace Schneedetektion.OpenCV
             return GetHistogram(image);
         }
 
-        public Statistic GetStatistic(string imagePath, IEnumerable<Point> pointCollection, out BitmapImage patchImage)
+        public Statistic GetStatisticForPatch(string imagePath, IEnumerable<Point> pointCollection, out BitmapImage patchImage)
         {
             // Create Matrix 
             Mat matrix = new Mat(imagePath, LoadImageType.AnyColor);
@@ -194,6 +194,11 @@ namespace Schneedetektion.OpenCV
             // Return
             patchImage = OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
             return statistic;
+        }
+
+        public Statistic GetStatisticForImage(string fileName)
+        {
+            return GetStatistic(new Image<Bgr, byte>(fileName));
         }
 
         public void SaveBitmask(string imagePath, string bitmaskPath, IEnumerable<Point> pointCollection)
@@ -385,6 +390,111 @@ namespace Schneedetektion.OpenCV
             histogramValues.Add(histogram.GetBinValues());
 
             return histogramValues;
+        }
+
+        private Statistic GetStatistic(Image<Bgr, byte> image, Image<Gray, byte> bitmask = null)
+        {
+            // Pro Kanal ein Grauwert-Bild erstellen
+            Image<Gray, byte> blueChannel = image[(int)EChannel.Blue];
+            Image<Gray, byte> greenChannel = image[(int)EChannel.Green];
+            Image<Gray, byte> redChannel = image[(int)EChannel.Red];
+
+            // Pro Kanal eine Liste der Länge 256
+            List<int> blueHistogram = new List<int>();
+            blueHistogram.AddRange(new int[256]);
+            List<int> greenHistogram = new List<int>();
+            greenHistogram.AddRange(new int[256]);
+            List<int> redHistogram = new List<int>();
+            redHistogram.AddRange(new int[256]);
+
+            // List for other Statistic Values
+            List<double> bluePixels = new List<double>();
+            List<double> greenPixels = new List<double>();
+            List<double> redPixels = new List<double>();
+
+            // Ein Loop für alles
+            for (int i = 0; i < image.Cols; i++)
+            {
+                for (int j = 0; j < image.Rows; j++)
+                {
+                    // Wenn keine Bitmask angegeben wurde, oder die Bitmaske an dieser stelle schwarz ist
+                    if (bitmask == null || bitmask[j, i].MCvScalar.V0 == 0)
+                    {
+                        // Histogram abfüllen
+                        blueHistogram[(int)blueChannel[j, i].MCvScalar.V0]++;
+                        greenHistogram[(int)greenChannel[j, i].MCvScalar.V0]++;
+                        redHistogram[(int)redChannel[j, i].MCvScalar.V0]++;
+
+                        // Pixel in Listen abspitzen
+                        bluePixels.Add(blueChannel[j, i].MCvScalar.V0);
+                        greenPixels.Add(greenChannel[j, i].MCvScalar.V0);
+                        redPixels.Add(redChannel[j, i].MCvScalar.V0);
+                    }
+                }
+            }
+
+            Statistic statistic = new Statistic();
+
+            // Histogram
+            statistic.SetHistogram(blueHistogram, EChannel.Blue);
+            statistic.SetHistogram(greenHistogram, EChannel.Green);
+            statistic.SetHistogram(redHistogram, EChannel.Red);
+
+            // Mode
+            statistic.ModeBlue = blueHistogram.IndexOf(blueHistogram.Max());
+            statistic.ModeGreen = greenHistogram.IndexOf(greenHistogram.Max());
+            statistic.ModeRed = redHistogram.IndexOf(redHistogram.Max());
+
+            // Mean
+            statistic.MeanBlue = bluePixels.Average();
+            statistic.MeanGreen = greenPixels.Average();
+            statistic.MeanRed = redPixels.Average();
+
+            // Variance
+            statistic.VarianceBlue = bluePixels.Sum(i => Math.Pow(i - statistic.MeanBlue.Value, 2)) / (double)bluePixels.Count;
+            statistic.VarianceGreen = greenPixels.Sum(i => Math.Pow(i - statistic.MeanGreen.Value, 2)) / (double)greenPixels.Count;
+            statistic.VarianceRed = redPixels.Sum(i => Math.Pow(i - statistic.MeanRed.Value, 2)) / (double)redPixels.Count;
+
+            // Standard Deviation
+            statistic.StandardDeviationBlue = Math.Sqrt(statistic.VarianceBlue.Value);
+            statistic.StandardDeviationGreen = Math.Sqrt(statistic.VarianceGreen.Value);
+            statistic.StandardDeviationRed = Math.Sqrt(statistic.VarianceRed.Value);
+
+            // Minimum
+            statistic.MinimumBlue = bluePixels.Min();
+            statistic.MinimumGreen = greenPixels.Min();
+            statistic.MinimumRed = redPixels.Min();
+
+            // Maximum
+            statistic.MaximumBlue = bluePixels.Max();
+            statistic.MaximumGreen = greenPixels.Max();
+            statistic.MaximumRed = redPixels.Max();
+
+            // Contrast
+            statistic.ContrastBlue = (statistic.MaximumBlue.Value - statistic.MinimumBlue.Value) / (statistic.MaximumBlue.Value + statistic.MinimumBlue.Value);
+            statistic.ContrastGreen = (statistic.MaximumGreen.Value - statistic.MinimumGreen.Value) / (statistic.MaximumGreen.Value + statistic.MinimumGreen.Value);
+            statistic.ContrastRed = (statistic.MaximumRed.Value - statistic.MinimumRed.Value) / (statistic.MaximumRed.Value + statistic.MinimumRed.Value);
+
+            // Median
+            bluePixels.Sort();
+            greenPixels.Sort();
+            redPixels.Sort();
+            int middle = bluePixels.Count / 2;
+            if (bluePixels.Count % 2 == 0) // Gerade Anzahl
+            {
+                statistic.MedianBlue = (bluePixels.ElementAt(middle) + bluePixels.ElementAt(middle - 1)) / 2d;
+                statistic.MedianGreen = (greenPixels.ElementAt(middle) + greenPixels.ElementAt(middle - 1)) / 2d;
+                statistic.MedianRed = (redPixels.ElementAt(middle) + redPixels.ElementAt(middle - 1)) / 2d;
+            }
+            else // Ungerade Anzahl
+            {
+                statistic.MedianBlue = bluePixels.ElementAt(middle);
+                statistic.MedianGreen = greenPixels.ElementAt(middle);
+                statistic.MedianRed = redPixels.ElementAt(middle);
+            }
+
+            // Return
+            return statistic;
         }
         #endregion
     }
