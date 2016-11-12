@@ -22,8 +22,7 @@ namespace Schneedetektion.GatherData
         private static StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private static OpenCVHelper openCVHelper = new OpenCVHelper();
 
-        private static int take = 100;
-        private static int enqueued = 0;
+        private static int take = 50;
         private static List<ManualResetEvent> resetEvents = new List<ManualResetEvent>();
 
         static void Main(string[] args)
@@ -50,45 +49,37 @@ namespace Schneedetektion.GatherData
                                         where i.Day == true
                                         where i.Entity_Statistics.Count == 0
                                         select i;
+            
+            foreach (var image in images.Take(take))
+            {
+                ManualResetEvent resetEvent = new ManualResetEvent(false);
+                ThreadPool.QueueUserWorkItem(arg =>
+                {
+                    Statistic imageStatistic = openCVHelper.GetStatisticForImage(Path.Combine(folderName, image.Place, image.Name + ".jpg"), false);
+                    Console.WriteLine(image.ID + " - " + image.Name);
 
-            EnqueueImagesForStatistics(images.Take(take));
+                    image.Entity_Statistics.Add(new Entity_Statistic()
+                    {
+                        Statistic = imageStatistic
+                    });
+                    resetEvent.Set();
+                });
+                resetEvents.Add(resetEvent);
+            }
 
-            Console.ReadLine();
+            WaitHandle.WaitAll(resetEvents.ToArray());
+
             dataContext.SubmitChanges();
             Console.WriteLine("Saved!");
-        }
 
-        private static void EnqueueImagesForStatistics(IEnumerable<Image> images)
-        {
-            enqueued = images.Count();
-            foreach (var image in images)
+            if (images.Count() > take)
             {
-                ThreadPool.QueueUserWorkItem(new WaitCallback(CalculateStatistic), image);
-            }
-        }
-
-        private static void CalculateStatistic(object image)
-        {
-            Image i = image as Image;
-            Statistic imageStatistic = openCVHelper.GetStatisticForImage(Path.Combine(folderName, i.Place, i.Name + ".jpg"), false);
-            Console.WriteLine(i.ID + " - " + i.Name);
-
-            i.Entity_Statistics.Add(new Entity_Statistic()
-            {
-                Statistic = imageStatistic
-            });
-
-            CountCalculated();
-        }
-
-        private static void CountCalculated()
-        {
-            enqueued--;
-            if (enqueued < 1)
-            {
-                dataContext.SubmitChanges();
-                Console.WriteLine("Saved!");
+                resetEvents.Clear();
                 CalculateImageStatistics();
+            }
+            else
+            {
+                Console.ReadLine();
             }
         }
 
