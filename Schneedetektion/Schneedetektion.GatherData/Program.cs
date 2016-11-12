@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Schneedetektion.Data;
+﻿using Schneedetektion.Data;
 using Schneedetektion.GatherData.Properties;
 using Schneedetektion.OpenCV;
 using System;
@@ -9,9 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using System.Threading;
 
 namespace Schneedetektion.GatherData
 {
@@ -25,6 +22,10 @@ namespace Schneedetektion.GatherData
         private static StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private static OpenCVHelper openCVHelper = new OpenCVHelper();
 
+        private static int take = 100;
+        private static int enqueued = 0;
+        private static List<ManualResetEvent> resetEvents = new List<ManualResetEvent>();
+
         static void Main(string[] args)
         {
             //cameraNames = dataContext.Cameras.Select(c => c.Name).ToList();
@@ -32,9 +33,9 @@ namespace Schneedetektion.GatherData
             //    "mvk109", "mvk110", "mvk112", "mvk114", "mvk115", "mvk116", "mvk117", "mvk118", "mvk119", "mvk120", "mvk121", "mvk122", "mvk123", "mvk125",
             //    "mvk126", "mvk127", "mvk128", "mvk129", "mvk131", "mvk132", "mvk134", "mvk156", "mvk157", "mvk158", "mvk159", "mvk160", "mvk161", "mvk162",
             //    "mvk163", "mvk164" };
-            cameraNames = new List<string>() { "mvk106" };
+            //cameraNames = new List<string>() { "mvk106" };
 
-            CalculateStatistics();
+            CalculateImageStatistics();
             // RegisterImagesInDB();
             // UpdateDateTime();
             // RemoveDataWithoutFile();
@@ -42,40 +43,53 @@ namespace Schneedetektion.GatherData
             // MoveOldPictures();
         }
 
-        private static void CalculateStatistics()
+        private static void CalculateImageStatistics()
         {
             IEnumerable<Image> images = from i in dataContext.Images
                                         where i.Place == "mvk021"
                                         where i.Day == true
-                                        //where i.Entity_Statistics == null
+                                        where i.Entity_Statistics.Count == 0
                                         select i;
 
-            IEnumerable<Polygon> polygons = dataContext.Polygons.Where(p => p.CameraName == "mvk021");
+            EnqueueImagesForStatistics(images.Take(take));
 
-            BitmapImage patchImage = new BitmapImage();
-            int count = 0;
-
-            foreach (var polygon in polygons)
-            {
-                IEnumerable<Point> polygonPoints = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
-                foreach (var image in images)
-                {
-                    Statistic statistic = openCVHelper.GetStatisticForPatch(Path.Combine(folderName, image.Place, image.Name + ".jpg"), polygonPoints, out patchImage);
-                    //statistic.Image_ID = image.ID;
-                    //statistic.Polygon_ID = polygon.ID;
-
-                    Console.WriteLine(image.ID + " - " + image.Name);
-                    dataContext.Statistics.InsertOnSubmit(statistic);
-
-                    count++;
-                    if (count % 100 == 0 && count > 0)
-                    {
-                        dataContext.SubmitChanges();
-                        Console.WriteLine("Saved!");
-                    }
-                }
-            }
             Console.ReadLine();
+            dataContext.SubmitChanges();
+            Console.WriteLine("Saved!");
+        }
+
+        private static void EnqueueImagesForStatistics(IEnumerable<Image> images)
+        {
+            enqueued = images.Count();
+            foreach (var image in images)
+            {
+                ThreadPool.QueueUserWorkItem(new WaitCallback(CalculateStatistic), image);
+            }
+        }
+
+        private static void CalculateStatistic(object image)
+        {
+            Image i = image as Image;
+            Statistic imageStatistic = openCVHelper.GetStatisticForImage(Path.Combine(folderName, i.Place, i.Name + ".jpg"), false);
+            Console.WriteLine(i.ID + " - " + i.Name);
+
+            i.Entity_Statistics.Add(new Entity_Statistic()
+            {
+                Statistic = imageStatistic
+            });
+
+            CountCalculated();
+        }
+
+        private static void CountCalculated()
+        {
+            enqueued--;
+            if (enqueued < 1)
+            {
+                dataContext.SubmitChanges();
+                Console.WriteLine("Saved!");
+                CalculateImageStatistics();
+            }
         }
 
         private static void MoveOldPictures()
