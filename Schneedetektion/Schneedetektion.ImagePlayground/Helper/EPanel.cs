@@ -5,6 +5,7 @@
         HistogramLeft,
         HistogramRight,
         MaskTool,
-        Statistics
+        Statistics,
+        StatisticsFromDB
     }
 }

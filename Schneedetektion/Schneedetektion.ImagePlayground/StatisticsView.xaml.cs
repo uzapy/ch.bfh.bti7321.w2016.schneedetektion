@@ -27,6 +27,7 @@ namespace Schneedetektion.ImagePlayground
         {
             InitializeComponent();
             polygonHelper = new PolygonHelper(polygonCanvas);
+            imageContainer.ItemsSource = patches;
         }
         #endregion
 

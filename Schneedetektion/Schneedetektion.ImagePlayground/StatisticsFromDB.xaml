@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="Schneedetektion.ImagePlayground.StatisticsFromDB"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Schneedetektion.ImagePlayground">
+    <DockPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="352" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Image x:Name="statisticsImage" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            <Canvas x:Name="polygonCanvas" Grid.Column="0" Background="Transparent" />
+            <ListView x:Name="imageContainer" Grid.Column="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:PatchView Model="{Binding}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </DockPanel>
+</UserControl>

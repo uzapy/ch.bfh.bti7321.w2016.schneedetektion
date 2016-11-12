@@ -19,8 +19,11 @@
         <TabItem Header="Masking-Tool" x:Name="maskingToolTab">
             <local:MaskingView x:Name="maskingTool" />
         </TabItem>
-        <TabItem Header="Statistics" x:Name="statisticsViewTab">
+        <TabItem Header="Live Statistics" x:Name="statisticsViewTab">
             <local:StatisticsView x:Name="statisticsView" />
+        </TabItem>
+        <TabItem Header="DB Statistics" x:Name="statisticsFromDBTab">
+            <local:StatisticsFromDB x:Name="statisticsFromDB" />
         </TabItem>
     </TabControl>
 </Window>

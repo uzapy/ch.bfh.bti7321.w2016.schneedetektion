@@ -40,6 +40,10 @@ namespace Schneedetektion.ImagePlayground
                     statisticsView.ShowImage(e.SelectedImage);
                     statisticsViewTab.IsSelected = true;
                     break;
+                case EPanel.StatisticsFromDB:
+                    statisticsFromDB.ShowImage(e.SelectedImage);
+                    statisticsFromDBTab.IsSelected = true;
+                    break;
             }
         } 
         #endregion
