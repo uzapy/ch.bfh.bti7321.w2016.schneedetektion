@@ -1,5 +1,4 @@
 ﻿using Schneedetektion.Data;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -34,7 +33,14 @@ namespace Schneedetektion.ImagePlayground
                 polygonHelper.LoadPolygon(dbPolygon.PolygonPointCollection, dbPolygon.ImageArea, 352, 288);
             }
 
+            IEnumerable<Statistic> statistics = imageViewModel.Image.Entity_Statistics.Select(s => s.Statistic);
 
+            if (statistics.Count() > 0)
+            {
+                Statistic statistic = statistics.First();
+                PatchViewModel completeImagePatchViewModel = new PatchViewModel(statistic, imageViewModel);
+                patches.Add(completeImagePatchViewModel);
+            }
         }
     }
 }

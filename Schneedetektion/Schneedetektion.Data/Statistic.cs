@@ -28,8 +28,38 @@ namespace Schneedetektion.Data
             }
         }
 
-        public List<double> BlueHistogramList { get { return blueHistogram; } }
-        public List<double> GreenHistogramList { get { return greenHistogram; } }
-        public List<double> RedHistogramList { get { return redHistogram; } }
+        public List<double> BlueHistogramList
+        {
+            get
+            {
+                if (blueHistogram.Count == 0)
+                {
+                    blueHistogram = JsonConvert.DeserializeObject<List<double>>(BlueHistogram);
+                }
+                return blueHistogram;
+            }
+        }
+        public List<double> GreenHistogramList
+        {
+            get
+            {
+                if (greenHistogram.Count == 0)
+                {
+                    greenHistogram = JsonConvert.DeserializeObject<List<double>>(GreenHistogram);
+                }
+                return greenHistogram;
+            }
+        }
+        public List<double> RedHistogramList
+        {
+            get
+            {
+                if (redHistogram.Count == 0)
+                {
+                    redHistogram = JsonConvert.DeserializeObject<List<double>>(RedHistogram);
+                }
+                return redHistogram;
+            }
+        }
     }
 }
