@@ -1,4 +1,5 @@
-﻿using Schneedetektion.Data;
+﻿using Newtonsoft.Json;
+using Schneedetektion.Data;
 using Schneedetektion.GatherData.Properties;
 using Schneedetektion.OpenCV;
 using System;
@@ -9,6 +10,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Schneedetektion.GatherData
 {
@@ -34,7 +37,9 @@ namespace Schneedetektion.GatherData
             //    "mvk163", "mvk164" };
             //cameraNames = new List<string>() { "mvk106" };
 
-            CalculateImageStatistics();
+            //CalculateImageStatistics();
+            CalculatePatchStatistics();
+
             // RegisterImagesInDB();
             // UpdateDateTime();
             // RemoveDataWithoutFile();
@@ -81,6 +86,43 @@ namespace Schneedetektion.GatherData
             {
                 Console.ReadLine();
             }
+        }
+
+        private static void CalculatePatchStatistics()
+        {
+            string camera = "mvk106";
+            IEnumerable<Polygon> polygons = dataContext.Polygons.Where(p => p.CameraName == camera);
+            BitmapImage patchImage = new BitmapImage();
+
+            IEnumerable<Image> images = (from i in dataContext.Images
+                                            where i.Place == camera
+                                            where i.Day == true
+                                            where (from es in i.Entity_Statistics where es.Polygon_ID != null select es).Count() == 0
+                                            select i).Take(take);
+
+            foreach (var image in images)
+            {
+
+                foreach (var polygon in polygons)
+                {
+                    var polygonPoints = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
+                    Statistic imageStatistic = openCVHelper.GetStatisticForPatch(
+                    Path.Combine(folderName, image.Place, image.Name + ".jpg"), polygonPoints, out patchImage);
+
+                    Console.WriteLine("I: " + image.ID + " - " + image.Name + " - P:" + polygon.ID + " - " + polygon.ImageArea);
+
+                    image.Entity_Statistics.Add(new Entity_Statistic()
+                    {
+                        Statistic = imageStatistic,
+                        Polygon = polygon
+                    });
+                }
+            }
+
+            dataContext.SubmitChanges();
+            Console.WriteLine("Saved!");
+
+            CalculatePatchStatistics();
         }
 
         private static void MoveOldPictures()
