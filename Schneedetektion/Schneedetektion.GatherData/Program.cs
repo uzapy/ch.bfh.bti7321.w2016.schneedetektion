@@ -25,7 +25,7 @@ namespace Schneedetektion.GatherData
         private static StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private static OpenCVHelper openCVHelper = new OpenCVHelper();
 
-        private static int take = 50;
+        private static int take = 1000;
         private static List<ManualResetEvent> resetEvents = new List<ManualResetEvent>();
 
         static void Main(string[] args)
@@ -90,7 +90,7 @@ namespace Schneedetektion.GatherData
 
         private static void CalculatePatchStatistics()
         {
-            string camera = "mvk106";
+            string camera = "mvk108";
             IEnumerable<Polygon> polygons = dataContext.Polygons.Where(p => p.CameraName == camera);
             BitmapImage patchImage = new BitmapImage();
 

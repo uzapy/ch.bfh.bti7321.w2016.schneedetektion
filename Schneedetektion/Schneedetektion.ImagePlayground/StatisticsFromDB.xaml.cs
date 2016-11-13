@@ -1,14 +1,17 @@
 ﻿using Schneedetektion.Data;
+using Schneedetektion.OpenCV;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace Schneedetektion.ImagePlayground
 {
     public partial class StatisticsFromDB : UserControl
     {
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
+        private OpenCVHelper openCVHelper = new OpenCVHelper();
         private PolygonHelper polygonHelper;
         private ImageViewModel imageViewModel;
         private ObservableCollection<PatchViewModel> patches = new ObservableCollection<PatchViewModel>();
@@ -35,12 +38,26 @@ namespace Schneedetektion.ImagePlayground
 
             IEnumerable<Statistic> statistics = imageViewModel.Image.Entity_Statistics.Select(s => s.Statistic);
 
-            if (statistics.Count() > 0)
+            foreach (var es in imageViewModel.Image.Entity_Statistics)
             {
-                Statistic statistic = statistics.First();
-                PatchViewModel completeImagePatchViewModel = new PatchViewModel(statistic, imageViewModel);
-                patches.Add(completeImagePatchViewModel);
+                if (es.Polygon == null)
+                {
+                    PatchViewModel completeImagePatchViewModel = new PatchViewModel(es.Statistic, imageViewModel);
+                    patches.Add(completeImagePatchViewModel);
+                }
+                else
+                {
+                    BitmapImage patchImage = openCVHelper.GetPatchBitmapImage(imageViewModel.FileName,
+                        PolygonHelper.DeserializePointCollection(es.Polygon.PolygonPointCollection));
+                    PatchViewModel patchViewModel = new PatchViewModel(es.Statistic, patchImage, imageViewModel, es.Polygon);
+                    patches.Add(patchViewModel);
+                }
             }
+        }
+
+        private void Clear_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            patches.Clear();
         }
     }
 }

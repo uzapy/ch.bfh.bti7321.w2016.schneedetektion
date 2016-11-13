@@ -131,6 +131,34 @@ namespace Schneedetektion.OpenCV
             bitMask.Save(bitmaskPath);
         }
 
+        public BitmapImage GetPatchBitmapImage(string imagePath, IEnumerable<Point> pointCollection)
+        {
+            // Create Matrix 
+            Mat matrix = new Mat(imagePath, LoadImageType.AnyColor);
+            UMat uMatrix = matrix.ToUMat(AccessType.ReadWrite);
+
+            // Scale and Transform Polygon
+            List<Point> scaledPoints = GetScaledPoints(pointCollection, uMatrix.Cols, uMatrix.Rows);
+            List<Drawing.Point> polygonPoints = GetInvertedPolygonPoints(scaledPoints, uMatrix.Cols, uMatrix.Rows);
+
+            // Apply Polygon
+            using (VectorOfPoint vPoint = new VectorOfPoint(polygonPoints.ToArray()))
+            using (VectorOfVectorOfPoint vvPoint = new VectorOfVectorOfPoint(vPoint))
+            {
+                // Alles schwarz anmalen, dass nicht im Polygon ist
+                CvInvoke.FillPoly(uMatrix, vvPoint, new Bgr(0, 0, 0).MCvScalar);
+            }
+
+            // Create Image from uMatrix
+            Image<Bgr, byte> image = new Image<Bgr, byte>(uMatrix.Bitmap);
+
+            // Crop Bitmaps
+            image.ROI = GetRegionOfInterest(scaledPoints);
+
+            // Return
+            return OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
+        }
+
         [Obsolete]
         public void GetMeanSdandardDeviationAndVariance(Drawing.Bitmap bitmap, string bitmaskPath, out OpenCVColor color, out OpenCVColor sdtDev, out OpenCVColor variance)
         {
