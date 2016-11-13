@@ -13,7 +13,7 @@ namespace Schneedetektion.ImagePlayground
         private BitmapImage patchBitmap;
         private ImageViewModel imageViewModel;
         private Polygon polygon;
-        private Histogram histogram;
+        private HistogramViewModel histogram;
         #endregion
 
         #region Constructor
@@ -24,7 +24,7 @@ namespace Schneedetektion.ImagePlayground
             this.imageViewModel = imageViewModel;
             this.polygon = polygon;
 
-            histogram = new Histogram(statistic.BlueHistogramList, statistic.GreenHistogramList, statistic.RedHistogramList);
+            histogram = new HistogramViewModel(statistic.BlueHistogramList, statistic.GreenHistogramList, statistic.RedHistogramList);
         }
 
         public PatchViewModel(Statistic completeImageStatistic, ImageViewModel imageViewModel)
@@ -33,7 +33,7 @@ namespace Schneedetektion.ImagePlayground
             this.patchBitmap = imageViewModel.Bitmap;
             this.imageViewModel = imageViewModel;
 
-            histogram = new Histogram(statistic.BlueHistogramList, statistic.GreenHistogramList, statistic.RedHistogramList);
+            histogram = new HistogramViewModel(statistic.BlueHistogramList, statistic.GreenHistogramList, statistic.RedHistogramList, true);
         }
         #endregion
 
@@ -54,7 +54,7 @@ namespace Schneedetektion.ImagePlayground
         }
 
         // Histogram
-        public Histogram Histogram
+        public HistogramViewModel HistogramViewModel
         {
             get { return histogram; }
         }

@@ -68,7 +68,7 @@
                 <TextBlock Text="{Binding ContrastRedText}" Width="50" />
             </StackPanel>
         </StackPanel>
-        <ItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Histogram.HistogramValues}">
+        <ItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding HistogramViewModel.HistogramValues}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas Background="Transparent" />

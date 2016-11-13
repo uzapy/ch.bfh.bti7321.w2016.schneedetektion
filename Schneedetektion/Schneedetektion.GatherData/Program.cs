@@ -55,7 +55,7 @@ namespace Schneedetektion.GatherData
                 ManualResetEvent resetEvent = new ManualResetEvent(false);
                 ThreadPool.QueueUserWorkItem(arg =>
                 {
-                    Statistic imageStatistic = openCVHelper.GetStatisticForImage(Path.Combine(folderName, image.Place, image.Name + ".jpg"), false);
+                    Statistic imageStatistic = openCVHelper.GetStatisticForImage(Path.Combine(folderName, image.Place, image.Name + ".jpg"));
                     Console.WriteLine(image.ID + " - " + image.Name);
 
                     image.Entity_Statistics.Add(new Entity_Statistic()

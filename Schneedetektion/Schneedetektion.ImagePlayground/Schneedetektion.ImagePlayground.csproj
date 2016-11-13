@@ -85,7 +85,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helper\Histogram.cs" />
+    <Compile Include="Helper\HistogramViewModel.cs" />
     <Compile Include="Helper\PatchViewModel.cs" />
     <Compile Include="Helper\SizeConverter.cs" />
     <Compile Include="Helper\EPanel.cs" />

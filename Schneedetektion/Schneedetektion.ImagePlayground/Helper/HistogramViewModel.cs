@@ -6,7 +6,7 @@ using System.Windows.Shapes;
 
 namespace Schneedetektion.ImagePlayground
 {
-    public class Histogram
+    public class HistogramViewModel
     {
         private List<double> blue;
         private List<double> green;
@@ -14,11 +14,22 @@ namespace Schneedetektion.ImagePlayground
         private List<Line> histogramValues = new List<Line>();
         private static Thickness thickness = new Thickness(2);
 
-        public Histogram(List<double> blueHistogram, List<double> greenHistogram, List<double> redHistogram)
+        public HistogramViewModel(List<double> blueHistogram, List<double> greenHistogram, List<double> redHistogram, bool normalizeHistogram = false)
         {
             blue = blueHistogram;
             green = greenHistogram;
             red = redHistogram;
+
+            if (normalizeHistogram)
+            {
+                double maxIntensity = (new double[3] { blue.Max(), green.Max(), red.Max() }).Max();
+                for (int i = 0; i < blue.Count; i++)
+                {
+                    blue[i] = blue[i] / maxIntensity * 100;
+                    green[i] = green[i] / maxIntensity * 100;
+                    red[i] = red[i] / maxIntensity * 100;
+                }
+            }
 
             for (int i = 0; i < blue.Count(); i++)
             {
@@ -59,8 +70,5 @@ namespace Schneedetektion.ImagePlayground
         }
 
         public List<Line> HistogramValues { get { return histogramValues; } }
-        public List<double> Blue { get { return blue; } }
-        public List<double> Green { get { return green; } }
-        public List<double> Red { get { return red; } }
     }
 }

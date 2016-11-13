@@ -95,12 +95,12 @@ namespace Schneedetektion.OpenCV
 
             // Return
             patchImage = OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
-            return GetStatistic(image, bitmask, false);
+            return GetStatistic(image, bitmask);
         }
 
-        public Statistic GetStatisticForImage(string fileName, bool normalizeHistogram = false)
+        public Statistic GetStatisticForImage(string fileName)
         {
-            return GetStatistic(new Image<Bgr, byte>(fileName), null, normalizeHistogram);
+            return GetStatistic(new Image<Bgr, byte>(fileName), null);
         }
 
         public void SaveBitmask(string imagePath, string bitmaskPath, IEnumerable<Point> pointCollection)
@@ -294,7 +294,7 @@ namespace Schneedetektion.OpenCV
             return histogramValues;
         }
 
-        private Statistic GetStatistic(Image<Bgr, byte> image, Image<Gray, byte> bitmask, bool normalizeHistogram)
+        private Statistic GetStatistic(Image<Bgr, byte> image, Image<Gray, byte> bitmask)
         {
             // Pro Kanal ein Grauwert-Bild erstellen
             Image<Gray, byte> blueChannel = image[(int)EChannel.Blue];
@@ -337,23 +337,10 @@ namespace Schneedetektion.OpenCV
 
             Statistic statistic = new Statistic();
 
-            // Normalize Histogram
-            if (normalizeHistogram)
-            {
-                double maxIntensity = (new double[3] { blueHistogram.Max(), greenHistogram.Max(), redHistogram.Max() }).Max();
-
-                for (int i = 0; i < blueHistogram.Count; i++)
-                {
-                    blueHistogram[i] = blueHistogram[i] / blueHistogram.Max() * 100;
-                    greenHistogram[i] = greenHistogram[i] / greenHistogram.Max() * 100;
-                    redHistogram[i] = redHistogram[i] / redHistogram.Max() * 100;
-                }
-            }
-
             // Histogram
-            statistic.SetHistogram(blueHistogram, EChannel.Blue);
-            statistic.SetHistogram(greenHistogram, EChannel.Green);
-            statistic.SetHistogram(redHistogram, EChannel.Red);
+            statistic.BlueHistogramList = blueHistogram;
+            statistic.GreenHistogramList = greenHistogram;
+            statistic.RedHistogramList = redHistogram;
 
             // Mode
             statistic.ModeBlue = blueHistogram.IndexOf(blueHistogram.Max());
