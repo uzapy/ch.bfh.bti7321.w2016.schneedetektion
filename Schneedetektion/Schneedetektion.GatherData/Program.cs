@@ -44,13 +44,13 @@ namespace Schneedetektion.GatherData
 
         private static void CalculateImageStatistics()
         {
-            IEnumerable<Image> images = from i in dataContext.Images
-                                        where i.Place == "mvk021"
+            IEnumerable<Image> images = (from i in dataContext.Images
+                                        where i.Place == "mvk108"
                                         where i.Day == true
                                         where i.Entity_Statistics.Count == 0
-                                        select i;
+                                        select i).Take(take);
             
-            foreach (var image in images.Take(take))
+            foreach (var image in images)
             {
                 ManualResetEvent resetEvent = new ManualResetEvent(false);
                 ThreadPool.QueueUserWorkItem(arg =>
@@ -72,7 +72,7 @@ namespace Schneedetektion.GatherData
             dataContext.SubmitChanges();
             Console.WriteLine("Saved!");
 
-            if (images.Count() > take)
+            if (images.Count() > 0)
             {
                 resetEvents.Clear();
                 CalculateImageStatistics();
