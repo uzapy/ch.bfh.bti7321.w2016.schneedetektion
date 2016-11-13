@@ -89,13 +89,16 @@
     <Compile Include="Helper\PatchViewModel.cs" />
     <Compile Include="Helper\SizeConverter.cs" />
     <Compile Include="Helper\EPanel.cs" />
-    <Compile Include="GalleryView.xaml.cs">
+    <Compile Include="Tabs\StatisticPlot.xaml.cs">
+      <DependentUpon>StatisticPlot.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tabs\GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HistogramViewer.xaml.cs">
+    <Compile Include="Tabs\HistogramViewer.xaml.cs">
       <DependentUpon>HistogramViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MaskingView.xaml.cs">
+    <Compile Include="Tabs\MaskingView.xaml.cs">
       <DependentUpon>MaskingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helper\SendImageEventArgs.cs" />
@@ -104,20 +107,24 @@
     <Compile Include="PatchView.xaml.cs">
       <DependentUpon>PatchView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RecordCategories.xaml.cs">
+    <Compile Include="Tabs\RecordCategories.xaml.cs">
       <DependentUpon>RecordCategories.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StatisticsFromDB.xaml.cs">
+    <Compile Include="Tabs\StatisticsFromDB.xaml.cs">
       <DependentUpon>StatisticsFromDB.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StatisticsView.xaml.cs">
+    <Compile Include="Tabs\StatisticsView.xaml.cs">
       <DependentUpon>StatisticsView.xaml</DependentUpon>
     </Compile>
-    <Page Include="GalleryView.xaml">
+    <Page Include="Tabs\StatisticPlot.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="HistogramViewer.xaml">
+    <Page Include="Tabs\GalleryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\HistogramViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -133,7 +140,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="MaskingView.xaml">
+    <Page Include="Tabs\MaskingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -141,15 +148,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RecordCategories.xaml">
+    <Page Include="Tabs\RecordCategories.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="StatisticsFromDB.xaml">
+    <Page Include="Tabs\StatisticsFromDB.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="StatisticsView.xaml">
+    <Page Include="Tabs\StatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

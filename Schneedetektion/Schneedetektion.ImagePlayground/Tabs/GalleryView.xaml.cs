@@ -12,7 +12,6 @@ namespace Schneedetektion.ImagePlayground
     public partial class GalleryView : UserControl
     {
         #region Fields
-        public static string folderName = Settings.Default.WorkingFolder;
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
 
         private ObservableCollection<string> cameraNames = new ObservableCollection<string>()
