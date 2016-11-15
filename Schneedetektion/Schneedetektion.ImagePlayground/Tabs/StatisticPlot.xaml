@@ -51,10 +51,10 @@
                 </StackPanel>
             </GroupBox>
         </StackPanel>
-        <Canvas x:Name="plotCanvas" Background="AliceBlue" SizeChanged="plotCanvas_SizeChanged">
-            <TextBlock Text="0" Canvas.Left="5" Canvas.Bottom="5" />
-            <TextBlock Text="X:255" Canvas.Right="5" Canvas.Bottom="5" />
-            <TextBlock Text="Y:255" Canvas.Left="5" Canvas.Top="5" />
+        <Canvas x:Name="plotCanvas" SizeChanged="plotCanvas_SizeChanged">
+            <TextBlock x:Name="zero" Text="0" Canvas.Left="5" Canvas.Bottom="5" />
+            <TextBlock x:Name="x255" Text="X:255" Canvas.Right="5" Canvas.Bottom="5" />
+            <TextBlock x:Name="y255" Text="Y:255" Canvas.Left="5" Canvas.Top="5" />
             <Line x:Name="xLine" Stroke="Black" StrokeThickness="2" Canvas.Left="0" Canvas.Bottom="0" />
             <Line x:Name="yLine" Stroke="Black" StrokeThickness="2" Canvas.Left="0" Canvas.Bottom="0" />
         </Canvas>

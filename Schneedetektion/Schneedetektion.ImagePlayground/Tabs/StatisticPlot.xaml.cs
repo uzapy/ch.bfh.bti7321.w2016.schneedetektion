@@ -2,10 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Schneedetektion.ImagePlayground
 {
@@ -14,6 +15,7 @@ namespace Schneedetektion.ImagePlayground
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private ObservableCollection<string> cameraNames = new ObservableCollection<string>();
         private ObservableCollection<string> polygonNames = new ObservableCollection<string>();
+        private List<object> initialElements = new List<object>();
         private string selectedCamera = String.Empty;
         private string selectedPolygon = String.Empty;
         private string selectedX = String.Empty;
@@ -31,6 +33,11 @@ namespace Schneedetektion.ImagePlayground
             foreach (var camera in cameras)
             {
                 cameraNames.Add(camera);
+            }
+
+            foreach (var child in plotCanvas.Children)
+            {
+                initialElements.Add(child);
             }
         }
 
@@ -77,12 +84,14 @@ namespace Schneedetektion.ImagePlayground
         {
             if (comboColor.SelectedValue != null)
             {
-                selectedColor = (comboY.SelectedValue as ComboBoxItem).Content as String;
+                selectedColor = (comboColor.SelectedValue as ComboBoxItem).Content as String;
             }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            ClearCanvas();
+
             int polygonID = 0;
 
             if (!String.IsNullOrEmpty(selectedCamera) &&
@@ -109,6 +118,15 @@ namespace Schneedetektion.ImagePlayground
             }
         }
 
+        private void ClearCanvas()
+        {
+            plotCanvas.Children.Clear();
+            foreach (var element in initialElements)
+            {
+                plotCanvas.Children.Add(element as UIElement);
+            }
+        }
+
         private void plotCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             xLine.X1 = 0;
@@ -122,12 +140,51 @@ namespace Schneedetektion.ImagePlayground
             yLine.Y2 = ((Canvas)e.OriginalSource).ActualHeight;
         }
 
-        private void DrawPoints(IEnumerable<Statistic> statistics, string selectedX, string selectedY, string selectedColor, Brush blue)
+        private void DrawPoints(IEnumerable<Statistic> statistics, string selectedX, string selectedY, string selectedColor, Brush brush)
         {
             foreach (var statistic in statistics)
             {
+                double left = ScaleToCanvas(statistic.Get(selectedX, selectedColor), selectedX, plotCanvas.ActualWidth) - 5;
+                double top = (plotCanvas.ActualHeight - 5) - ScaleToCanvas(statistic.Get(selectedY, selectedColor), selectedY, plotCanvas.ActualHeight);
 
+                plotCanvas.Children.Add(
+                    new Ellipse()
+                    {
+                        Width = 5,
+                        Height = 5,
+                        Fill = brush,
+                        Opacity = 0.3,
+                        Margin = new Thickness(left, top, 0, 0)
+                    });
             }
+        }
+
+        private double ScaleToCanvas(double value, string property, double scale)
+        {
+            // Mode / Mean / Median / Minimum / Maximum => 0 - 255
+            // StandardDeviation                        => 0 - 127
+            // Variance                                 => 0 - 16129
+            // Contrast                                 => 0 - 1
+
+            double max = 1;
+            if (property == "Mode" || property == "Mean" || property == "Median" || property == "Minimum" || property == "Maximum")
+            {
+                max = 255;
+            }
+            else if (property == "StandardDeviation")
+            {
+                max = 128;
+            }
+            else if (property == "Variance")
+            {
+                max = 16384;
+            }
+            else if (property == "Contrast")
+            {
+                max = 1;
+            }
+
+            return value / max * scale;
         }
     }
 }
