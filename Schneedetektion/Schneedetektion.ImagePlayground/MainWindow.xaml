@@ -25,6 +25,9 @@
         <TabItem Header="DB Statistics" x:Name="statisticsFromDBTab">
             <local:StatisticsFromDB x:Name="statisticsFromDB" />
         </TabItem>
+        <TabItem Header="Statistic Plot" x:Name="statisticPlotTab">
+            <local:StatisticPlot x:Name="statisticPlot" />
+        </TabItem>
         <TabItem Header="Statistic 2D Plot" x:Name="statistic2DPlotTab">
             <local:Statistic2DPlot x:Name="statistic2DPlot" />
         </TabItem>
