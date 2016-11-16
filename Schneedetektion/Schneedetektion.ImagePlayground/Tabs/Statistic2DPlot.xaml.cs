@@ -1,18 +1,22 @@
 ﻿using Schneedetektion.Data;
+using Schneedetektion.OpenCV;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace Schneedetektion.ImagePlayground
 {
-    public partial class StatisticPlot : UserControl
+    public partial class Statistic2DPlot : UserControl
     {
+        #region Fields
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
+        private OpenCVHelper openCVHelper = new OpenCVHelper();
         private ObservableCollection<string> cameraNames = new ObservableCollection<string>();
         private ObservableCollection<string> polygonNames = new ObservableCollection<string>();
         private List<object> initialElements = new List<object>();
@@ -21,8 +25,10 @@ namespace Schneedetektion.ImagePlayground
         private string selectedX = String.Empty;
         private string selectedY = String.Empty;
         private string selectedColor = String.Empty;
+        #endregion
 
-        public StatisticPlot()
+        #region Constructor
+        public Statistic2DPlot()
         {
             InitializeComponent();
 
@@ -40,7 +46,9 @@ namespace Schneedetektion.ImagePlayground
                 initialElements.Add(child);
             }
         }
+        #endregion
 
+        #region Event Handler
         private void cameraList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cameraList.SelectedItem != null)
@@ -117,7 +125,9 @@ namespace Schneedetektion.ImagePlayground
                 DrawPoints(statisticsWithoutSnow, selectedX, selectedY, selectedColor, Brushes.Green);
             }
         }
+        #endregion
 
+        #region Private Methods
         private void ClearCanvas()
         {
             plotCanvas.Children.Clear();
@@ -144,19 +154,39 @@ namespace Schneedetektion.ImagePlayground
         {
             foreach (var statistic in statistics)
             {
-                double left = ScaleToCanvas(statistic.Get(selectedX, selectedColor), selectedX, plotCanvas.ActualWidth) - 5;
+                double left = ScaleToCanvas(statistic.Get(selectedX, selectedColor), selectedX, plotCanvas.ActualWidth);
                 double top = (plotCanvas.ActualHeight - 5) - ScaleToCanvas(statistic.Get(selectedY, selectedColor), selectedY, plotCanvas.ActualHeight);
 
-                plotCanvas.Children.Add(
-                    new Ellipse()
-                    {
-                        Width = 5,
-                        Height = 5,
-                        Fill = brush,
-                        Opacity = 0.3,
-                        Margin = new Thickness(left, top, 0, 0)
-                    });
+                Ellipse e = new Ellipse()
+                {
+                    Width = 5,
+                    Height = 5,
+                    Fill = brush,
+                    Opacity = 0.3,
+                    Margin = new Thickness(left, top, 0, 0),
+                    Tag = statistic.ID
+                };
+
+                e.MouseLeftButtonUp += new MouseButtonEventHandler(HandleEllipseClick);
+
+                plotCanvas.Children.Add(e);
             }
+        }
+
+        private void HandleEllipseClick(object sender, RoutedEventArgs args)
+        {
+            int statisticID = (int)(sender as Ellipse).Tag;
+            int polygonID = Int32.Parse(selectedPolygon.Split('-')[0]);
+
+            Statistic statistic = dataContext.Statistics.Where(s => s.ID == statisticID).Single();
+            Entity_Statistic entityStatitistic = statistic.Entity_Statistics.Where(es => es.Polygon.ID == polygonID).Single();
+            ImageViewModel imageViewModel = new ImageViewModel(entityStatitistic.Image);
+
+            fullImage.Source = imageViewModel.Bitmap;
+
+            patchImage.Source = openCVHelper.GetPatchBitmapImage(
+                imageViewModel.FileName,
+                PolygonHelper.DeserializePointCollection(entityStatitistic.Polygon.PolygonPointCollection));
         }
 
         private double ScaleToCanvas(double value, string property, double scale)
@@ -185,6 +215,7 @@ namespace Schneedetektion.ImagePlayground
             }
 
             return value / max * scale;
-        }
+        } 
+        #endregion
     }
 }

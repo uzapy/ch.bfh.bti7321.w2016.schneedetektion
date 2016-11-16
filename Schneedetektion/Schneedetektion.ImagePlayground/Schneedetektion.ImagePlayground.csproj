@@ -89,8 +89,8 @@
     <Compile Include="Helper\PatchViewModel.cs" />
     <Compile Include="Helper\SizeConverter.cs" />
     <Compile Include="Helper\EPanel.cs" />
-    <Compile Include="Tabs\StatisticPlot.xaml.cs">
-      <DependentUpon>StatisticPlot.xaml</DependentUpon>
+    <Compile Include="Tabs\Statistic2DPlot.xaml.cs">
+      <DependentUpon>Statistic2DPlot.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tabs\GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
@@ -116,7 +116,7 @@
     <Compile Include="Tabs\StatisticsView.xaml.cs">
       <DependentUpon>StatisticsView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Tabs\StatisticPlot.xaml">
+    <Page Include="Tabs\Statistic2DPlot.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

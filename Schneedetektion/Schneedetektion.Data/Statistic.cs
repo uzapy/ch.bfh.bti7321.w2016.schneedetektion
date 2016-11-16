@@ -5,6 +5,7 @@ namespace Schneedetektion.Data
 {
     public partial class Statistic
     {
+        #region Histogram
         private List<double> blueHistogram = new List<double>();
         private List<double> greenHistogram = new List<double>();
         private List<double> redHistogram = new List<double>();
@@ -58,7 +59,9 @@ namespace Schneedetektion.Data
                 RedHistogram = JsonConvert.SerializeObject(redHistogram);
             }
         }
+        #endregion
 
+        #region Get Property Value
         public double Get(string property, string color)
         {
             if (property == "Mode")
@@ -215,6 +218,7 @@ namespace Schneedetektion.Data
             }
 
             return 0;
-        }
+        } 
+        #endregion
     }
 }

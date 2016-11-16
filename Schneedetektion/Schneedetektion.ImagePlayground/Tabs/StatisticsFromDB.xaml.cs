@@ -24,6 +24,11 @@ namespace Schneedetektion.ImagePlayground
             imageContainer.ItemsSource = patches;
         }
 
+        private void Clear_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            patches.Clear();
+        }
+
         internal void ShowImage(ImageViewModel selectedImage)
         {
             imageViewModel = selectedImage;
@@ -53,11 +58,6 @@ namespace Schneedetektion.ImagePlayground
                     patches.Add(patchViewModel);
                 }
             }
-        }
-
-        private void Clear_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            patches.Clear();
         }
     }
 }

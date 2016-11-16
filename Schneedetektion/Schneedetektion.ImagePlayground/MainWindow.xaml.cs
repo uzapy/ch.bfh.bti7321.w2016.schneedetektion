@@ -5,16 +5,13 @@ namespace Schneedetektion.ImagePlayground
 {
     public partial class MainWindow : Window
     {
-        #region Constructor
         public MainWindow()
         {
             InitializeComponent();
 
             galleryView.SendImage += GalleryView_SendImage;
         }
-        #endregion
 
-        #region Event Handler
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (recordCategoriesTab.IsSelected)
@@ -45,7 +42,6 @@ namespace Schneedetektion.ImagePlayground
                     statisticsFromDBTab.IsSelected = true;
                     break;
             }
-        } 
-        #endregion
+        }
     }
 }
