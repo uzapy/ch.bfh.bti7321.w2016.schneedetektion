@@ -22,6 +22,7 @@
       <Column Name="PolygonPointCollection" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="Bitmask" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
       <Association Name="Polygon_Entity_Statistic" Member="Entity_Statistics" ThisKey="ID" OtherKey="Polygon_ID" Type="Entity_Statistic" />
+      <Association Name="Polygon_Combined_Statistic" Member="Combined_Statistics" ThisKey="ID" OtherKey="Polygon_ID" Type="Combined_Statistic" />
     </Type>
   </Table>
   <Table Name="dbo.Images" Member="Images">
@@ -76,6 +77,7 @@
       <Column Name="ContrastGreen" Type="System.Double" DbType="Float" CanBeNull="true" />
       <Column Name="ContrastRed" Type="System.Double" DbType="Float" CanBeNull="true" />
       <Association Name="Statistic_Entity_Statistic" Member="Entity_Statistics" ThisKey="ID" OtherKey="Statistics_ID" Type="Entity_Statistic" />
+      <Association Name="Statistic_Combined_Statistic" Member="Combined_Statistics" ThisKey="ID" OtherKey="Statistics_ID" Type="Combined_Statistic" />
     </Type>
   </Table>
   <Table Name="dbo.Entity_Statistics" Member="Entity_Statistics">
@@ -87,6 +89,23 @@
       <Association Name="Image_Entity_Statistic" Member="Image" ThisKey="Image_ID" OtherKey="ID" Type="Image" IsForeignKey="true" />
       <Association Name="Statistic_Entity_Statistic" Member="Statistic" ThisKey="Statistics_ID" OtherKey="ID" Type="Statistic" IsForeignKey="true" />
       <Association Name="Polygon_Entity_Statistic" Member="Polygon" ThisKey="Polygon_ID" OtherKey="ID" Type="Polygon" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Combined_Statistics" Member="Combined_Statistics">
+    <Type Name="Combined_Statistic">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Statistics_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Images" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Polygon_ID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="StartTime" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EndTime" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Week" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Snow" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Foggy" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Rainy" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Lighting" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Association Name="Polygon_Combined_Statistic" Member="Polygon" ThisKey="Polygon_ID" OtherKey="ID" Type="Polygon" IsForeignKey="true" />
+      <Association Name="Statistic_Combined_Statistic" Member="Statistic" ThisKey="Statistics_ID" OtherKey="ID" Type="Statistic" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

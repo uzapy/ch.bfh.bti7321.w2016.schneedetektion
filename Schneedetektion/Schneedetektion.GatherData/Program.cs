@@ -24,7 +24,6 @@ namespace Schneedetektion.GatherData
         private static string[] fileNames;
         private static StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private static OpenCVHelper openCVHelper = new OpenCVHelper();
-
         private static int take = 1000;
         private static List<ManualResetEvent> resetEvents = new List<ManualResetEvent>();
 
@@ -37,14 +36,60 @@ namespace Schneedetektion.GatherData
             //    "mvk163", "mvk164" };
             //cameraNames = new List<string>() { "mvk106" };
 
-            //CalculateImageStatistics();
-            CalculatePatchStatistics();
+            CombineStatistics("mvk106");
 
+            //CalculateImageStatistics();
+            //CalculatePatchStatistics();
             // RegisterImagesInDB();
             // UpdateDateTime();
             // RemoveDataWithoutFile();
             // GetLiveImage();
             // MoveOldPictures();
+        }
+
+        private static void CombineStatistics(string camera)
+        {
+            DateTime date = dataContext.Images.Where(i => i.Place == camera).Min(i => i.DateTime).Date;
+
+            while (date < DateTime.Today)
+            {
+                var imagesOfWeek = from i in dataContext.Images
+                                   where i.DateTime > date
+                                   where i.DateTime <= date.AddDays(7)
+                                   where i.Place == camera
+                                   where i.Day == true
+                                   select i;
+
+                int startHour = 6;
+                int endHour = 8;
+
+                for (int j = 0; j < 7; j++)
+                {
+                    var imagesInSlot = from i in imagesOfWeek
+                                       where i.DateTime.Hour >= startHour && i.DateTime.Hour <= endHour
+                                       select i;
+
+                    // var entity_statistics = imagesInSlot.SelectMany(i => i.Entity_Statistics);
+                    // var statistics = entity_statistics.Where(es => es.Polygon.CameraName == camera).OrderBy(es => es.Polygon_ID);
+                    var polygons = dataContext.Polygons.Where(p => p.CameraName == camera);
+
+                    foreach (var polygon in polygons)
+                    {
+                        Combined_Statistic combinedStatistic = new Combined_Statistic();
+                        combinedStatistic.Statistic = new Statistic();
+                        combinedStatistic.Polygon = polygon;
+                        combinedStatistic.StartTime = startHour;
+                        combinedStatistic.EndTime = endHour;
+
+                        var entity_statistics = imagesInSlot.SelectMany(i => i.Entity_Statistics).Where(es => es.Polygon_ID == polygon.ID);
+                    }
+
+                    startHour += 2;
+                    endHour += 2;
+                }
+
+                date.AddDays(7);
+            }
         }
 
         private static void CalculateImageStatistics()
