@@ -14,7 +14,7 @@
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="X:" Margin="3" />
-                        <ComboBox x:Name="comboX" Width="134" SelectionChanged="comboX_SelectionChanged">
+                        <ComboBox x:Name="comboX" Width="75" SelectionChanged="comboX_SelectionChanged">
                             <ComboBoxItem Name="comboXMode">Mode</ComboBoxItem>
                             <ComboBoxItem Name="comboXMean">Mean</ComboBoxItem>
                             <ComboBoxItem Name="comboXMedian">Median</ComboBoxItem>
@@ -24,10 +24,16 @@
                             <ComboBoxItem Name="comboXVariance">Variance</ComboBoxItem>
                             <ComboBoxItem Name="comboXContrast">Contrast</ComboBoxItem>
                         </ComboBox>
+                        <ComboBox x:Name="comboColorX" Width="75" SelectionChanged="comboColorX_SelectionChanged">
+                            <ComboBoxItem Name="comboColorXBlue">Blue</ComboBoxItem>
+                            <ComboBoxItem Name="comboColorXGreen">Green</ComboBoxItem>
+                            <ComboBoxItem Name="comboColorXRed">Red</ComboBoxItem>
+                            <ComboBoxItem Name="combiColorXBGR">BGR</ComboBoxItem>
+                        </ComboBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Y:" Margin="4,4,3,3" />
-                        <ComboBox x:Name="comboY" Width="134" SelectionChanged="comboY_SelectionChanged">
+                        <ComboBox x:Name="comboY" Width="75" SelectionChanged="comboY_SelectionChanged">
                             <ComboBoxItem Name="comboYMode">Mode</ComboBoxItem>
                             <ComboBoxItem Name="comboYMean">Mean</ComboBoxItem>
                             <ComboBoxItem Name="comboYMedian">Median</ComboBoxItem>
@@ -37,15 +43,15 @@
                             <ComboBoxItem Name="comboYVariance">Variance</ComboBoxItem>
                             <ComboBoxItem Name="comboYContrast">Contrast</ComboBoxItem>
                         </ComboBox>
+                        <ComboBox x:Name="comboColorY" Width="75" SelectionChanged="comboColorY_SelectionChanged">
+                            <ComboBoxItem Name="comboColorYBlue">Blue</ComboBoxItem>
+                            <ComboBoxItem Name="comboColorYGreen">Green</ComboBoxItem>
+                            <ComboBoxItem Name="comboColorYRed">Red</ComboBoxItem>
+                            <ComboBoxItem Name="combiColorYBGR">BGR</ComboBoxItem>
+                        </ComboBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Color" Margin="3,4,3,3" />
-                        <ComboBox x:Name="comboColor" Width="115.5" SelectionChanged="comboColor_SelectionChanged">
-                            <ComboBoxItem Name="comboColorBlue">Blue</ComboBoxItem>
-                            <ComboBoxItem Name="comboColorGreen">Green</ComboBoxItem>
-                            <ComboBoxItem Name="comboColorRed">Red</ComboBoxItem>
-                            <ComboBoxItem Name="combiColorBGR">BGR</ComboBoxItem>
-                        </ComboBox>
                     </StackPanel>
                     <Button Content="Plot!" Click="Button_Click" />
                 </StackPanel>
@@ -54,9 +60,9 @@
             <Image x:Name="patchImage" Width="150" />
         </StackPanel>
         <Canvas x:Name="plotCanvas" SizeChanged="plotCanvas_SizeChanged">
-            <TextBlock x:Name="zero" Text="0" Canvas.Left="5" Canvas.Bottom="5" />
-            <TextBlock x:Name="x255" Text="X:255" Canvas.Right="5" Canvas.Bottom="5" />
-            <TextBlock x:Name="y255" Text="Y:255" Canvas.Left="5" Canvas.Top="5" />
+            <TextBlock x:Name="zero" Text="0" Canvas.Left="15" Canvas.Bottom="15" />
+            <TextBlock x:Name="x255" Text="X:255" Canvas.Right="15" Canvas.Bottom="15" />
+            <TextBlock x:Name="y255" Text="Y:255" Canvas.Left="15" Canvas.Top="15" />
             <Line x:Name="xLine" Stroke="Black" StrokeThickness="2" Canvas.Left="0" Canvas.Bottom="0" />
             <Line x:Name="yLine" Stroke="Black" StrokeThickness="2" Canvas.Left="0" Canvas.Bottom="0" />
         </Canvas>

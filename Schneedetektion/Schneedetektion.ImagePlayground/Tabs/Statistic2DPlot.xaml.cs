@@ -24,7 +24,8 @@ namespace Schneedetektion.ImagePlayground
         private string selectedPolygon = String.Empty;
         private string selectedX = String.Empty;
         private string selectedY = String.Empty;
-        private string selectedColor = String.Empty;
+        private string selectedColorX = String.Empty;
+        private string selectedColorY = String.Empty;
         #endregion
 
         #region Constructor
@@ -88,11 +89,19 @@ namespace Schneedetektion.ImagePlayground
             }
         }
 
-        private void comboColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void comboColorX_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (comboColor.SelectedValue != null)
+            if (comboColorX.SelectedValue != null)
             {
-                selectedColor = (comboColor.SelectedValue as ComboBoxItem).Content as String;
+                selectedColorX = (comboColorX.SelectedValue as ComboBoxItem).Content as String;
+            }
+        }
+
+        private void comboColorY_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (comboColorY.SelectedValue != null)
+            {
+                selectedColorY = (comboColorY.SelectedValue as ComboBoxItem).Content as String;
             }
         }
 
@@ -105,8 +114,9 @@ namespace Schneedetektion.ImagePlayground
             if (!String.IsNullOrEmpty(selectedCamera) &&
                 !String.IsNullOrEmpty(selectedPolygon) && Int32.TryParse(selectedPolygon.Split('-')[0], out polygonID) &&
                 !String.IsNullOrEmpty(selectedX) &&
-                !String.IsNullOrEmpty(selectedX) &&
-                !String.IsNullOrEmpty(selectedColor))
+                !String.IsNullOrEmpty(selectedY) &&
+                !String.IsNullOrEmpty(selectedColorX) &&
+                !String.IsNullOrEmpty(selectedColorY))
             {
                 var statisticsWithSnow = from es in dataContext.Entity_Statistics
                                          where es.Image.Place == selectedCamera
@@ -114,7 +124,7 @@ namespace Schneedetektion.ImagePlayground
                                          where es.Polygon.ID == polygonID
                                          select es.Statistic;
 
-                DrawPoints(statisticsWithSnow, selectedX, selectedY, selectedColor, Brushes.Blue);
+                DrawPoints(statisticsWithSnow, selectedX, selectedY, selectedColorX, selectedColorY, Brushes.Blue);
 
                 var statisticsWithoutSnow = from es in dataContext.Entity_Statistics
                                             where es.Image.Place == selectedCamera
@@ -122,7 +132,7 @@ namespace Schneedetektion.ImagePlayground
                                             where es.Polygon.ID == polygonID
                                             select es.Statistic;
 
-                DrawPoints(statisticsWithoutSnow, selectedX, selectedY, selectedColor, Brushes.Green);
+                DrawPoints(statisticsWithoutSnow, selectedX, selectedY, selectedColorX, selectedColorY, Brushes.Green);
             }
         }
         #endregion
@@ -150,12 +160,13 @@ namespace Schneedetektion.ImagePlayground
             yLine.Y2 = ((Canvas)e.OriginalSource).ActualHeight;
         }
 
-        private void DrawPoints(IEnumerable<Statistic> statistics, string selectedX, string selectedY, string selectedColor, Brush brush)
+        private void DrawPoints(IEnumerable<Statistic> statistics,
+            string selectedX, string selectedY, string selectedColorX, string selectedColorY, Brush brush)
         {
             foreach (var statistic in statistics)
             {
-                double left = ScaleToCanvas(statistic.Get(selectedX, selectedColor), selectedX, plotCanvas.ActualWidth);
-                double top = (plotCanvas.ActualHeight - 5) - ScaleToCanvas(statistic.Get(selectedY, selectedColor), selectedY, plotCanvas.ActualHeight);
+                double left = ScaleToCanvas(statistic.Get(selectedX, selectedColorX), selectedX, plotCanvas.ActualWidth - 10) + 5;
+                double top = (plotCanvas.ActualHeight - 5) - ScaleToCanvas(statistic.Get(selectedY, selectedColorY), selectedY, plotCanvas.ActualHeight - 5);
 
                 Ellipse e = new Ellipse()
                 {
