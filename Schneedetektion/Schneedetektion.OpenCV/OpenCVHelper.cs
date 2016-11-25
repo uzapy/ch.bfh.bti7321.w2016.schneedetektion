@@ -57,13 +57,6 @@ namespace Schneedetektion.OpenCV
             return GetHistogram(image);
         }
 
-        [Obsolete]
-        public List<float[]> GetHistogram(Drawing.Bitmap bitmap)
-        {
-            Image<Bgr, byte> image = new Image<Bgr, byte>(bitmap);
-            return GetHistogram(image);
-        }
-
         public Statistic GetStatisticForPatch(string imagePath, IEnumerable<Point> pointCollection, out BitmapImage patchImage)
         {
             // Create Matrix 
@@ -157,81 +150,6 @@ namespace Schneedetektion.OpenCV
 
             // Return
             return OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
-        }
-
-        [Obsolete]
-        public void GetMeanSdandardDeviationAndVariance(Drawing.Bitmap bitmap, string bitmaskPath, out OpenCVColor color, out OpenCVColor sdtDev, out OpenCVColor variance)
-        {
-            Image<Bgr, byte> image = new Image<Bgr, byte>(bitmap);
-            Image<Gray, byte> bitmask = new Image<Gray, byte>(bitmaskPath);
-
-            Bgr average;
-            MCvScalar standardDeviation;
-            image.AvgSdv(out average, out standardDeviation, bitmask);
-
-            color.Blue     = average.Blue;
-            color.Green    = average.Green;
-            color.Red      = average.Red;
-            sdtDev.Blue    = standardDeviation.V0;
-            sdtDev.Green   = standardDeviation.V1;
-            sdtDev.Red     = standardDeviation.V2;
-            variance.Blue  = Math.Pow(standardDeviation.V0, 2);
-            variance.Green = Math.Pow(standardDeviation.V1, 2);
-            variance.Red   = Math.Pow(standardDeviation.V2, 2);
-        }
-
-        [Obsolete]
-        public void GetMinMaxMedianAndContrast(Drawing.Bitmap bitmap, string bitmaskPath,
-            out OpenCVColor min, out OpenCVColor max, out OpenCVColor median, out OpenCVColor contrast)
-        {
-            Image<Bgr, byte> image = new Image<Bgr, byte>(bitmap);
-            Image<Gray, byte> bitmask = new Image<Gray, byte>(bitmaskPath);
-
-            List<double> blue = new List<double>();
-            List<double> green = new List<double>();
-            List<double> red = new List<double>();
-
-            for (int i = 0; i < image.Cols; i++)
-            {
-                for (int j = 0; j < image.Rows; j++)
-                {
-                    if (bitmask[j, i].MCvScalar.V0 > 0)
-                    {
-                        blue.Add(image[j, i].MCvScalar.V0);
-                        green.Add(image[j, i].MCvScalar.V1);
-                        red.Add(image[j, i].MCvScalar.V2);
-                    }
-                }
-            }
-
-            blue.Sort();
-            green.Sort();
-            red.Sort();
-
-            int count = blue.Count();
-            int middle = count / 2;
-            if (count % 2 == 0) // Gerade Anzahl
-            {
-                median.Blue = blue.ElementAt(middle) + blue.ElementAt(middle - 1) / 2;
-                median.Green = green.ElementAt(middle) + green.ElementAt(middle - 1) / 2;
-                median.Red = red.ElementAt(middle) + red.ElementAt(middle - 1) / 2;
-            }
-            else // Ungerade Anzahl
-            {
-                median.Blue = blue.ElementAt(middle);
-                median.Green = green.ElementAt(middle);
-                median.Red = red.ElementAt(middle);
-            }
-
-            min.Blue       = blue.First();
-            min.Green      = green.First();
-            min.Red        = red.First();
-            max.Blue       = blue.Last();
-            max.Green      = green.Last();
-            max.Red        = red.Last();
-            contrast.Blue  = (max.Blue - min.Blue) / (max.Blue + min.Blue);
-            contrast.Green = (max.Green - min.Green) / (max.Green + min.Green);
-            contrast.Red   = (max.Red - min.Red) / (max.Red + min.Red);
         }
         #endregion
 

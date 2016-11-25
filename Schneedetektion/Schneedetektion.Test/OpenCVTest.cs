@@ -57,21 +57,21 @@ namespace Schneedetektion.Test
             }
 
             // Statistiken berechnen
-            foreach (var patch in patches)
-            {
-                List<float[]> histogram = openCVHelper.GetHistogram(OpenCVHelper.BitmapImageToBitmap(patch.PatchBitmap));
+            //foreach (var patch in patches)
+            //{
+            //    List<float[]> histogram = openCVHelper.GetHistogram(OpenCVHelper.BitmapImageToBitmap(patch.PatchBitmap));
 
-                OpenCVColor mean;
-                OpenCVColor standardDeviation;
-                OpenCVColor variance;
-                openCVHelper.GetMeanSdandardDeviationAndVariance(OpenCVHelper.BitmapImageToBitmap(patch.PatchBitmap), patch.Polygon.Bitmask, out mean, out standardDeviation, out variance);
+            //    OpenCVColor mean;
+            //    OpenCVColor standardDeviation;
+            //    OpenCVColor variance;
+            //    openCVHelper.GetMeanSdandardDeviationAndVariance(OpenCVHelper.BitmapImageToBitmap(patch.PatchBitmap), patch.Polygon.Bitmask, out mean, out standardDeviation, out variance);
 
-                OpenCVColor median;
-                OpenCVColor min;
-                OpenCVColor max;
-                OpenCVColor contrast;
-                openCVHelper.GetMinMaxMedianAndContrast(OpenCVHelper.BitmapImageToBitmap(patch.PatchBitmap), patch.Polygon.Bitmask, out median, out min, out max, out contrast);
-            }
+            //    OpenCVColor median;
+            //    OpenCVColor min;
+            //    OpenCVColor max;
+            //    OpenCVColor contrast;
+            //    openCVHelper.GetMinMaxMedianAndContrast(OpenCVHelper.BitmapImageToBitmap(patch.PatchBitmap), patch.Polygon.Bitmask, out median, out min, out max, out contrast);
+            //}
         }
 
         [TestMethod]
