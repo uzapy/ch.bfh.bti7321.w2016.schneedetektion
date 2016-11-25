@@ -49,10 +49,18 @@ namespace Schneedetektion.GatherData
 
         private static void CombineStatistics(string camera)
         {
+            // oldest picture of camera
             DateTime date = dataContext.Images.Where(i => i.Place == camera).Min(i => i.DateTime).Date;
+            // go back to monday
+            date = date.AddDays(-(int)date.DayOfWeek + 1);
 
+            // select polygons for camera
+            var polygons = dataContext.Polygons.Where(p => p.CameraName == camera);
+
+            // starting from this date
             while (date < DateTime.Today)
             {
+                // select images in current monday to sunday period
                 var imagesOfWeek = from i in dataContext.Images
                                    where i.DateTime > date
                                    where i.DateTime <= date.AddDays(7)
@@ -60,36 +68,103 @@ namespace Schneedetektion.GatherData
                                    where i.Day == true
                                    select i;
 
-                int startHour = 6;
-                int endHour = 8;
-
-                for (int j = 0; j < 7; j++)
+                // iterate through time slots
+                for (int slotStart = 6; slotStart < 20; slotStart += 2)
                 {
-                    var imagesInSlot = from i in imagesOfWeek
-                                       where i.DateTime.Hour >= startHour && i.DateTime.Hour <= endHour
-                                       select i;
+                    // select images in current 2 hour time slot
+                    var imagesInTimeSlot = from i in imagesOfWeek
+                                           where i.DateTime.Hour >= slotStart && i.DateTime.Hour <= (slotStart + 1)
+                                           select i;
 
-                    // var entity_statistics = imagesInSlot.SelectMany(i => i.Entity_Statistics);
-                    // var statistics = entity_statistics.Where(es => es.Polygon.CameraName == camera).OrderBy(es => es.Polygon_ID);
-                    var polygons = dataContext.Polygons.Where(p => p.CameraName == camera);
-
-                    foreach (var polygon in polygons)
-                    {
-                        Combined_Statistic combinedStatistic = new Combined_Statistic();
-                        combinedStatistic.Statistic = new Statistic();
-                        combinedStatistic.Polygon = polygon;
-                        combinedStatistic.StartTime = startHour;
-                        combinedStatistic.EndTime = endHour;
-
-                        var entity_statistics = imagesInSlot.SelectMany(i => i.Entity_Statistics).Where(es => es.Polygon_ID == polygon.ID);
-                    }
-
-                    startHour += 2;
-                    endHour += 2;
+                    // all category-permutations
+                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, true,  true,  false, false);
+                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, true,  true,  true,  false);
+                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, true,  true,  false, true);
+                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, true,  false, false, false);
+                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, true,  false, true,  false);
+                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, true,  false, false, true);
+                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, false, true,  false, false);
+                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, false, true,  true,  false);
+                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, false, true,  false, true);
+                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, false, false, false, false);
+                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, false, false, true,  false);
+                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, false, false, false, true);
                 }
 
-                date.AddDays(7);
+                // next week
+                date = date.AddDays(7);
             }
+        }
+
+        private static void CreateCombinedStatistic(IQueryable<Image> images, IQueryable<Polygon> polygons, DateTime date, int slotStart,
+            bool snow, bool badlighting, bool foggy, bool rainy)
+        {
+            images = images.Where(i => i.Snow == snow && i.BadLighting == badlighting && i.Foggy == foggy && i.Rainy == rainy);
+
+            // wenn weniger als 2 bilder in kollektion => verwerfen
+            if (images.Count() < 2)
+            {
+                return;
+            }
+
+            foreach (var polygon in polygons)
+            {
+                Combined_Statistic combinedStatistic = new Combined_Statistic();
+                combinedStatistic.Statistic = new Statistic();
+                combinedStatistic.Polygon = polygon;
+                combinedStatistic.Images = JsonConvert.SerializeObject(images.Select(i => i.ID));
+                combinedStatistic.StartTime = slotStart;
+                combinedStatistic.EndTime = (slotStart + 2);
+                combinedStatistic.StartOfWeek = date;
+                combinedStatistic.Snow = snow;
+                combinedStatistic.BadLighting = badlighting;
+                combinedStatistic.Foggy = foggy;
+                combinedStatistic.Rainy = rainy;
+
+                var statistics = images.SelectMany(i => i.Entity_Statistics).Where(es => es.Polygon_ID == polygon.ID).Select(es => es.Statistic);
+
+                combinedStatistic.Statistic.BlueHistogramList      = GetAverageHistogram(statistics.Select(s => s.BlueHistogramList));
+                combinedStatistic.Statistic.GreenHistogramList     = GetAverageHistogram(statistics.Select(s => s.GreenHistogramList));
+                combinedStatistic.Statistic.RedHistogramList       = GetAverageHistogram(statistics.Select(s => s.RedHistogramList));
+                combinedStatistic.Statistic.ModeBlue               = statistics.Select(s => s.ModeBlue).Average();
+                combinedStatistic.Statistic.ModeGreen              = statistics.Select(s => s.ModeGreen).Average();
+                combinedStatistic.Statistic.ModeRed                = statistics.Select(s => s.ModeRed).Average();
+                combinedStatistic.Statistic.MeanBlue               = statistics.Select(s => s.MeanBlue).Average();
+                combinedStatistic.Statistic.MeanGreen              = statistics.Select(s => s.MeanGreen).Average();
+                combinedStatistic.Statistic.MeanRed                = statistics.Select(s => s.MeanRed).Average();
+                combinedStatistic.Statistic.MedianBlue             = statistics.Select(s => s.MedianBlue).Average();
+                combinedStatistic.Statistic.MedianGreen            = statistics.Select(s => s.MedianGreen).Average();
+                combinedStatistic.Statistic.MedianRed              = statistics.Select(s => s.MedianRed).Average();
+                combinedStatistic.Statistic.MinimumBlue            = statistics.Select(s => s.MinimumBlue).Average();
+                combinedStatistic.Statistic.MinimumGreen           = statistics.Select(s => s.MinimumGreen).Average();
+                combinedStatistic.Statistic.MinimumRed             = statistics.Select(s => s.MinimumRed).Average();
+                combinedStatistic.Statistic.MaximumBlue            = statistics.Select(s => s.MaximumBlue).Average();
+                combinedStatistic.Statistic.MaximumGreen           = statistics.Select(s => s.MaximumGreen).Average();
+                combinedStatistic.Statistic.MaximumRed             = statistics.Select(s => s.MaximumRed).Average();
+                combinedStatistic.Statistic.StandardDeviationBlue  = statistics.Select(s => s.StandardDeviationBlue).Average();
+                combinedStatistic.Statistic.StandardDeviationGreen = statistics.Select(s => s.StandardDeviationGreen).Average();
+                combinedStatistic.Statistic.StandardDeviationRed   = statistics.Select(s => s.StandardDeviationRed).Average();
+                combinedStatistic.Statistic.VarianceBlue           = statistics.Select(s => s.VarianceBlue).Average();
+                combinedStatistic.Statistic.VarianceGreen          = statistics.Select(s => s.VarianceGreen).Average();
+                combinedStatistic.Statistic.VarianceRed            = statistics.Select(s => s.VarianceRed).Average();
+                combinedStatistic.Statistic.ContrastBlue           = statistics.Select(s => s.ContrastBlue).Average();
+                combinedStatistic.Statistic.ContrastGreen          = statistics.Select(s => s.ContrastGreen).Average();
+                combinedStatistic.Statistic.ContrastRed            = statistics.Select(s => s.ContrastRed).Average();
+            }
+        }
+
+        private static List<double> GetAverageHistogram(IQueryable<List<double>> histograms)
+        {
+            List<List<double>> histogramList = histograms.ToList();
+            List<double> averageHistogram = new List<double>();
+            averageHistogram.AddRange(new double[256]);
+
+            for (int i = 0; i < averageHistogram.Count; i++)
+            {
+                averageHistogram[i] = histogramList.Select(h => h[i]).Average();
+            }
+
+            return averageHistogram;
         }
 
         private static void CalculateImageStatistics()

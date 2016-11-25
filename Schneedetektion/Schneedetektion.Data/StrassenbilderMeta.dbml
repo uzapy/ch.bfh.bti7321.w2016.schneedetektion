@@ -95,15 +95,15 @@
     <Type Name="Combined_Statistic">
       <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Statistics_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Images" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="Polygon_ID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Images" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="StartTime" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="EndTime" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Week" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Snow" Type="System.Double" DbType="Float" CanBeNull="true" />
-      <Column Name="Foggy" Type="System.Double" DbType="Float" CanBeNull="true" />
-      <Column Name="Rainy" Type="System.Double" DbType="Float" CanBeNull="true" />
-      <Column Name="Lighting" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="StartOfWeek" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Snow" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="BadLighting" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Foggy" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Rainy" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Association Name="Polygon_Combined_Statistic" Member="Polygon" ThisKey="Polygon_ID" OtherKey="ID" Type="Polygon" IsForeignKey="true" />
       <Association Name="Statistic_Combined_Statistic" Member="Statistic" ThisKey="Statistics_ID" OtherKey="ID" Type="Statistic" IsForeignKey="true" />
     </Type>

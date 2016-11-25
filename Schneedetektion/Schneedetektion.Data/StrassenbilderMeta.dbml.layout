@@ -17,7 +17,7 @@
     <classShape Id="303af9c2-c527-43ba-a280-d0f110bb5014" absoluteBounds="3.875, 0.75, 2, 3.8862125651041666">
       <DataClassMoniker Name="/StrassenbilderMetaDataContext/Image" />
       <nestedChildShapes>
-        <elementListCompartment Id="bf9f5bb5-c3e4-40b5-8683-361e2e4366c9" absoluteBounds="3.8899999999999997, 1.21, 1.9700000000000002, 3.3262125651041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="bf9f5bb5-c3e4-40b5-8683-361e2e4366c9" absoluteBounds="3.89, 1.21, 1.9700000000000002, 3.3262125651041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
     <classShape Id="528d34d1-7c41-4479-91bc-dd538817cc08" absoluteBounds="10, 0.875, 2, 6.1938297526041657">
@@ -39,38 +39,38 @@
         <classShapeMoniker Id="6cda6027-381d-4dce-8101-b093c2be8ecb" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(8 : 3.25); (8 : 2.70359537760417)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(8 : 3.25); (8 : 2.70359537760417)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/StrassenbilderMetaDataContext/Polygon/Polygon_Entity_Statistic" />
       <nodes>
         <classShapeMoniker Id="f89cf763-c116-42e3-95f1-f58fcafbcbb2" />
         <classShapeMoniker Id="6cda6027-381d-4dce-8101-b093c2be8ecb" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(10 : 1.91429768880208); (9 : 1.91429768880208)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(10 : 1.91429768880208); (9 : 1.91429768880208)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/StrassenbilderMetaDataContext/Statistic/Statistic_Entity_Statistic" />
       <nodes>
         <classShapeMoniker Id="528d34d1-7c41-4479-91bc-dd538817cc08" />
         <classShapeMoniker Id="6cda6027-381d-4dce-8101-b093c2be8ecb" />
       </nodes>
     </associationConnector>
-    <classShape Id="512990fb-d502-45c7-854c-1fc1af0b1fdd" absoluteBounds="7, 6.125, 2, 2.9247054036458331">
+    <classShape Id="e4dfe4dd-08ff-4a00-aa8e-d46ada815f08" absoluteBounds="7, 6.125, 2, 2.9247054036458331">
       <DataClassMoniker Name="/StrassenbilderMetaDataContext/Combined_Statistic" />
       <nestedChildShapes>
-        <elementListCompartment Id="cd8f1b34-196b-4e74-a9b0-6e94fded7190" absoluteBounds="7.0150000000000006, 6.585, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="ffd29073-3224-4240-881c-f1a6d3084556" absoluteBounds="7.015, 6.5850000000000009, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
     <associationConnector edgePoints="[(8 : 5.40549967447917); (8 : 6.125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/StrassenbilderMetaDataContext/Polygon/Polygon_Combined_Statistic" />
       <nodes>
         <classShapeMoniker Id="f89cf763-c116-42e3-95f1-f58fcafbcbb2" />
-        <classShapeMoniker Id="512990fb-d502-45c7-854c-1fc1af0b1fdd" />
+        <classShapeMoniker Id="e4dfe4dd-08ff-4a00-aa8e-d46ada815f08" />
       </nodes>
     </associationConnector>
     <associationConnector edgePoints="[(10 : 6.59691487630208); (9 : 6.59691487630208)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/StrassenbilderMetaDataContext/Statistic/Statistic_Combined_Statistic" />
       <nodes>
         <classShapeMoniker Id="528d34d1-7c41-4479-91bc-dd538817cc08" />
-        <classShapeMoniker Id="512990fb-d502-45c7-854c-1fc1af0b1fdd" />
+        <classShapeMoniker Id="e4dfe4dd-08ff-4a00-aa8e-d46ada815f08" />
       </nodes>
     </associationConnector>
   </nestedChildShapes>

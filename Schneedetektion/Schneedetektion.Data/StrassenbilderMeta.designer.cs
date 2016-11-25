@@ -2122,23 +2122,23 @@ namespace Schneedetektion.Data
 		
 		private int _Statistics_ID;
 		
-		private string _Images;
-		
 		private System.Nullable<int> _Polygon_ID;
+		
+		private string _Images;
 		
 		private System.Nullable<int> _StartTime;
 		
 		private System.Nullable<int> _EndTime;
 		
-		private System.Nullable<int> _Week;
+		private System.Nullable<System.DateTime> _StartOfWeek;
 		
-		private System.Nullable<double> _Snow;
+		private System.Nullable<bool> _Snow;
 		
-		private System.Nullable<double> _Foggy;
+		private System.Nullable<bool> _BadLighting;
 		
-		private System.Nullable<double> _Rainy;
+		private System.Nullable<bool> _Foggy;
 		
-		private System.Nullable<double> _Lighting;
+		private System.Nullable<bool> _Rainy;
 		
 		private EntityRef<Polygon> _Polygon;
 		
@@ -2152,24 +2152,24 @@ namespace Schneedetektion.Data
     partial void OnIDChanged();
     partial void OnStatistics_IDChanging(int value);
     partial void OnStatistics_IDChanged();
-    partial void OnImagesChanging(string value);
-    partial void OnImagesChanged();
     partial void OnPolygon_IDChanging(System.Nullable<int> value);
     partial void OnPolygon_IDChanged();
+    partial void OnImagesChanging(string value);
+    partial void OnImagesChanged();
     partial void OnStartTimeChanging(System.Nullable<int> value);
     partial void OnStartTimeChanged();
     partial void OnEndTimeChanging(System.Nullable<int> value);
     partial void OnEndTimeChanged();
-    partial void OnWeekChanging(System.Nullable<int> value);
-    partial void OnWeekChanged();
-    partial void OnSnowChanging(System.Nullable<double> value);
+    partial void OnStartOfWeekChanging(System.Nullable<System.DateTime> value);
+    partial void OnStartOfWeekChanged();
+    partial void OnSnowChanging(System.Nullable<bool> value);
     partial void OnSnowChanged();
-    partial void OnFoggyChanging(System.Nullable<double> value);
+    partial void OnBadLightingChanging(System.Nullable<bool> value);
+    partial void OnBadLightingChanged();
+    partial void OnFoggyChanging(System.Nullable<bool> value);
     partial void OnFoggyChanged();
-    partial void OnRainyChanging(System.Nullable<double> value);
+    partial void OnRainyChanging(System.Nullable<bool> value);
     partial void OnRainyChanged();
-    partial void OnLightingChanging(System.Nullable<double> value);
-    partial void OnLightingChanged();
     #endregion
 		
 		public Combined_Statistic()
@@ -2223,26 +2223,6 @@ namespace Schneedetektion.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Images", DbType="NVarChar(50)")]
-		public string Images
-		{
-			get
-			{
-				return this._Images;
-			}
-			set
-			{
-				if ((this._Images != value))
-				{
-					this.OnImagesChanging(value);
-					this.SendPropertyChanging();
-					this._Images = value;
-					this.SendPropertyChanged("Images");
-					this.OnImagesChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Polygon_ID", DbType="Int")]
 		public System.Nullable<int> Polygon_ID
 		{
@@ -2263,6 +2243,26 @@ namespace Schneedetektion.Data
 					this._Polygon_ID = value;
 					this.SendPropertyChanged("Polygon_ID");
 					this.OnPolygon_IDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Images", DbType="NVarChar(MAX)")]
+		public string Images
+		{
+			get
+			{
+				return this._Images;
+			}
+			set
+			{
+				if ((this._Images != value))
+				{
+					this.OnImagesChanging(value);
+					this.SendPropertyChanging();
+					this._Images = value;
+					this.SendPropertyChanged("Images");
+					this.OnImagesChanged();
 				}
 			}
 		}
@@ -2307,28 +2307,28 @@ namespace Schneedetektion.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Week", DbType="Int")]
-		public System.Nullable<int> Week
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StartOfWeek", DbType="Date")]
+		public System.Nullable<System.DateTime> StartOfWeek
 		{
 			get
 			{
-				return this._Week;
+				return this._StartOfWeek;
 			}
 			set
 			{
-				if ((this._Week != value))
+				if ((this._StartOfWeek != value))
 				{
-					this.OnWeekChanging(value);
+					this.OnStartOfWeekChanging(value);
 					this.SendPropertyChanging();
-					this._Week = value;
-					this.SendPropertyChanged("Week");
-					this.OnWeekChanged();
+					this._StartOfWeek = value;
+					this.SendPropertyChanged("StartOfWeek");
+					this.OnStartOfWeekChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Snow", DbType="Float")]
-		public System.Nullable<double> Snow
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Snow", DbType="Bit")]
+		public System.Nullable<bool> Snow
 		{
 			get
 			{
@@ -2347,8 +2347,28 @@ namespace Schneedetektion.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Foggy", DbType="Float")]
-		public System.Nullable<double> Foggy
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BadLighting", DbType="Bit")]
+		public System.Nullable<bool> BadLighting
+		{
+			get
+			{
+				return this._BadLighting;
+			}
+			set
+			{
+				if ((this._BadLighting != value))
+				{
+					this.OnBadLightingChanging(value);
+					this.SendPropertyChanging();
+					this._BadLighting = value;
+					this.SendPropertyChanged("BadLighting");
+					this.OnBadLightingChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Foggy", DbType="Bit")]
+		public System.Nullable<bool> Foggy
 		{
 			get
 			{
@@ -2367,8 +2387,8 @@ namespace Schneedetektion.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Rainy", DbType="Float")]
-		public System.Nullable<double> Rainy
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Rainy", DbType="Bit")]
+		public System.Nullable<bool> Rainy
 		{
 			get
 			{
@@ -2383,26 +2403,6 @@ namespace Schneedetektion.Data
 					this._Rainy = value;
 					this.SendPropertyChanged("Rainy");
 					this.OnRainyChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Lighting", DbType="Float")]
-		public System.Nullable<double> Lighting
-		{
-			get
-			{
-				return this._Lighting;
-			}
-			set
-			{
-				if ((this._Lighting != value))
-				{
-					this.OnLightingChanging(value);
-					this.SendPropertyChanging();
-					this._Lighting = value;
-					this.SendPropertyChanged("Lighting");
-					this.OnLightingChanged();
 				}
 			}
 		}
