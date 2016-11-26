@@ -89,6 +89,12 @@
     <Compile Include="Helper\PatchViewModel.cs" />
     <Compile Include="Helper\SizeConverter.cs" />
     <Compile Include="Helper\EPanel.cs" />
+    <Compile Include="Tabs\CombinedStatistic2DPlot.xaml.cs">
+      <DependentUpon>CombinedStatistic2DPlot.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tabs\NearestNeighbourClassification.xaml.cs">
+      <DependentUpon>NearestNeighbourClassification.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tabs\StatisticPlot.xaml.cs">
       <DependentUpon>StatisticPlot.xaml</DependentUpon>
     </Compile>
@@ -119,6 +125,14 @@
     <Compile Include="Tabs\StatisticsView.xaml.cs">
       <DependentUpon>StatisticsView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Tabs\CombinedStatistic2DPlot.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\NearestNeighbourClassification.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Tabs\StatisticPlot.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

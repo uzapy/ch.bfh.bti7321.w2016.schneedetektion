@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="Schneedetektion.ImagePlayground.NearestNeighbourClassification"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Schneedetektion.ImagePlayground"
+             xmlns:xseed="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
+            <GroupBox Header="By Camera">
+                <ListBox x:Name="cameraList" Height="100" SelectionMode="Single" />
+            </GroupBox>
+            <StackPanel Orientation="Horizontal"  Margin="0,5">
+                <TextBlock Text="Number" Margin="0,2,0,0" />
+                <xseed:IntegerUpDown x:Name="numberOfImages" Minimum="1" Value="10" Width="83" Margin="24,0,0,0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <TextBlock Text="Neighbours" Margin="0,2,0,0" />
+                <xseed:IntegerUpDown x:Name="numberOfNeighbours" Minimum="1" Value="5" Width="83" Margin="5,0,0,5" />
+            </StackPanel>
+            <Button Content="Classify!" Click="Button_Click" Width="150" Padding="5" />
+            <Slider x:Name="imageSizeSlider" Minimum="100" Maximum="800" LargeChange="1" Value="125" Margin="0,5,0,5" />
+        </StackPanel>
+        <ListView x:Name="imageContainer" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Image Grid.Row="0" Source="{Binding Bitmap}" Width="{Binding ElementName=imageSizeSlider, Path=Value}" />
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Width="{Binding ElementName=imageSizeSlider, Path=Value}" Height="25" Background="Ivory">
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Width="{Binding ElementName=imageSizeSlider, Path=Value}" Height="25" Background="Coral">
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </DockPanel>
+</UserControl>

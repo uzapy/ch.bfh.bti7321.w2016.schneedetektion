@@ -31,5 +31,11 @@
         <TabItem Header="Statistic 2D Plot" x:Name="statistic2DPlotTab">
             <local:Statistic2DPlot x:Name="statistic2DPlot" />
         </TabItem>
+        <TabItem Header="Combined Stat 2D Plot" x:Name="combinedStatistic2DPlotTab">
+            <local:CombinedStatistic2DPlot x:Name="combinedStatistic2DPlot" />
+        </TabItem>
+        <TabItem Header="NN Classification" x:Name="nearestNeighborClassificationTab">
+            <local:NearestNeighbourClassification x:Name="nearestNeighborClassificationPlot" />
+        </TabItem>
     </TabControl>
 </Window>

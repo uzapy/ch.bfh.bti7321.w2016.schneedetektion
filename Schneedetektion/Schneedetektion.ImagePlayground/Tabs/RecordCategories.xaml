@@ -12,7 +12,7 @@
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button x:Name="backButton" HorizontalContentAlignment="Left" Width="111" Click="backButton_Click">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="Resources/back.png" Width="16" Margin="5,0,0,0" />
+                    <Image Source="/Resources/back.png" Width="16" Margin="5,0,0,0" />
                     <TextBlock Text="Zurück" Margin="7,0,0,0" />
                 </StackPanel>
             </Button>
@@ -21,13 +21,13 @@
                 <StackPanel>
                     <ToggleButton x:Name="snowButton" HorizontalContentAlignment="Left" Width="111" Height="37.5" Click="snowButton_Click">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="Resources/snow.png" Width="16"  Margin="5,0,0,0" />
+                            <Image Source="/Resources/snow.png" Width="16"  Margin="5,0,0,0" />
                             <TextBlock Text="Schnee" Margin="7,0,0,0" />
                         </StackPanel>
                     </ToggleButton>
                     <ToggleButton x:Name="noSnowButton" HorizontalContentAlignment="Left" Width="111" Height="37.5" Click="noSnowButton_Click">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="Resources/sun.png" Width="16"  Margin="5,0,0,0" />
+                            <Image Source="/Resources/sun.png" Width="16"  Margin="5,0,0,0" />
                             <TextBlock Text="kein Schnee" Margin="7,0,0,0" />
                         </StackPanel>
                     </ToggleButton>
@@ -38,19 +38,19 @@
                 <StackPanel>
                     <ToggleButton x:Name="nightButton" HorizontalContentAlignment="Left" Width="111" Height="25" Click="nightButton_Click">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="Resources/night.png" Width="16"  Margin="5,0,0,0" />
+                            <Image Source="/Resources/night.png" Width="16"  Margin="5,0,0,0" />
                             <TextBlock Text="Nacht" Margin="7,0,0,0" />
                         </StackPanel>
                     </ToggleButton>
                     <ToggleButton x:Name="duskButton" HorizontalContentAlignment="Left" Width="111" Height="25" Click="duskButton_Click">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="Resources/dusk.png" Width="16"  Margin="5,0,0,0" />
+                            <Image Source="/Resources/dusk.png" Width="16"  Margin="5,0,0,0" />
                             <TextBlock Text="Dämmerung" Margin="7,0,0,0" />
                         </StackPanel>
                     </ToggleButton>
                     <ToggleButton x:Name="dayButton" HorizontalContentAlignment="Left" Width="111" Height="25" Click="dayButton_Click">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="Resources/sun.png" Width="16"  Margin="5,0,0,0" />
+                            <Image Source="/Resources/sun.png" Width="16"  Margin="5,0,0,0" />
                             <TextBlock Text="Tag" Margin="7,0,0,0" />
                         </StackPanel>
                     </ToggleButton>
@@ -61,19 +61,19 @@
                 <StackPanel>
                     <ToggleButton x:Name="foggyButton" HorizontalContentAlignment="Left" Width="111" Height="25" Click="foggyButton_Click">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="Resources/fog.png" Width="16"  Margin="5,0,0,0" />
+                            <Image Source="/Resources/fog.png" Width="16"  Margin="5,0,0,0" />
                             <TextBlock Text="Nebel" Margin="7,0,0,0" />
                         </StackPanel>
                     </ToggleButton>
                     <ToggleButton x:Name="cloudyButton" HorizontalContentAlignment="Left" Width="111" Height="25" Click="cloudyButton_Click">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="Resources/cloud.png" Width="16"  Margin="5,0,0,0" />
+                            <Image Source="/Resources/cloud.png" Width="16"  Margin="5,0,0,0" />
                             <TextBlock Text="Bewölkung" Margin="7,0,0,0" />
                         </StackPanel>
                     </ToggleButton>
                     <ToggleButton x:Name="rainyButton" HorizontalContentAlignment="Left" Width="111" Height="25" Click="rainyButton_Click">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="Resources/rain.png" Width="16"  Margin="5,0,0,0" />
+                            <Image Source="/Resources/rain.png" Width="16"  Margin="5,0,0,0" />
                             <TextBlock Text="Regen" Margin="7,0,0,0" />
                         </StackPanel>
                     </ToggleButton>
@@ -84,13 +84,13 @@
                 <StackPanel>
                     <ToggleButton x:Name="badLightingButton" HorizontalContentAlignment="Left" Width="111" Height="37.5" Click="badLightingButton_Click">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="Resources/sunglasses.png" Width="16" Margin="5,0,0,0" />
+                            <Image Source="/Resources/sunglasses.png" Width="16" Margin="5,0,0,0" />
                             <TextBlock Text="Gegenlicht Spiegelungen" TextWrapping="Wrap" Width="75" Margin="7,0,0,0" />
                         </StackPanel>
                     </ToggleButton>
                     <ToggleButton x:Name="goodLightingButton" HorizontalContentAlignment="Left" Width="111" Height="37.5" Click="goodLightingButton_Click">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="Resources/glasses.png" Width="16" Margin="5,0,0,0" />
+                            <Image Source="/Resources/glasses.png" Width="16" Margin="5,0,0,0" />
                             <TextBlock Text="Gut" Margin="7,0,0,0" />
                         </StackPanel>
                     </ToggleButton>
@@ -100,7 +100,7 @@
             <Button x:Name="forwardButton" HorizontalContentAlignment="Right" Width="111" Click="forwardButton_Click">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Vorwärts" />
-                    <Image Source="Resources/forward.png" Width="16" Margin="7,0,5,0" />
+                    <Image Source="/Resources/forward.png" Width="16" Margin="7,0,5,0" />
                 </StackPanel>
             </Button>
         </StackPanel>
