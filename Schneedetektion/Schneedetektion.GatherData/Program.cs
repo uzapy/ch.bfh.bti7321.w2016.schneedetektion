@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using Newtonsoft.Json;
 using Schneedetektion.Data;
 using Schneedetektion.GatherData.Properties;
 using Schneedetektion.OpenCV;
@@ -10,7 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.Windows.Media;
+using Media = System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Schneedetektion.GatherData
@@ -49,10 +51,13 @@ namespace Schneedetektion.GatherData
 
         private static void CombineStatistics(string camera)
         {
+            Console.WriteLine($"Camera: {camera}");
+
             // oldest picture of camera
             DateTime date = dataContext.Images.Where(i => i.Place == camera).Min(i => i.DateTime).Date;
             // go back to monday
             date = date.AddDays(-(int)date.DayOfWeek + 1);
+            Console.WriteLine($"Start Date: {date.ToShortDateString()}");
 
             // select polygons for camera
             var polygons = dataContext.Polygons.Where(p => p.CameraName == camera);
@@ -75,28 +80,32 @@ namespace Schneedetektion.GatherData
                     var imagesInTimeSlot = from i in imagesOfWeek
                                            where i.DateTime.Hour >= slotStart && i.DateTime.Hour <= (slotStart + 1)
                                            select i;
-
+                    Console.WriteLine($"Time Slot: {slotStart} - {slotStart + 2}");
+                    
                     // all category-permutations
-                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, true,  true,  false, false);
-                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, true,  true,  true,  false);
-                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, true,  true,  false, true);
-                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, true,  false, false, false);
-                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, true,  false, true,  false);
-                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, true,  false, false, true);
-                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, false, true,  false, false);
-                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, false, true,  true,  false);
-                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, false, true,  false, true);
-                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, false, false, false, false);
-                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, false, false, true,  false);
-                    CreateCombinedStatistic(imagesInTimeSlot, polygons, date, slotStart, false, false, false, true);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  true,  false, false);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  true,  true,  false);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  true,  false, true);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  false, false, false);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  false, true,  false);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  false, false, true);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, true,  false, false);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, true,  true,  false);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, true,  false, true);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, false, false, false);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, false, true,  false);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, false, false, true);
                 }
+
+                // save changes (one week worth)
+                dataContext.SubmitChanges();
 
                 // next week
                 date = date.AddDays(7);
             }
         }
 
-        private static void CreateCombinedStatistic(IQueryable<Image> images, IQueryable<Polygon> polygons, DateTime date, int slotStart,
+        private static void CreateCombinedStatisticFromStatistics(IQueryable<Image> images, IQueryable<Polygon> polygons, DateTime date, int slotStart,
             bool snow, bool badlighting, bool foggy, bool rainy)
         {
             images = images.Where(i => i.Snow == snow && i.BadLighting == badlighting && i.Foggy == foggy && i.Rainy == rainy);
@@ -150,6 +159,45 @@ namespace Schneedetektion.GatherData
                 combinedStatistic.Statistic.ContrastBlue           = statistics.Select(s => s.ContrastBlue).Average();
                 combinedStatistic.Statistic.ContrastGreen          = statistics.Select(s => s.ContrastGreen).Average();
                 combinedStatistic.Statistic.ContrastRed            = statistics.Select(s => s.ContrastRed).Average();
+            }
+        }
+
+        private static void CreateCombinedStatisticFromImages(IQueryable<Image> images, IQueryable<Polygon> polygons, DateTime date, int slotStart,
+            bool snow, bool badlighting, bool foggy, bool rainy)
+        {
+            // filter catergory
+            images = images.Where(i => i.Snow == snow && i.BadLighting == badlighting && i.Foggy == foggy && i.Rainy == rainy);
+            Console.WriteLine($"Snow = {snow}\t Bad Lighting = {badlighting}\t Foggy = {foggy}\t Rainy {rainy}");
+            Console.WriteLine($"Found Images: {images.Count()}");
+
+            // wenn weniger als 2 bilder in kollektion => verwerfen
+            if (images.Count() < 2)
+            {
+                return;
+            }
+
+            // combine images
+            Image<Bgr, byte> combinedImage = openCVHelper.CombineImages(images.Select(i => Path.Combine(folderName, i.Place, i.Name + ".jpg")));
+
+            foreach (var polygon in polygons)
+            {
+                var polygonPoints = JsonConvert.DeserializeObject<Media.PointCollection>(polygon.PolygonPointCollection);
+                // calculate statistic
+                Statistic statistic = openCVHelper.GetStatisticForPatchFromImage(combinedImage, polygonPoints);
+
+                Combined_Statistic combinedStatistic = new Combined_Statistic();
+                combinedStatistic.Statistic = statistic;
+                combinedStatistic.Polygon = polygon;
+                combinedStatistic.Images = JsonConvert.SerializeObject(images.Select(i => i.ID));
+                combinedStatistic.StartTime = slotStart;
+                combinedStatistic.EndTime = (slotStart + 2);
+                combinedStatistic.StartOfWeek = date;
+                combinedStatistic.Snow = snow;
+                combinedStatistic.BadLighting = badlighting;
+                combinedStatistic.Foggy = foggy;
+                combinedStatistic.Rainy = rainy;
+
+                Console.WriteLine($"Polygon: {combinedStatistic.Polygon.ID}");
             }
         }
 
@@ -212,7 +260,6 @@ namespace Schneedetektion.GatherData
         {
             string camera = "mvk108";
             IEnumerable<Polygon> polygons = dataContext.Polygons.Where(p => p.CameraName == camera);
-            BitmapImage patchImage = new BitmapImage();
 
             IEnumerable<Image> images = (from i in dataContext.Images
                                             where i.Place == camera
@@ -225,9 +272,9 @@ namespace Schneedetektion.GatherData
 
                 foreach (var polygon in polygons)
                 {
-                    var polygonPoints = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
-                    Statistic imageStatistic = openCVHelper.GetStatisticForPatch(
-                    Path.Combine(folderName, image.Place, image.Name + ".jpg"), polygonPoints, out patchImage);
+                    var imagePath = Path.Combine(folderName, image.Place, image.Name + ".jpg");
+                    var polygonPoints = JsonConvert.DeserializeObject<Media.PointCollection>(polygon.PolygonPointCollection);
+                    Statistic imageStatistic = openCVHelper.GetStatisticForPatchFromImagePath(imagePath, polygonPoints);
 
                     Console.WriteLine("I: " + image.ID + " - " + image.Name + " - P:" + polygon.ID + " - " + polygon.ImageArea);
 

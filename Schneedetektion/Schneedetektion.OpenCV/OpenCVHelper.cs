@@ -57,11 +57,15 @@ namespace Schneedetektion.OpenCV
             return GetHistogram(image);
         }
 
-        public Statistic GetStatisticForPatch(string imagePath, IEnumerable<Point> pointCollection, out BitmapImage patchImage)
+        public Statistic GetStatisticForPatchFromImagePath(string imagePath, IEnumerable<Point> pointCollection)
         {
-            // Create Matrix 
-            Mat matrix = new Mat(imagePath, LoadImageType.AnyColor);
-            UMat uMatrix = matrix.ToUMat(AccessType.ReadWrite);
+            return GetStatisticForPatchFromImage(new Image<Bgr, byte>(imagePath), pointCollection);
+        }
+
+        public Statistic GetStatisticForPatchFromImage(Image<Bgr, byte> original, IEnumerable<Point> pointCollection)
+        {
+            // Create Matrix
+            UMat uMatrix = original.ToUMat();
             // Create Bitmask
             Image<Gray, byte> bitmask = new Image<Gray, byte>(uMatrix.Cols, uMatrix.Rows, new Gray(0));
 
@@ -87,7 +91,7 @@ namespace Schneedetektion.OpenCV
             bitmask.ROI = GetRegionOfInterest(scaledPoints);
 
             // Return
-            patchImage = OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
+            // patchImage = OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
             return GetStatistic(image, bitmask);
         }
 
@@ -119,8 +123,6 @@ namespace Schneedetektion.OpenCV
             // Crop of Bitmask ROI
             bitMask.ROI = GetRegionOfInterest(scaledPoints);
 
-            // TODO: Alle Werte hier berechnen (auch Histogram)
-
             bitMask.Save(bitmaskPath);
         }
 
@@ -150,6 +152,43 @@ namespace Schneedetektion.OpenCV
 
             // Return
             return OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
+        }
+
+        public Image<Bgr, byte> CombineImages(IEnumerable<string> imagePaths)
+        {
+            List<Image<Bgr, byte>> images = new List<Image<Bgr, byte>>();
+            for (int i = 0; i < imagePaths.Count(); i++)
+            {
+                images.Add(new Image<Bgr, byte>(imagePaths.ElementAt(i)));
+            }
+            Image<Bgr, byte> result = new Image<Bgr, byte>(images.First().Cols, images.First().Rows, new Bgr(0, 0, 0));
+
+            for (int column = 0; column < images.First().Cols; column++)
+            {
+                for (int row = 0; row < images.First().Rows; row++)
+                {
+                    double blue = 0;
+                    double green = 0;
+                    double red = 0;
+                    for (int i = 0; i < images.Count; i++)
+                    {
+                        blue += images[i][row, column].Blue;
+                        green += images[i][row, column].Green;
+                        red += images[i][row, column].Red;
+                    }
+                    blue /= images.Count;
+                    green /= images.Count;
+                    red /= images.Count;
+
+                    result[row, column] = new Bgr(blue, green, red);
+                    //result[row, column] = new Bgr(
+                    //    images.Select(image => image[row, column].Blue).Average(),
+                    //    images.Select(image => image[row, column].Green).Average(),
+                    //    images.Select(image => image[row, column].Red).Average());
+                }
+            }
+
+            return result;
         }
         #endregion
 

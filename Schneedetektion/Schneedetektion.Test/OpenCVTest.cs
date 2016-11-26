@@ -4,6 +4,7 @@ using Schneedetektion.ImagePlayground;
 using Schneedetektion.OpenCV;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -51,8 +52,8 @@ namespace Schneedetektion.Test
             foreach (var polygon in polygons)
             {
                 IEnumerable<Point> pointCollection = PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection);
-                BitmapImage patchImage = new BitmapImage();
-                Statistic statistic = openCVHelper.GetStatisticForPatch(imageViewModel.FileName, pointCollection, out patchImage);
+                Statistic statistic = openCVHelper.GetStatisticForPatchFromImagePath(imageViewModel.FileName, pointCollection);
+                BitmapImage patchImage = openCVHelper.GetPatchBitmapImage(imageViewModel.FileName, pointCollection);
                 patches.Add(new PatchViewModel(statistic, patchImage, imageViewModel, polygon));
             }
 
@@ -84,6 +85,17 @@ namespace Schneedetektion.Test
             openCVHelper.SaveBitmask(imageViewModel.FileName,
                 @"C:\Users\uzapy\Desktop\astra2016\bitmasks\1.png",
                 PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection));
+        }
+
+        [TestMethod]
+        public void CombinePictures()
+        {
+            int[] ids = new int[] { 400049, 400050, 400051, 400052, 400053, 400054, 400194, 400195, 400196, 400197, 400338, 400339, 400340, 400341, 400342, 400481, 400482, 400483, 400484, 400485, 400486 };
+            IEnumerable<string> imagePaths = dataContext.Images
+                .Where(i => ids.Contains(i.ID))
+                .Select(i => Path.Combine(@"C:\Users\uzapy\Desktop\astra2016", i.Place, i.Name + ".jpg"));
+
+            openCVHelper.CombineImages(imagePaths);
         }
     }
 }

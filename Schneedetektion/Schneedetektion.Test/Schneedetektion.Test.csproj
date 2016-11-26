@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Emgu.CV, Version=3.0.0.2157, Culture=neutral, PublicKeyToken=7281126722ab4438" />
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Data.Linq" />
