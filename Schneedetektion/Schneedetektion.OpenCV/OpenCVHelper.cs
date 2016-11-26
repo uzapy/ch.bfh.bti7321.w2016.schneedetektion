@@ -71,7 +71,7 @@ namespace Schneedetektion.OpenCV
 
             // Scale and Transform Polygon
             List<Point> scaledPoints = GetScaledPoints(pointCollection, uMatrix.Cols, uMatrix.Rows);
-            List<Drawing.Point> polygonPoints = GetInvertedPolygonPoints(scaledPoints, uMatrix.Cols, uMatrix.Rows);
+            List<Drawing.Point> polygonPoints = GetInvertedPoints(scaledPoints, uMatrix.Cols, uMatrix.Rows);
 
             // Apply Polygon
             using (VectorOfPoint vPoint = new VectorOfPoint(polygonPoints.ToArray()))
@@ -134,7 +134,7 @@ namespace Schneedetektion.OpenCV
 
             // Scale and Transform Polygon
             List<Point> scaledPoints = GetScaledPoints(pointCollection, uMatrix.Cols, uMatrix.Rows);
-            List<Drawing.Point> polygonPoints = GetInvertedPolygonPoints(scaledPoints, uMatrix.Cols, uMatrix.Rows);
+            List<Drawing.Point> polygonPoints = GetInvertedPoints(scaledPoints, uMatrix.Cols, uMatrix.Rows);
 
             // Apply Polygon
             using (VectorOfPoint vPoint = new VectorOfPoint(polygonPoints.ToArray()))
@@ -207,7 +207,7 @@ namespace Schneedetektion.OpenCV
             return scaledPoints;
         }
 
-        private List<Drawing.Point> GetInvertedPolygonPoints(List<Point> scaledPoints, int numberOfCols, int numberOfRows)
+        private List<Drawing.Point> GetInvertedPoints(List<Point> scaledPoints, int numberOfCols, int numberOfRows)
         {
             // Element finden, das am nächsten zum Nullpunkt ist
             Point p0 = scaledPoints.OrderBy(p => Math.Sqrt(Math.Pow(p.X, 2) + Math.Pow(p.Y, 2))).First();

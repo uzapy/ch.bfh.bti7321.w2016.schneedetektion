@@ -28,6 +28,7 @@ namespace Schneedetektion.GatherData
         private static OpenCVHelper openCVHelper = new OpenCVHelper();
         private static int take = 1000;
         private static List<ManualResetEvent> resetEvents = new List<ManualResetEvent>();
+        private static int count = 0;
 
         static void Main(string[] args)
         {
@@ -38,7 +39,7 @@ namespace Schneedetektion.GatherData
             //    "mvk163", "mvk164" };
             //cameraNames = new List<string>() { "mvk106" };
 
-            CombineStatistics("mvk106");
+            CombineStatistics("mvk108");
 
             //CalculateImageStatistics();
             //CalculatePatchStatistics();
@@ -99,9 +100,11 @@ namespace Schneedetektion.GatherData
 
                 // save changes (one week worth)
                 dataContext.SubmitChanges();
+                Console.WriteLine("Saved!");
 
                 // next week
                 date = date.AddDays(7);
+                Console.WriteLine($"Start Date: {date.ToShortDateString()}");
             }
         }
 
@@ -167,17 +170,19 @@ namespace Schneedetektion.GatherData
         {
             // filter catergory
             images = images.Where(i => i.Snow == snow && i.BadLighting == badlighting && i.Foggy == foggy && i.Rainy == rainy);
-            Console.WriteLine($"Snow = {snow}\t Bad Lighting = {badlighting}\t Foggy = {foggy}\t Rainy {rainy}");
-            Console.WriteLine($"Found Images: {images.Count()}");
 
             // wenn weniger als 2 bilder in kollektion => verwerfen
             if (images.Count() < 2)
             {
                 return;
             }
+            Console.WriteLine($"Snow = {snow}\t Bad Lighting = {badlighting}\t Foggy = {foggy}\t Rainy {rainy}");
+            Console.WriteLine($"Found Images: {images.Count()}");
 
             // combine images
             Image<Bgr, byte> combinedImage = openCVHelper.CombineImages(images.Select(i => Path.Combine(folderName, i.Place, i.Name + ".jpg")));
+            combinedImage.Save(@"C:\Users\uzapy\Desktop\test\" + count++ + ".png");
+            Console.WriteLine(@"C:\Users\uzapy\Desktop\test\" + (count-1) + ".png");
 
             foreach (var polygon in polygons)
             {
