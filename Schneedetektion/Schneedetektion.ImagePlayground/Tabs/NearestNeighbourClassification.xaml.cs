@@ -176,7 +176,7 @@ namespace Schneedetektion.ImagePlayground
             double truePositives  = classifiedImages.Where(i => i.TruePositive).Count();
             double sensitivity    = truePositives / (truePositives + falseNegatives);
             double precision      = truePositives / (truePositives + falsePositives);
-            double f              = (precision * sensitivity) / (precision + sensitivity);
+            double f              = 2 * (precision * sensitivity) / (precision + sensitivity);
 
             fTest.Text =
                 $"True Negatives:\t{trueNegatives}\n" +
