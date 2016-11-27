@@ -10,13 +10,20 @@
             </GroupBox>
             <StackPanel Orientation="Horizontal"  Margin="0,5">
                 <TextBlock Text="Number" Margin="0,2,0,0" />
-                <xseed:IntegerUpDown x:Name="numberOfImages" Minimum="1" Value="10" Width="83" Margin="24,0,0,0" />
+                <xseed:IntegerUpDown x:Name="numberOfImages" Minimum="1" Value="1" Width="83" Margin="24,0,0,0" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <TextBlock Text="Neighbours" Margin="0,2,0,0" />
                 <xseed:IntegerUpDown x:Name="numberOfNeighbours" Minimum="1" Value="5" Width="83" Margin="5,0,0,5" />
             </StackPanel>
-            <Button Content="Classify!" Click="Button_Click" Width="150" Padding="5" />
+            <Button Click="Load_Click" Width="150" Padding="5">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Load " />
+                    <TextBlock Text="{Binding ElementName=numberOfImages, Path=Value}" />
+                    <TextBlock Text=" Images" />
+                </StackPanel>
+            </Button>
+            <Button Content="Classify" Click="Classify_Click" Width="150" Padding="5" />
             <Slider x:Name="imageSizeSlider" Minimum="100" Maximum="800" LargeChange="1" Value="125" Margin="0,5,0,5" />
         </StackPanel>
         <ListView x:Name="imageContainer" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -34,9 +41,17 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <Image Grid.Row="0" Source="{Binding Bitmap}" Width="{Binding ElementName=imageSizeSlider, Path=Value}" />
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" Width="{Binding ElementName=imageSizeSlider, Path=Value}" Height="25" Background="Ivory">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Width="{Binding ElementName=imageSizeSlider, Path=Value}" Height="25" Background="Green">
+                            <TextBlock Text="Truth" Margin="5,3,5,0" />
+                            <Image Source="{Binding TruthSnow}" Margin="0,0,5,0" />
+                            <Image Source="{Binding TruthWeather}" Margin="0,0,5,0" />
+                            <Image Source="{Binding TruthBadLighting}" />
                         </StackPanel>
                         <StackPanel Grid.Row="2" Orientation="Horizontal" Width="{Binding ElementName=imageSizeSlider, Path=Value}" Height="25" Background="Coral">
+                            <TextBlock Text="Class" Margin="5,3,5,0" />
+                            <Image Source="{Binding ClassifiedSnow}" Margin="0,0,5,0" />
+                            <Image Source="{Binding ClassifiedWeather}" Margin="0,0,5,0" />
+                            <Image Source="{Binding ClassifiedBadLighting}" />
                         </StackPanel>
                     </Grid>
                 </DataTemplate>

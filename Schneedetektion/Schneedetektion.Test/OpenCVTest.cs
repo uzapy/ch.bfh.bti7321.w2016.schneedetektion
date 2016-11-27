@@ -4,6 +4,7 @@ using Schneedetektion.ImagePlayground;
 using Schneedetektion.OpenCV;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -96,6 +97,26 @@ namespace Schneedetektion.Test
                 .Select(i => Path.Combine(@"C:\Users\uzapy\Desktop\astra2016", i.Place, i.Name + ".jpg"));
 
             openCVHelper.CombineImages(imagePaths);
+        }
+
+        [TestMethod]
+        public void StatisticsDistanceTest()
+        {
+            var statistics = dataContext.Statistics.OrderByDescending(s => s.ID).Take(2);
+            Statistic one = statistics.First();
+            Statistic other = statistics.Skip(1).First();
+
+            double distance = one.DistanceTo(other);
+
+            var orderedStatistics = dataContext.Combined_Statistics.Where(cs => cs.Polygon.CameraName == "mvk106").GroupBy(cs => cs.Images);
+            var polygons = dataContext.Polygons.Where(p => p.CameraName == "mvk106");
+            foreach (var groupStatistics in orderedStatistics)
+            {
+                foreach (var statistic in groupStatistics.OrderBy(gs => gs.Polygon_ID))
+                {
+                    Trace.WriteLine($"Poly: {statistic.Polygon_ID} - Stat: {statistic.ID}");
+                }
+            }
         }
     }
 }

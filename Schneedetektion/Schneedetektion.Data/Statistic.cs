@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace Schneedetektion.Data
@@ -218,7 +219,35 @@ namespace Schneedetektion.Data
             }
 
             return 0;
-        } 
+        }
+        #endregion
+
+        #region Distance
+        public double DistanceTo(Statistic other)
+        {
+            return Math.Sqrt(
+                Math.Pow(this.ModeBlue.Value - other.ModeBlue.Value, 2) +
+                Math.Pow(this.ModeGreen.Value - other.ModeGreen.Value, 2) +
+                Math.Pow(this.ModeRed.Value - other.ModeRed.Value, 2) +
+                Math.Pow(this.MeanBlue.Value - other.MeanBlue.Value, 2) +
+                Math.Pow(this.MeanGreen.Value - other.MeanGreen.Value, 2) +
+                Math.Pow(this.MeanRed.Value - other.MeanRed.Value, 2) +
+                Math.Pow(this.MedianBlue.Value - other.MedianBlue.Value, 2) +
+                Math.Pow(this.MedianGreen.Value - other.MedianGreen.Value, 2) +
+                Math.Pow(this.MedianRed.Value - other.MedianRed.Value, 2) +
+                Math.Pow(this.MinimumBlue.Value - other.MinimumBlue.Value, 2) +
+                Math.Pow(this.MinimumGreen.Value - other.MinimumGreen.Value, 2) +
+                Math.Pow(this.MinimumRed.Value - other.MinimumRed.Value, 2) +
+                Math.Pow(this.MaximumBlue.Value - other.MaximumBlue.Value, 2) +
+                Math.Pow(this.MaximumGreen.Value - other.MaximumGreen.Value, 2) +
+                Math.Pow(this.MaximumRed.Value - other.MaximumRed.Value, 2) +
+                Math.Pow((this.StandardDeviationBlue.Value - other.StandardDeviationBlue.Value) * 2, 2) +
+                Math.Pow((this.StandardDeviationGreen.Value - other.StandardDeviationGreen.Value) * 2, 2) +
+                Math.Pow((this.StandardDeviationRed.Value - other.StandardDeviationRed.Value) * 2, 2) +
+                Math.Pow((this.ContrastBlue.Value - other.ContrastBlue.Value) * 255, 2) +
+                Math.Pow((this.ContrastGreen.Value - other.ContrastGreen.Value) * 255, 2) +
+                Math.Pow((this.ContrastRed.Value - other.ContrastRed.Value) * 255, 2));
+        }
         #endregion
     }
 }
