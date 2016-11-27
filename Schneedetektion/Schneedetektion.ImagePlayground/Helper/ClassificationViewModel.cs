@@ -1,5 +1,6 @@
 ﻿using Schneedetektion.Data;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace Schneedetektion.ImagePlayground
 {
@@ -12,10 +13,64 @@ namespace Schneedetektion.ImagePlayground
         private bool? classifiedBadLighting;
         #endregion
 
+        public ClassificationViewModel(Image image) : base(image) { }
+
         #region Properties
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ClassificationViewModel(Image image) : base(image) { }
+        public bool TrueNegative
+        {
+            get
+            {
+                return Image.NoSnow.Value && !classifiedSnow.Value;
+            }
+        }
+
+        public bool FalseNegative
+        {
+            get
+            {
+                return Image.Snow.Value && !classifiedSnow.Value;
+            }
+        }
+
+        public bool FalsePositive
+        {
+            get
+            {
+                return Image.NoSnow.Value && classifiedSnow.Value;
+            }
+        }
+
+        public bool TruePositive
+        {
+            get
+            {
+                return Image.Snow.Value && classifiedSnow.Value;
+            }
+        }
+
+        public Brush ClassificationSuccessBrush
+        {
+            get
+            {
+                if (classifiedSnow.HasValue)
+                {
+                    if (classifiedSnow.Value == Image.Snow)
+                    {
+                        return Brushes.LightGreen;
+                    }
+                    else
+                    {
+                        return Brushes.LightPink;
+                    }
+                }
+                else
+                {
+                    return Brushes.LightYellow;
+                }
+            }
+        }
 
         public string TruthSnow
         {
@@ -148,6 +203,7 @@ namespace Schneedetektion.ImagePlayground
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(ClassifiedSnow)));
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(ClassifiedWeather)));
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(ClassifiedBadLighting)));
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(ClassificationSuccessBrush)));
             }
         }
     }

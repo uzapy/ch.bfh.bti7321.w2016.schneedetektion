@@ -34,6 +34,15 @@ namespace Schneedetektion.ImagePlayground
             {
                 cameraNames.Add(camera);
             }
+
+            fTest.Text =
+                "True Negatives:\t0\n" +
+                "False Negatives:\t0\n" +
+                "False Positives:\t0\n" +
+                "True Positives:\t0\n" +
+                "Sensitivity:\t0\n" +
+                "Precision:\t0\n" +
+                "F:\t\t0\n";
         }
         #endregion
 
@@ -67,6 +76,23 @@ namespace Schneedetektion.ImagePlayground
             {
                 FindNearestNeighbours(image);
             }
+
+            double trueNegatives = images.Where(i => i.TrueNegative).Count();
+            double falseNegatives = images.Where(i => i.FalseNegative).Count();
+            double falsePositives = images.Where(i => i.FalsePositive).Count();
+            double truePositives = images.Where(i => i.TruePositive).Count();
+            double sensitivity = truePositives / (truePositives + falseNegatives);
+            double precision = truePositives / (truePositives + falsePositives);
+            double f = (precision * sensitivity) / (precision + sensitivity);
+
+            fTest.Text =
+                $"True Negatives:\t{trueNegatives}\n" +
+                $"False Negatives:\t{falseNegatives}\n" +
+                $"False Positives:\t{falsePositives}\n" +
+                $"True Positives:\t{truePositives}\n" +
+                $"Sensitivity:\t{sensitivity.ToString("0.00")}\n" +
+                $"Precision:\t{precision.ToString("0.00")}\n" +
+                $"F:\t\t{f.ToString("0.00")}\n";
         }
         #endregion
 
