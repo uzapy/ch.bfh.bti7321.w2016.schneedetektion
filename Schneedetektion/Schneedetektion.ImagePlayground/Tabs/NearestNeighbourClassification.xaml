@@ -10,7 +10,7 @@
             </GroupBox>
             <StackPanel Orientation="Horizontal"  Margin="0,5">
                 <TextBlock Text="Number" Margin="0,2,0,0" />
-                <xseed:IntegerUpDown x:Name="numberOfImages" Minimum="1" Value="1" Width="83" Margin="24,0,0,0" />
+                <xseed:IntegerUpDown x:Name="numberOfImages" Minimum="1" Value="100" Width="83" Margin="24,0,0,0" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <TextBlock Text="Neighbours" Margin="0,2,0,0" />

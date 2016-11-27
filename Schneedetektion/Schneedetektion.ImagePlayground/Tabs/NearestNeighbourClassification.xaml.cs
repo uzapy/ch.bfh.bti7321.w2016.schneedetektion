@@ -3,6 +3,7 @@ using Schneedetektion.OpenCV;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,7 +19,9 @@ namespace Schneedetektion.ImagePlayground
         private ObservableCollection<ClassificationViewModel> images = new ObservableCollection<ClassificationViewModel>();
         private List<Polygon> polygons = new List<Polygon>();
         private IQueryable<Combined_Statistic> combinedStatistics;
+        private List<NearestNeighbour> neighbours = new List<NearestNeighbour>();
         private Random random = new Random();
+        private BackgroundWorker backgroundWorker = new BackgroundWorker();
         #endregion
 
         #region Constructor
@@ -34,6 +37,10 @@ namespace Schneedetektion.ImagePlayground
             {
                 cameraNames.Add(camera);
             }
+
+            backgroundWorker.DoWork += BackgroundWorker_FindNearestNeighbours;
+            backgroundWorker.ProgressChanged += BackgroundWorker_ProgressChanged;
+            backgroundWorker.WorkerReportsProgress = true;
 
             fTest.Text =
                 "True Negatives:\t0\n" +
@@ -72,27 +79,7 @@ namespace Schneedetektion.ImagePlayground
 
         private void Classify_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var image in images)
-            {
-                FindNearestNeighbours(image);
-            }
-
-            double trueNegatives = images.Where(i => i.TrueNegative).Count();
-            double falseNegatives = images.Where(i => i.FalseNegative).Count();
-            double falsePositives = images.Where(i => i.FalsePositive).Count();
-            double truePositives = images.Where(i => i.TruePositive).Count();
-            double sensitivity = truePositives / (truePositives + falseNegatives);
-            double precision = truePositives / (truePositives + falsePositives);
-            double f = (precision * sensitivity) / (precision + sensitivity);
-
-            fTest.Text =
-                $"True Negatives:\t{trueNegatives}\n" +
-                $"False Negatives:\t{falseNegatives}\n" +
-                $"False Positives:\t{falsePositives}\n" +
-                $"True Positives:\t{truePositives}\n" +
-                $"Sensitivity:\t{sensitivity.ToString("0.00")}\n" +
-                $"Precision:\t{precision.ToString("0.00")}\n" +
-                $"F:\t\t{f.ToString("0.00")}\n";
+            backgroundWorker.RunWorkerAsync();
         }
         #endregion
 
@@ -111,6 +98,14 @@ namespace Schneedetektion.ImagePlayground
             return list;
         }
 
+        private void BackgroundWorker_FindNearestNeighbours(object sender, DoWorkEventArgs e)
+        {
+            foreach (var image in images)
+            {
+                FindNearestNeighbours(image);
+            }
+        }
+
         private void FindNearestNeighbours(ClassificationViewModel classificationViewModel)
         {
             // Statistiken für Patches des Bilder berechnen
@@ -124,7 +119,7 @@ namespace Schneedetektion.ImagePlayground
             // kombinierte statistiken nach Bild-Gruppen gruppieren
             var groupedStatistics = combinedStatistics.GroupBy(cs => cs.Images);
 
-            List<NearestNeighbour> neighbours = new List<NearestNeighbour>();
+            neighbours.Clear();
             // Pro Gruppe Nearest-Neighbor erstellen
             foreach (var group in groupedStatistics)
             {
@@ -146,24 +141,51 @@ namespace Schneedetektion.ImagePlayground
             }
 
             // nachbaren nach distanz ordnen - nächste nachbaren auswählen
-            List<NearestNeighbour> nearestNeighbours = neighbours.OrderBy(n => n.Distance).Take(numberOfNeighbours.Value.Value).ToList();
+            this.Dispatcher.Invoke(() =>
+            {
+                List<NearestNeighbour> nearestNeighbours = neighbours.OrderBy(n => n.Distance).Take(numberOfNeighbours.Value.Value).ToList();
 
-            // eigenschaften der nächsten nachbaren für die klassifizierung nutzen
-            IEnumerable<Combined_Statistic> nearestCombinedStatistics = nearestNeighbours.SelectMany(nn => nn.NeighbourStatistics.Values);
-            int snow = nearestCombinedStatistics.Where(ns => ns.Snow.Value).Count();
-            int noSnow = nearestCombinedStatistics.Where(ns => !ns.Snow.Value).Count();
-            int badLighting = nearestCombinedStatistics.Where(ns => ns.BadLighting.Value).Count();
-            int goodLighting = nearestCombinedStatistics.Where(ns => !ns.BadLighting.Value).Count();
-            int foggy = nearestCombinedStatistics.Where(ns => ns.Foggy.Value).Count();
-            int rainy = nearestCombinedStatistics.Where(ns => ns.Rainy.Value).Count();
-            int goodWeather = nearestCombinedStatistics.Where(ns => !ns.Foggy.Value && !ns.Rainy.Value).Count();
+                // eigenschaften der nächsten nachbaren für die klassifizierung nutzen
+                IEnumerable<Combined_Statistic> nearestCombinedStatistics = nearestNeighbours.SelectMany(nn => nn.NeighbourStatistics.Values);
+                int snow = nearestCombinedStatistics.Where(ns => ns.Snow.Value).Count();
+                int noSnow = nearestCombinedStatistics.Where(ns => !ns.Snow.Value).Count();
+                int badLighting = nearestCombinedStatistics.Where(ns => ns.BadLighting.Value).Count();
+                int goodLighting = nearestCombinedStatistics.Where(ns => !ns.BadLighting.Value).Count();
+                int foggy = nearestCombinedStatistics.Where(ns => ns.Foggy.Value).Count();
+                int rainy = nearestCombinedStatistics.Where(ns => ns.Rainy.Value).Count();
+                int goodWeather = nearestCombinedStatistics.Where(ns => !ns.Foggy.Value && !ns.Rainy.Value).Count();
 
-            // resultate speichern
-            classificationViewModel.SetResults(
-                snow > noSnow,
-                foggy > goodWeather,
-                rainy > goodWeather,
-                badLighting > goodLighting);
+                // resultate speichern
+                classificationViewModel.SetResults(
+                    snow > noSnow,
+                    foggy > goodWeather,
+                    rainy > goodWeather,
+                    badLighting > goodLighting);
+            });
+
+            backgroundWorker.ReportProgress(0, null);
+        }
+
+        private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            var classifiedImages = images.Where(i => i.HasResults);
+
+            double trueNegatives  = classifiedImages.Where(i => i.TrueNegative).Count();
+            double falseNegatives = classifiedImages.Where(i => i.FalseNegative).Count();
+            double falsePositives = classifiedImages.Where(i => i.FalsePositive).Count();
+            double truePositives  = classifiedImages.Where(i => i.TruePositive).Count();
+            double sensitivity    = truePositives / (truePositives + falseNegatives);
+            double precision      = truePositives / (truePositives + falsePositives);
+            double f              = (precision * sensitivity) / (precision + sensitivity);
+
+            fTest.Text =
+                $"True Negatives:\t{trueNegatives}\n" +
+                $"False Negatives:\t{falseNegatives}\n" +
+                $"False Positives:\t{falsePositives}\n" +
+                $"True Positives:\t{truePositives}\n" +
+                $"Sensitivity:\t{sensitivity.ToString("0.00")}\n" +
+                $"Precision:\t{precision.ToString("0.00")}\n" +
+                $"F:\t\t{f.ToString("0.00")}\n";
         }
         #endregion
     }

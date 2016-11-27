@@ -11,6 +11,7 @@ namespace Schneedetektion.ImagePlayground
         private bool? classifiedFoggy;
         private bool? classifiedRainy;
         private bool? classifiedBadLighting;
+        private bool hasResults;
         #endregion
 
         public ClassificationViewModel(Image image) : base(image) { }
@@ -189,7 +190,13 @@ namespace Schneedetektion.ImagePlayground
                     return "/Resources/questionmark.png";
                 }
             }
-        } 
+        }
+
+        public bool HasResults
+        {
+            get { return hasResults; }
+            set { hasResults = value; }
+        }
         #endregion
 
         public void SetResults(bool snow, bool foggy, bool rainy, bool badLighting)
@@ -205,6 +212,7 @@ namespace Schneedetektion.ImagePlayground
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(ClassifiedBadLighting)));
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(ClassificationSuccessBrush)));
             }
+            HasResults = true;
         }
     }
 }
