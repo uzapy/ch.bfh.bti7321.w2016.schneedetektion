@@ -19,7 +19,6 @@ namespace Schneedetektion.ImagePlayground
         private ObservableCollection<ClassificationViewModel> classificationViewModels = new ObservableCollection<ClassificationViewModel>();
         private List<Polygon> polygons = new List<Polygon>();
         private IQueryable<Combined_Statistic> combinedStatistics;
-        private List<NearestNeighbour> neighbours = new List<NearestNeighbour>();
         private Random random = new Random();
         private BackgroundWorker backgroundWorker = new BackgroundWorker();
         #endregion
@@ -130,7 +129,7 @@ namespace Schneedetektion.ImagePlayground
             // kombinierte statistiken nach Bild-Gruppen gruppieren
             var groupedStatistics = combinedStatistics.GroupBy(cs => cs.Images);
 
-            neighbours.Clear();
+            List<NearestNeighbour> neighbours = new List<NearestNeighbour>();
             // Pro Gruppe Nearest-Neighbor erstellen
             foreach (var group in groupedStatistics)
             {

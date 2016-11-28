@@ -57,8 +57,7 @@ namespace Schneedetektion.Data
         {
             foreach (var polygon in polygons)
             {
-                Distances.Add(polygon,
-                    imageStatistics[polygon].DistanceTo(NeighbourStatistics[polygon].Statistic));
+                Distances.Add(polygon, imageStatistics[polygon].DistanceTo(NeighbourStatistics[polygon].Statistic));
             }
         }
     }
