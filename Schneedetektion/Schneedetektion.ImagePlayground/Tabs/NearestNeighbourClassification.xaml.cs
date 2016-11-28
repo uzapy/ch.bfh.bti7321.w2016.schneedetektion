@@ -59,15 +59,26 @@ namespace Schneedetektion.ImagePlayground
             if (cameraList.SelectedItem != null && numberOfImages.Value.HasValue && numberOfNeighbours.Value.HasValue)
             {
                 string selectedCamera = cameraList.SelectedItem as String;
+                int numberOfImagesTotal = numberOfImages.Value.Value;
+                int numberOfImagesWithoutSnow = (int)((double)numberOfImagesTotal * (1d - (double)ratio.Value/100d));
+                int numberOfImagesWithSnow = numberOfImagesTotal - numberOfImagesWithoutSnow;
 
                 // polygone laden
                 polygons = dataContext.Polygons.Where(p => p.CameraName == selectedCamera).ToList();
                 // statistiken laden
                 combinedStatistics = dataContext.Combined_Statistics.Where(cs => cs.Polygon.CameraName == selectedCamera);
 
-                // Zufällige Bilder auswählen
-                var dbImages = dataContext.Images.Where(i => i.Day.Value && i.Place == selectedCamera).ToList();
-                var selectedImages = Shuffle(dbImages).Take(numberOfImages.Value.Value);
+                // Zufällige Bilder ohne Schnee auswählen
+                var dbImagesWithoutSnow = dataContext.Images
+                    .Where(i => i.Day.Value && i.Place == selectedCamera && i.NoSnow.Value)
+                    .Take(numberOfImagesWithoutSnow);
+                // Zufällige Bilder mit Schnee auswählen
+                var dbImagesWithSnow = dataContext.Images
+                    .Where(i => i.Day.Value && i.Place == selectedCamera && i.Snow.Value)
+                    .Take(numberOfImagesWithSnow);
+
+                // beide Listen kombinieren und shuffeln
+                var selectedImages = Shuffle(dbImagesWithoutSnow.Concat(dbImagesWithSnow).ToList());
 
                 // Bilder anzeigen
                 foreach (var image in selectedImages)

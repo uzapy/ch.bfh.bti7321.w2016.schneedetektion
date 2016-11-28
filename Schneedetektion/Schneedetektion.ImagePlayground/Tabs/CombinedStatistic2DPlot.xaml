@@ -56,8 +56,31 @@
                     <Button Content="Plot!" Click="Button_Click" />
                 </StackPanel>
             </GroupBox>
-            <Image x:Name="fullImage" Width="150" />
-            <Image x:Name="patchImage" Width="150" />
+            <GroupBox Header="Index">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Snow" Grid.Column="0" Grid.Row="0" />
+                    <Ellipse Grid.Column="1" Grid.Row="0" Width="20" Height="20" Fill="Blue" HorizontalAlignment="Center" />
+                    <TextBlock Text="No Snow" Grid.Column="0" Grid.Row="1" />
+                    <Ellipse Grid.Column="1" Grid.Row="1" Width="20" Height="20" Fill="Green" HorizontalAlignment="Center" />
+                    <TextBlock Text="Bad Lighting" Grid.Column="0" Grid.Row="2" />
+                    <Ellipse Grid.Column="1" Grid.Row="2" Width="20" Height="20" Stroke="Red" StrokeThickness="4" HorizontalAlignment="Center" />
+                    <TextBlock Text="Rainy" Grid.Column="0" Grid.Row="3" />
+                    <Ellipse Grid.Column="1" Grid.Row="3" Width="20" Height="20" Stroke="Purple" StrokeThickness="4" HorizontalAlignment="Center" />
+                    <TextBlock Text="Foggy" Grid.Column="0" Grid.Row="4" />
+                    <Ellipse Grid.Column="1" Grid.Row="4" Width="20" Height="20" Stroke="Yellow" StrokeThickness="4" HorizontalAlignment="Center" />
+                </Grid>
+            </GroupBox>
         </StackPanel>
         <Canvas x:Name="plotCanvas" SizeChanged="plotCanvas_SizeChanged">
             <TextBlock x:Name="zero" Text="0" Canvas.Left="15" Canvas.Bottom="15" />

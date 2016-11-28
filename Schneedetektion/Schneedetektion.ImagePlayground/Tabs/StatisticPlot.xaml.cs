@@ -151,7 +151,7 @@ namespace Schneedetektion.ImagePlayground
                 bars[flooredValue]++;
             }
 
-            double strokeWidth = plotCanvas.ActualWidth / 255;
+            double strokeWidth = plotCanvas.ActualWidth / 256;
 
             for (int i = 0; i < bars.Count; i++)
             {

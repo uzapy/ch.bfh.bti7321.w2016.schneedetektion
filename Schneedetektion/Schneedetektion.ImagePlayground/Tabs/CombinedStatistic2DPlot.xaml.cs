@@ -175,11 +175,11 @@ namespace Schneedetektion.ImagePlayground
                 }
                 if (combinedStatistic.Rainy.Value)
                 {
-                    circleBrush = Brushes.Brown;
+                    circleBrush = Brushes.Purple;
                 }
                 if (combinedStatistic.Foggy.Value)
                 {
-                    circleBrush = Brushes.Gray;
+                    circleBrush = Brushes.Yellow;
                 }
 
                 Ellipse e = new Ellipse()
