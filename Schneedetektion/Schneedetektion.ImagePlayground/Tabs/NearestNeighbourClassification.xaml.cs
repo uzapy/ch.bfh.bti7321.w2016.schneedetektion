@@ -91,6 +91,11 @@ namespace Schneedetektion.ImagePlayground
         {
             backgroundWorker.RunWorkerAsync(numberOfNeighbours.Value.Value);
         }
+
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+            classificationViewModels.Clear();
+        }
         #endregion
 
         #region Methods

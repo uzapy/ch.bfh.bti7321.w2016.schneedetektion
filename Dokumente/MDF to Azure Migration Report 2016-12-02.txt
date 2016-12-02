@@ -1,0 +1,108 @@
+The execution was successful
+
+- Initializing Data Flow Task (Success)
+
+- Initializing Connections (Success)
+
+- Setting SQL Command (Success)
+
+- Setting Source Connection (Success)
+
+- Setting Destination Connection (Success)
+
+- Validating (Warning)
+Messages
+Warning 0x80049304: Data Flow Task 1: Warning: Could not open global shared memory to communicate with performance DLL; data flow performance counters are not available.  To resolve, run this package as an administrator, or on the system's console.
+ (SQL Server Import and Export Wizard)
+ 
+
+- Prepare for Execute (Success)
+
+- Pre-execute (Success)
+
+- Executing (Success)
+
+- Copying to [dbo].[Cameras] (Success)
+12 rows transferred 
+
+- Copying to [dbo].[Combined_Statistics] (Success)
+2616 rows transferred 
+
+- Copying to [dbo].[Entity_Statistics] (Success)
+97355 rows transferred 
+
+Messages
+Information 0x402090df: Data Flow Task 1: The final commit for the data insertion in "Destination 2 - Entity_Statistics" has started.
+ (SQL Server Import and Export Wizard)
+ 
+Information 0x402090e0: Data Flow Task 1: The final commit for the data insertion  in "Destination 2 - Entity_Statistics" has ended.
+ (SQL Server Import and Export Wizard)
+ 
+
+- Copying to [dbo].[Images] (Success)
+418111 rows transferred 
+
+Messages
+Information 0x402090df: Data Flow Task 1: The final commit for the data insertion in "Destination 1 - Combined_Statistics" has started.
+ (SQL Server Import and Export Wizard)
+ 
+Information 0x402090e0: Data Flow Task 1: The final commit for the data insertion  in "Destination 1 - Combined_Statistics" has ended.
+ (SQL Server Import and Export Wizard)
+ 
+Information 0x402090df: Data Flow Task 1: The final commit for the data insertion in "Destination 3 - Images" has started.
+ (SQL Server Import and Export Wizard)
+ 
+Information 0x402090e0: Data Flow Task 1: The final commit for the data insertion  in "Destination 3 - Images" has ended.
+ (SQL Server Import and Export Wizard)
+ 
+
+- Copying to [dbo].[Polygons] (Success)
+52 rows transferred 
+
+Messages
+Information 0x402090df: Data Flow Task 1: The final commit for the data insertion in "Destination - Cameras" has started.
+ (SQL Server Import and Export Wizard)
+ 
+Information 0x402090e0: Data Flow Task 1: The final commit for the data insertion  in "Destination - Cameras" has ended.
+ (SQL Server Import and Export Wizard)
+ 
+Information 0x402090df: Data Flow Task 1: The final commit for the data insertion in "Destination 4 - Polygons" has started.
+ (SQL Server Import and Export Wizard)
+ 
+Information 0x402090e0: Data Flow Task 1: The final commit for the data insertion  in "Destination 4 - Polygons" has ended.
+ (SQL Server Import and Export Wizard)
+ 
+
+- Copying to [dbo].[Statistics] (Success)
+99971 rows transferred 
+
+Messages
+Information 0x402090df: Data Flow Task 2: The final commit for the data insertion in "Destination 5 - Statistics" has started.
+ (SQL Server Import and Export Wizard)
+ 
+Information 0x402090e0: Data Flow Task 2: The final commit for the data insertion  in "Destination 5 - Statistics" has ended.
+ (SQL Server Import and Export Wizard)
+ 
+
+- Post-execute (Success)
+Messages
+Information 0x4004300b: Data Flow Task 1: "Destination - Cameras" wrote 12 rows.
+ (SQL Server Import and Export Wizard)
+ 
+Information 0x4004300b: Data Flow Task 1: "Destination 1 - Combined_Statistics" wrote 2616 rows.
+ (SQL Server Import and Export Wizard)
+ 
+Information 0x4004300b: Data Flow Task 1: "Destination 2 - Entity_Statistics" wrote 97355 rows.
+ (SQL Server Import and Export Wizard)
+ 
+Information 0x4004300b: Data Flow Task 1: "Destination 3 - Images" wrote 418111 rows.
+ (SQL Server Import and Export Wizard)
+ 
+Information 0x4004300b: Data Flow Task 1: "Destination 4 - Polygons" wrote 52 rows.
+ (SQL Server Import and Export Wizard)
+ 
+Information 0x4004300b: Data Flow Task 2: "Destination 5 - Statistics" wrote 99971 rows.
+ (SQL Server Import and Export Wizard)
+ 
+
+

@@ -46,11 +46,16 @@ namespace Schneedetektion.ImagePlayground
             {
                 initialElements.Add(child);
             }
-        }
-        #endregion
 
-        #region Event Handler
-        private void cameraList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+            comboX_SelectionChanged(this, null);
+            comboY_SelectionChanged(this, null);
+            comboColorX_SelectionChanged(this, null);
+            comboColorY_SelectionChanged(this, null);
+        }
+    #endregion
+
+    #region Event Handler
+    private void cameraList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cameraList.SelectedItem != null)
             {
@@ -132,7 +137,7 @@ namespace Schneedetektion.ImagePlayground
                                                     where es.Polygon.ID == polygonID
                                                     select es;
 
-                DrawPoints(combinedStatisticsWithoutSnow, selectedX, selectedY, selectedColorX, selectedColorY, Brushes.Green);
+                DrawPoints(combinedStatisticsWithoutSnow, selectedX, selectedY, selectedColorX, selectedColorY, Brushes.Magenta);
             }
         }
         #endregion
@@ -171,11 +176,11 @@ namespace Schneedetektion.ImagePlayground
                 Brush circleBrush = Brushes.Transparent;
                 if (combinedStatistic.BadLighting.Value)
                 {
-                    circleBrush = Brushes.Red;
+                    circleBrush = Brushes.Turquoise;
                 }
                 if (combinedStatistic.Rainy.Value)
                 {
-                    circleBrush = Brushes.Purple;
+                    circleBrush = Brushes.Green;
                 }
                 if (combinedStatistic.Foggy.Value)
                 {
@@ -184,12 +189,12 @@ namespace Schneedetektion.ImagePlayground
 
                 Ellipse e = new Ellipse()
                 {
-                    Width = 10,
-                    Height = 10,
+                    Width = 15,
+                    Height = 15,
                     Fill = brush,
-                    StrokeThickness = 2,
+                    StrokeThickness = 3,
                     Stroke = circleBrush,
-                    Opacity = 0.6,
+                    Opacity = 0.66,
                     Margin = new Thickness(left, top, 0, 0),
                     Tag = combinedStatistic.ID,
                 };

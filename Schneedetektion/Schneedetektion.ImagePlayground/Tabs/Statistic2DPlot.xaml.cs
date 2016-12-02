@@ -46,6 +46,11 @@ namespace Schneedetektion.ImagePlayground
             {
                 initialElements.Add(child);
             }
+
+            comboX_SelectionChanged(this, null);
+            comboY_SelectionChanged(this, null);
+            comboColorX_SelectionChanged(this, null);
+            comboColorY_SelectionChanged(this, null);
         }
         #endregion
 
@@ -132,7 +137,7 @@ namespace Schneedetektion.ImagePlayground
                                             where es.Polygon.ID == polygonID
                                             select es.Statistic;
 
-                DrawPoints(statisticsWithoutSnow, selectedX, selectedY, selectedColorX, selectedColorY, Brushes.Green);
+                DrawPoints(statisticsWithoutSnow, selectedX, selectedY, selectedColorX, selectedColorY, Brushes.Magenta);
             }
         }
         #endregion
@@ -170,10 +175,10 @@ namespace Schneedetektion.ImagePlayground
 
                 Ellipse e = new Ellipse()
                 {
-                    Width = 5,
-                    Height = 5,
+                    Width = 8,
+                    Height = 8,
                     Fill = brush,
-                    Opacity = 0.3,
+                    Opacity = 0.5,
                     Margin = new Thickness(left, top, 0, 0),
                     Tag = statistic.ID
                 };

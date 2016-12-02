@@ -17,7 +17,7 @@
                         <ComboBox x:Name="comboX" Width="75" SelectionChanged="comboX_SelectionChanged">
                             <ComboBoxItem Name="comboXMode">Mode</ComboBoxItem>
                             <ComboBoxItem Name="comboXMean">Mean</ComboBoxItem>
-                            <ComboBoxItem Name="comboXMedian">Median</ComboBoxItem>
+                            <ComboBoxItem Name="comboXMedian" IsSelected="True">Median</ComboBoxItem>
                             <ComboBoxItem Name="comboXMinimum">Minimum</ComboBoxItem>
                             <ComboBoxItem Name="comboXMaximum">Maximum</ComboBoxItem>
                             <ComboBoxItem Name="comboXStdDev">StandardDeviation</ComboBoxItem>
@@ -28,7 +28,7 @@
                             <ComboBoxItem Name="comboColorXBlue">Blue</ComboBoxItem>
                             <ComboBoxItem Name="comboColorXGreen">Green</ComboBoxItem>
                             <ComboBoxItem Name="comboColorXRed">Red</ComboBoxItem>
-                            <ComboBoxItem Name="combiColorXBGR">BGR</ComboBoxItem>
+                            <ComboBoxItem Name="combiColorXBGR" IsSelected="True">BGR</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
@@ -39,7 +39,7 @@
                             <ComboBoxItem Name="comboYMedian">Median</ComboBoxItem>
                             <ComboBoxItem Name="comboYMinimum">Minimum</ComboBoxItem>
                             <ComboBoxItem Name="comboYMaximum">Maximum</ComboBoxItem>
-                            <ComboBoxItem Name="comboYStdDev">StandardDeviation</ComboBoxItem>
+                            <ComboBoxItem Name="comboYStdDev" IsSelected="True">StandardDeviation</ComboBoxItem>
                             <ComboBoxItem Name="comboYVariance">Variance</ComboBoxItem>
                             <ComboBoxItem Name="comboYContrast">Contrast</ComboBoxItem>
                         </ComboBox>
@@ -47,7 +47,7 @@
                             <ComboBoxItem Name="comboColorYBlue">Blue</ComboBoxItem>
                             <ComboBoxItem Name="comboColorYGreen">Green</ComboBoxItem>
                             <ComboBoxItem Name="comboColorYRed">Red</ComboBoxItem>
-                            <ComboBoxItem Name="combiColorYBGR">BGR</ComboBoxItem>
+                            <ComboBoxItem Name="combiColorYBGR" IsSelected="True">BGR</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
@@ -72,17 +72,17 @@
                     <TextBlock Text="Snow" Grid.Column="0" Grid.Row="0" />
                     <Ellipse Grid.Column="1" Grid.Row="0" Width="20" Height="20" Fill="Blue" HorizontalAlignment="Center" />
                     <TextBlock Text="No Snow" Grid.Column="0" Grid.Row="1" />
-                    <Ellipse Grid.Column="1" Grid.Row="1" Width="20" Height="20" Fill="Green" HorizontalAlignment="Center" />
+                    <Ellipse Grid.Column="1" Grid.Row="1" Width="20" Height="20" Fill="Magenta" HorizontalAlignment="Center" />
                     <TextBlock Text="Bad Lighting" Grid.Column="0" Grid.Row="2" />
-                    <Ellipse Grid.Column="1" Grid.Row="2" Width="20" Height="20" Stroke="Red" StrokeThickness="4" HorizontalAlignment="Center" />
+                    <Ellipse Grid.Column="1" Grid.Row="2" Width="20" Height="20" Stroke="Turquoise" StrokeThickness="4" HorizontalAlignment="Center" />
                     <TextBlock Text="Rainy" Grid.Column="0" Grid.Row="3" />
-                    <Ellipse Grid.Column="1" Grid.Row="3" Width="20" Height="20" Stroke="Purple" StrokeThickness="4" HorizontalAlignment="Center" />
+                    <Ellipse Grid.Column="1" Grid.Row="3" Width="20" Height="20" Stroke="Green" StrokeThickness="4" HorizontalAlignment="Center" />
                     <TextBlock Text="Foggy" Grid.Column="0" Grid.Row="4" />
                     <Ellipse Grid.Column="1" Grid.Row="4" Width="20" Height="20" Stroke="Yellow" StrokeThickness="4" HorizontalAlignment="Center" />
                 </Grid>
             </GroupBox>
         </StackPanel>
-        <Canvas x:Name="plotCanvas" SizeChanged="plotCanvas_SizeChanged">
+        <Canvas x:Name="plotCanvas" SizeChanged="plotCanvas_SizeChanged" Background="LightGray">
             <TextBlock x:Name="zero" Text="0" Canvas.Left="15" Canvas.Bottom="15" />
             <TextBlock x:Name="x255" Text="X:255" Canvas.Right="15" Canvas.Bottom="15" />
             <TextBlock x:Name="y255" Text="Y:255" Canvas.Left="15" Canvas.Top="15" />

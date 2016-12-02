@@ -43,6 +43,9 @@ namespace Schneedetektion.ImagePlayground
             {
                 initialElements.Add(child);
             }
+
+            comboX_SelectionChanged(this, null);
+            comboColor_SelectionChanged(this, null);
         }
         #endregion
 
@@ -95,7 +98,6 @@ namespace Schneedetektion.ImagePlayground
             if (!String.IsNullOrEmpty(selectedCamera) &&
                 !String.IsNullOrEmpty(selectedPolygon) && Int32.TryParse(selectedPolygon.Split('-')[0], out polygonID) &&
                 !String.IsNullOrEmpty(selectedX) &&
-                !String.IsNullOrEmpty(selectedX) &&
                 !String.IsNullOrEmpty(selectedColor))
             {
                 var statisticsWithSnow = from es in dataContext.Entity_Statistics
@@ -112,7 +114,7 @@ namespace Schneedetektion.ImagePlayground
                                             where es.Polygon.ID == polygonID
                                             select es.Statistic;
 
-                DrawPoints(statisticsWithoutSnow, selectedX, selectedColor, Brushes.Green);
+                DrawPoints(statisticsWithoutSnow, selectedX, selectedColor, Brushes.Yellow);
             }
         }
         #endregion

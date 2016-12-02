@@ -17,7 +17,7 @@
                         <ComboBox x:Name="comboX" Width="134" SelectionChanged="comboX_SelectionChanged">
                             <ComboBoxItem Name="comboXMode">Mode</ComboBoxItem>
                             <ComboBoxItem Name="comboXMean">Mean</ComboBoxItem>
-                            <ComboBoxItem Name="comboXMedian">Median</ComboBoxItem>
+                            <ComboBoxItem Name="comboXMedian" IsSelected="True">Median</ComboBoxItem>
                             <ComboBoxItem Name="comboXMinimum">Minimum</ComboBoxItem>
                             <ComboBoxItem Name="comboXMaximum">Maximum</ComboBoxItem>
                             <ComboBoxItem Name="comboXStdDev">StandardDeviation</ComboBoxItem>
@@ -31,11 +31,27 @@
                             <ComboBoxItem Name="comboColorBlue">Blue</ComboBoxItem>
                             <ComboBoxItem Name="comboColorGreen">Green</ComboBoxItem>
                             <ComboBoxItem Name="comboColorRed">Red</ComboBoxItem>
-                            <ComboBoxItem Name="combiColorBGR">BGR</ComboBoxItem>
+                            <ComboBoxItem Name="combiColorBGR" IsSelected="True">BGR</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
                     <Button Content="Plot!" Click="Button_Click" />
                 </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Index">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Snow" Grid.Column="0" Grid.Row="0" />
+                    <Rectangle Grid.Column="1" Grid.Row="0" Width="20" Height="20" Fill="Blue" HorizontalAlignment="Center" />
+                    <TextBlock Text="No Snow" Grid.Column="0" Grid.Row="1" />
+                    <Rectangle Grid.Column="1" Grid.Row="1" Width="20" Height="20" Fill="Yellow" HorizontalAlignment="Center" />
+                </Grid>
             </GroupBox>
         </StackPanel>
         <Canvas x:Name="plotCanvas" SizeChanged="plotCanvas_SizeChanged">
