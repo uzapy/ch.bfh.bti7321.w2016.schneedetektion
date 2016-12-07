@@ -10,6 +10,9 @@
             <GroupBox Header="By Polygon">
                 <ListBox x:Name="polygonList" Height="200" SelectionMode="Single" SelectionChanged="polygonList_SelectionChanged" />
             </GroupBox>
+            <GroupBox Header="By TimeSlot">
+                <ListBox x:Name="timeSlotList" Height="200" SelectionMode="Single" SelectionChanged="timeSlotList_SelectionChanged" />
+            </GroupBox>
             <GroupBox Header="By Property">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">

@@ -19,9 +19,11 @@ namespace Schneedetektion.ImagePlayground
         private OpenCVHelper openCVHelper = new OpenCVHelper();
         private ObservableCollection<string> cameraNames = new ObservableCollection<string>();
         private ObservableCollection<string> polygonNames = new ObservableCollection<string>();
+        private ObservableCollection<string> timeSlotNames = new ObservableCollection<string>();
         private List<object> initialElements = new List<object>();
         private string selectedCamera = String.Empty;
         private string selectedPolygon = String.Empty;
+        private string selectedTimeSlot = String.Empty;
         private string selectedX = String.Empty;
         private string selectedY = String.Empty;
         private string selectedColorX = String.Empty;
@@ -35,11 +37,22 @@ namespace Schneedetektion.ImagePlayground
 
             cameraList.ItemsSource = cameraNames;
             polygonList.ItemsSource = polygonNames;
+            timeSlotList.ItemsSource = timeSlotNames;
 
             IEnumerable<string> cameras = dataContext.Combined_Statistics.Select(cs => cs.Polygon.CameraName).Distinct();
             foreach (var camera in cameras)
             {
                 cameraNames.Add(camera);
+            }
+
+            timeSlotNames.Add("All");
+            IEnumerable<int?> timeSlots = dataContext.Combined_Statistics.Select(cs => cs.StartTime).Distinct().OrderBy(st => st);
+            foreach (var timeSlot in timeSlots)
+            {
+                if (timeSlot.HasValue)
+                {
+                    timeSlotNames.Add(timeSlot.Value.ToString() + "-" + (timeSlot.Value + 2).ToString());
+                }
             }
 
             foreach (var child in plotCanvas.Children)
@@ -52,10 +65,10 @@ namespace Schneedetektion.ImagePlayground
             comboColorX_SelectionChanged(this, null);
             comboColorY_SelectionChanged(this, null);
         }
-    #endregion
+        #endregion
 
-    #region Event Handler
-    private void cameraList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        #region Event Handler
+        private void cameraList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cameraList.SelectedItem != null)
             {
@@ -75,6 +88,14 @@ namespace Schneedetektion.ImagePlayground
             if (polygonList.SelectedItem != null)
             {
                 selectedPolygon = polygonList.SelectedItem as String;
+            }
+        }
+
+        private void timeSlotList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (timeSlotList.SelectedItem != null)
+            {
+                selectedTimeSlot = timeSlotList.SelectedItem as String;
             }
         }
 
@@ -115,18 +136,28 @@ namespace Schneedetektion.ImagePlayground
             ClearCanvas();
 
             int polygonID = 0;
+            int timeSlot = 0;
+            bool hasTimeSlot = false;
 
             if (!String.IsNullOrEmpty(selectedCamera) &&
                 !String.IsNullOrEmpty(selectedPolygon) && Int32.TryParse(selectedPolygon.Split('-')[0], out polygonID) &&
+                !String.IsNullOrEmpty(selectedTimeSlot) &&
                 !String.IsNullOrEmpty(selectedX) &&
                 !String.IsNullOrEmpty(selectedY) &&
                 !String.IsNullOrEmpty(selectedColorX) &&
                 !String.IsNullOrEmpty(selectedColorY))
             {
+
+                if (Int32.TryParse(selectedTimeSlot.Split('-')[0], out timeSlot))
+                {
+                    hasTimeSlot = true;
+                }
+
                 var combinedStatisticsWithSnow = from es in dataContext.Combined_Statistics
                                                  where es.Polygon.CameraName == selectedCamera
                                                  where es.Snow == true
                                                  where es.Polygon.ID == polygonID
+                                                 where es.StartTime == timeSlot || !hasTimeSlot
                                                  select es;
 
                 DrawPoints(combinedStatisticsWithSnow, selectedX, selectedY, selectedColorX, selectedColorY, Brushes.Blue);
@@ -135,6 +166,7 @@ namespace Schneedetektion.ImagePlayground
                                                     where es.Polygon.CameraName == selectedCamera
                                                     where es.Snow == false
                                                     where es.Polygon.ID == polygonID
+                                                    where es.StartTime == timeSlot || !hasTimeSlot
                                                     select es;
 
                 DrawPoints(combinedStatisticsWithoutSnow, selectedX, selectedY, selectedColorX, selectedColorY, Brushes.Magenta);
