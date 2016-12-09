@@ -154,7 +154,7 @@ namespace Schneedetektion.OpenCV
             return OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
         }
 
-        public Image<Bgr, byte> CombineImages(IEnumerable<string> imagePaths)
+        public Image<Bgr, byte> CombineImagesMean(IEnumerable<string> imagePaths)
         {
             List<Image<Bgr, byte>> images = new List<Image<Bgr, byte>>();
             for (int i = 0; i < imagePaths.Count(); i++)
@@ -181,10 +181,41 @@ namespace Schneedetektion.OpenCV
                     red /= images.Count;
 
                     result[row, column] = new Bgr(blue, green, red);
-                    //result[row, column] = new Bgr(
-                    //    images.Select(image => image[row, column].Blue).Average(),
-                    //    images.Select(image => image[row, column].Green).Average(),
-                    //    images.Select(image => image[row, column].Red).Average());
+                }
+            }
+
+            return result;
+        }
+
+        public Image<Bgr, byte> CombineImagesMadian(IEnumerable<string> imagePaths)
+        {
+            List<Image<Bgr, byte>> images = new List<Image<Bgr, byte>>();
+            for (int i = 0; i < imagePaths.Count(); i++)
+            {
+                images.Add(new Image<Bgr, byte>(imagePaths.ElementAt(i)));
+            }
+            Image<Bgr, byte> result = new Image<Bgr, byte>(images.First().Cols, images.First().Rows, new Bgr(0, 0, 0));
+
+            List<double> blue  = new List<double>();
+            List<double> green = new List<double>();
+            List<double> red   = new List<double>();
+
+            for (int column = 0; column < images.First().Cols; column++)
+            {
+                for (int row = 0; row < images.First().Rows; row++)
+                {
+                    for (int i = 0; i < images.Count; i++)
+                    {
+                        blue.Add(images[i][row, column].Blue);
+                        green.Add(images[i][row, column].Green);
+                        red.Add(images[i][row, column].Red);
+                    }
+
+                    result[row, column] = new Bgr(GetMedian(blue), GetMedian(green), GetMedian(red));
+
+                    blue.Clear();
+                    green.Clear();
+                    red.Clear();
                 }
             }
 
@@ -382,6 +413,20 @@ namespace Schneedetektion.OpenCV
 
             // Return
             return statistic;
+        }
+
+        private double GetMedian(List<double> list)
+        {
+            list.Sort();
+            int middle = list.Count / 2;
+            if (list.Count % 2 == 0)
+            {
+                return (list.ElementAt(middle) + list.ElementAt(middle - 1)) / 2d;
+            }
+            else
+            {
+                return list.ElementAt(middle);
+            }
         }
         #endregion
     }

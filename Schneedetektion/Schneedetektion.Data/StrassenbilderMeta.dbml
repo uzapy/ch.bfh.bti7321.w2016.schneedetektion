@@ -104,6 +104,7 @@
       <Column Name="BadLighting" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="Foggy" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="Rainy" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="CombinationMethod" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Association Name="Polygon_Combined_Statistic" Member="Polygon" ThisKey="Polygon_ID" OtherKey="ID" Type="Polygon" IsForeignKey="true" />
       <Association Name="Statistic_Combined_Statistic" Member="Statistic" ThisKey="Statistics_ID" OtherKey="ID" Type="Statistic" IsForeignKey="true" />
     </Type>

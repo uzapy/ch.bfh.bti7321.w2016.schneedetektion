@@ -172,7 +172,7 @@ namespace Schneedetektion.GatherData
             images = images.Where(i => i.Snow == snow && i.BadLighting == badlighting && i.Foggy == foggy && i.Rainy == rainy);
 
             // wenn weniger als 2 bilder in kollektion => verwerfen
-            if (images.Count() < 2)
+            if (images.Count() < 3)
             {
                 return;
             }
@@ -180,7 +180,7 @@ namespace Schneedetektion.GatherData
             Console.WriteLine($"Found Images: {images.Count()}");
 
             // combine images
-            Image<Bgr, byte> combinedImage = openCVHelper.CombineImages(images.Select(i => Path.Combine(folderName, i.Place, i.Name + ".jpg")));
+            Image<Bgr, byte> combinedImage = openCVHelper.CombineImagesMadian(images.Select(i => Path.Combine(folderName, i.Place, i.Name + ".jpg")));
             combinedImage.Save(@"C:\Users\uzapy\Desktop\test\" + count++ + ".png");
             Console.WriteLine(@"C:\Users\uzapy\Desktop\test\" + (count-1) + ".png");
 
@@ -201,6 +201,7 @@ namespace Schneedetektion.GatherData
                 combinedStatistic.BadLighting = badlighting;
                 combinedStatistic.Foggy = foggy;
                 combinedStatistic.Rainy = rainy;
+                combinedStatistic.CombinationMethod = "Median";
 
                 Console.WriteLine($"Polygon: {combinedStatistic.Polygon.ID}");
             }

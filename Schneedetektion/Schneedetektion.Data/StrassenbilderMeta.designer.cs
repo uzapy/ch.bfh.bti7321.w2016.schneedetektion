@@ -2140,6 +2140,8 @@ namespace Schneedetektion.Data
 		
 		private System.Nullable<bool> _Rainy;
 		
+		private string _CombinationMethod;
+		
 		private EntityRef<Polygon> _Polygon;
 		
 		private EntityRef<Statistic> _Statistic;
@@ -2170,6 +2172,8 @@ namespace Schneedetektion.Data
     partial void OnFoggyChanged();
     partial void OnRainyChanging(System.Nullable<bool> value);
     partial void OnRainyChanged();
+    partial void OnCombinationMethodChanging(string value);
+    partial void OnCombinationMethodChanged();
     #endregion
 		
 		public Combined_Statistic()
@@ -2403,6 +2407,26 @@ namespace Schneedetektion.Data
 					this._Rainy = value;
 					this.SendPropertyChanged("Rainy");
 					this.OnRainyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CombinationMethod", DbType="NVarChar(50)")]
+		public string CombinationMethod
+		{
+			get
+			{
+				return this._CombinationMethod;
+			}
+			set
+			{
+				if ((this._CombinationMethod != value))
+				{
+					this.OnCombinationMethodChanging(value);
+					this.SendPropertyChanging();
+					this._CombinationMethod = value;
+					this.SendPropertyChanged("CombinationMethod");
+					this.OnCombinationMethodChanged();
 				}
 			}
 		}

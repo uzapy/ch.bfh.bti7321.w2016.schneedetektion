@@ -96,7 +96,7 @@ namespace Schneedetektion.Test
                 .Where(i => ids.Contains(i.ID))
                 .Select(i => Path.Combine(@"C:\Users\uzapy\Desktop\astra2016", i.Place, i.Name + ".jpg"));
 
-            openCVHelper.CombineImages(imagePaths);
+            openCVHelper.CombineImagesMean(imagePaths);
         }
 
         [TestMethod]
