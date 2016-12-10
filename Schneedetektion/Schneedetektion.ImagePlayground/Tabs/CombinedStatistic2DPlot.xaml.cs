@@ -15,19 +15,21 @@ namespace Schneedetektion.ImagePlayground
     public partial class CombinedStatistic2DPlot : UserControl
     {
         #region Fields
-        private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
-        private OpenCVHelper openCVHelper = new OpenCVHelper();
-        private ObservableCollection<string> cameraNames = new ObservableCollection<string>();
-        private ObservableCollection<string> polygonNames = new ObservableCollection<string>();
-        private ObservableCollection<string> timeSlotNames = new ObservableCollection<string>();
-        private List<object> initialElements = new List<object>();
-        private string selectedCamera = String.Empty;
-        private string selectedPolygon = String.Empty;
-        private string selectedTimeSlot = String.Empty;
-        private string selectedX = String.Empty;
-        private string selectedY = String.Empty;
-        private string selectedColorX = String.Empty;
-        private string selectedColorY = String.Empty;
+        private StrassenbilderMetaDataContext dataContext       = new StrassenbilderMetaDataContext();
+        private OpenCVHelper openCVHelper                       = new OpenCVHelper();
+        private ObservableCollection<string> combinationMethods = new ObservableCollection<string>();
+        private ObservableCollection<string> cameraNames        = new ObservableCollection<string>();
+        private ObservableCollection<string> polygonNames       = new ObservableCollection<string>();
+        private ObservableCollection<string> timeSlotNames      = new ObservableCollection<string>();
+        private List<object> initialElements                    = new List<object>();
+        private string selectedCombinationMethod                = String.Empty;
+        private string selectedCamera                           = String.Empty;
+        private string selectedPolygon                          = String.Empty;
+        private string selectedTimeSlot                         = String.Empty;
+        private string selectedX                                = String.Empty;
+        private string selectedY                                = String.Empty;
+        private string selectedColorX                           = String.Empty;
+        private string selectedColorY                           = String.Empty;
         #endregion
 
         #region Constructor
@@ -35,9 +37,16 @@ namespace Schneedetektion.ImagePlayground
         {
             InitializeComponent();
 
-            cameraList.ItemsSource = cameraNames;
-            polygonList.ItemsSource = polygonNames;
-            timeSlotList.ItemsSource = timeSlotNames;
+            combinationMethodList.ItemsSource = combinationMethods;
+            cameraList.ItemsSource            = cameraNames;
+            polygonList.ItemsSource           = polygonNames;
+            timeSlotList.ItemsSource          = timeSlotNames;
+
+            IEnumerable<string> methods = dataContext.Combined_Statistics.Select(cs => cs.CombinationMethod).Distinct();
+            foreach (var method in methods)
+            {
+                combinationMethods.Add(method);
+            }
 
             IEnumerable<string> cameras = dataContext.Combined_Statistics.Select(cs => cs.Polygon.CameraName).Distinct();
             foreach (var camera in cameras)
@@ -68,6 +77,14 @@ namespace Schneedetektion.ImagePlayground
         #endregion
 
         #region Event Handler
+        private void combinationMethodList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (combinationMethodList.SelectedItem != null)
+            {
+                selectedCombinationMethod = combinationMethodList.SelectedItem as String;
+            }
+        }
+
         private void cameraList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cameraList.SelectedItem != null)
@@ -139,7 +156,8 @@ namespace Schneedetektion.ImagePlayground
             int timeSlot = 0;
             bool hasTimeSlot = false;
 
-            if (!String.IsNullOrEmpty(selectedCamera) &&
+            if (!String.IsNullOrEmpty(selectedCombinationMethod) &&
+                !String.IsNullOrEmpty(selectedCamera) &&
                 !String.IsNullOrEmpty(selectedPolygon) && Int32.TryParse(selectedPolygon.Split('-')[0], out polygonID) &&
                 !String.IsNullOrEmpty(selectedTimeSlot) &&
                 !String.IsNullOrEmpty(selectedX) &&
@@ -158,6 +176,7 @@ namespace Schneedetektion.ImagePlayground
                                                  where es.Snow == true
                                                  where es.Polygon.ID == polygonID
                                                  where es.StartTime == timeSlot || !hasTimeSlot
+                                                 where es.CombinationMethod == selectedCombinationMethod
                                                  select es;
 
                 DrawPoints(combinedStatisticsWithSnow, selectedX, selectedY, selectedColorX, selectedColorY, Brushes.Blue);
@@ -167,20 +186,10 @@ namespace Schneedetektion.ImagePlayground
                                                     where es.Snow == false
                                                     where es.Polygon.ID == polygonID
                                                     where es.StartTime == timeSlot || !hasTimeSlot
+                                                    where es.CombinationMethod == selectedCombinationMethod
                                                     select es;
 
                 DrawPoints(combinedStatisticsWithoutSnow, selectedX, selectedY, selectedColorX, selectedColorY, Brushes.Magenta);
-            }
-        }
-        #endregion
-
-        #region Private Methods
-        private void ClearCanvas()
-        {
-            plotCanvas.Children.Clear();
-            foreach (var element in initialElements)
-            {
-                plotCanvas.Children.Add(element as UIElement);
             }
         }
 
@@ -195,6 +204,17 @@ namespace Schneedetektion.ImagePlayground
             yLine.Y1 = 0;
             yLine.X2 = 0;
             yLine.Y2 = ((Canvas)e.OriginalSource).ActualHeight;
+        }
+        #endregion
+
+        #region Private Methods
+        private void ClearCanvas()
+        {
+            plotCanvas.Children.Clear();
+            foreach (var element in initialElements)
+            {
+                plotCanvas.Children.Add(element as UIElement);
+            }
         }
 
         private void DrawPoints(IEnumerable<Combined_Statistic> combinedStatistics,

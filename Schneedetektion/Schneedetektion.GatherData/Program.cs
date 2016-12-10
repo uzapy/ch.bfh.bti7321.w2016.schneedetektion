@@ -180,9 +180,10 @@ namespace Schneedetektion.GatherData
             Console.WriteLine($"Found Images: {images.Count()}");
 
             // combine images
-            Image<Bgr, byte> combinedImage = openCVHelper.CombineImagesMadian(images.Select(i => Path.Combine(folderName, i.Place, i.Name + ".jpg")));
-            combinedImage.Save(@"C:\Users\uzapy\Desktop\test\" + count++ + ".png");
-            Console.WriteLine(@"C:\Users\uzapy\Desktop\test\" + (count-1) + ".png");
+            Image<Bgr, byte> combinedImage = openCVHelper.CombineImagesMedian(images.Select(i => Path.Combine(folderName, i.Place, i.Name + ".jpg")));
+            combinedImage.Save(@"C:\Users\uzapy\Desktop\test\" + count + "median.png");
+            Console.WriteLine(@"C:\Users\uzapy\Desktop\test\" + count + "madian.png");
+            count++;
 
             foreach (var polygon in polygons)
             {

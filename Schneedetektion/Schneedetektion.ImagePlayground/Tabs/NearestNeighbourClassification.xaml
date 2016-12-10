@@ -5,6 +5,9 @@
              xmlns:xseed="http://schemas.xceed.com/wpf/xaml/toolkit">
     <DockPanel>
         <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
+            <GroupBox Header="By Combination Method">
+                <ListBox x:Name="combinationMethodList" Height="50" SelectionMode="Single" />
+            </GroupBox>
             <GroupBox Header="By Camera">
                 <ListBox x:Name="cameraList" Height="100" SelectionMode="Single" />
             </GroupBox>

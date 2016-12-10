@@ -15,6 +15,7 @@ namespace Schneedetektion.ImagePlayground
         #region Fields
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private OpenCVHelper openCVHelper = new OpenCVHelper();
+        private ObservableCollection<string> combinationMethods = new ObservableCollection<string>();
         private ObservableCollection<string> cameraNames = new ObservableCollection<string>();
         private ObservableCollection<ClassificationViewModel> classificationViewModels = new ObservableCollection<ClassificationViewModel>();
         private List<Polygon> polygons = new List<Polygon>();
@@ -28,8 +29,15 @@ namespace Schneedetektion.ImagePlayground
         {
             InitializeComponent();
 
-            cameraList.ItemsSource = cameraNames;
-            imageContainer.ItemsSource = classificationViewModels;
+            combinationMethodList.ItemsSource = combinationMethods;
+            cameraList.ItemsSource            = cameraNames;
+            imageContainer.ItemsSource        = classificationViewModels;
+
+            IEnumerable<string> methods = dataContext.Combined_Statistics.Select(cs => cs.CombinationMethod).Distinct();
+            foreach (var method in methods)
+            {
+                combinationMethods.Add(method);
+            }
 
             IEnumerable<string> cameras = dataContext.Combined_Statistics.Select(cs => cs.Polygon.CameraName).Distinct();
             foreach (var camera in cameras)
@@ -41,8 +49,7 @@ namespace Schneedetektion.ImagePlayground
             backgroundWorker.ProgressChanged += BackgroundWorker_ProgressChanged;
             backgroundWorker.WorkerReportsProgress = true;
 
-            fTest.Text =
-                "True Negatives:\t0\n" +
+            fTest.Text = "True Negatives:\t0\n" +
                 "False Negatives:\t0\n" +
                 "False Positives:\t0\n" +
                 "True Positives:\t0\n" +
@@ -55,16 +62,24 @@ namespace Schneedetektion.ImagePlayground
         #region Event Handler
         private void Load_Click(object sender, RoutedEventArgs e)
         {
-            if (cameraList.SelectedItem != null && numberOfImages.Value.HasValue && numberOfNeighbours.Value.HasValue)
+            if (combinationMethodList.SelectedItem != null &&
+                cameraList.SelectedItem != null &&
+                numberOfImages.Value.HasValue &&
+                numberOfNeighbours.Value.HasValue)
             {
+                string selectedCombinationMethod = combinationMethodList.SelectedItem as String;
                 string selectedCamera = cameraList.SelectedItem as String;
+
                 // polygone laden
                 polygons = dataContext.Polygons.Where(p => p.CameraName == selectedCamera).ToList();
                 // statistiken laden
-                combinedStatistics = dataContext.Combined_Statistics.Where(cs => cs.Polygon.CameraName == selectedCamera);
+                combinedStatistics = from cs in dataContext.Combined_Statistics
+                                     where cs.Polygon.CameraName == selectedCamera
+                                     where cs.CombinationMethod == selectedCombinationMethod
+                                     select cs;
 
                 int numberOfImagesTotal = numberOfImages.Value.Value;
-                int numberOfImagesWithoutSnow = (int)((double)numberOfImagesTotal * (1d - (double)ratio.Value/100d));
+                int numberOfImagesWithoutSnow = (int)((double)numberOfImagesTotal * (1d - (double)ratio.Value / 100d));
                 int numberOfImagesWithSnow = numberOfImagesTotal - numberOfImagesWithoutSnow;
 
                 // Zufällige Bilder ohne Schnee auswählen
@@ -128,7 +143,9 @@ namespace Schneedetektion.ImagePlayground
             foreach (var polygon in polygons)
             {
                 imageStatistics.Add(polygon,
-                    openCVHelper.GetStatisticForPatchFromImagePath(classificationViewModel.FileName, PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection)));
+                    openCVHelper.GetStatisticForPatchFromImagePath(
+                        classificationViewModel.FileName,
+                        PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection)));
             }
 
             // kombinierte statistiken nach Bild-Gruppen gruppieren
@@ -182,16 +199,15 @@ namespace Schneedetektion.ImagePlayground
         {
             var classifiedImages = classificationViewModels.Where(i => i.HasResults);
 
-            double trueNegatives  = classifiedImages.Where(i => i.TrueNegative).Count();
+            double trueNegatives = classifiedImages.Where(i => i.TrueNegative).Count();
             double falseNegatives = classifiedImages.Where(i => i.FalseNegative).Count();
             double falsePositives = classifiedImages.Where(i => i.FalsePositive).Count();
-            double truePositives  = classifiedImages.Where(i => i.TruePositive).Count();
-            double sensitivity    = truePositives / (truePositives + falseNegatives);
-            double precision      = truePositives / (truePositives + falsePositives);
-            double f              = 2 * (precision * sensitivity) / (precision + sensitivity);
+            double truePositives = classifiedImages.Where(i => i.TruePositive).Count();
+            double sensitivity = truePositives / (truePositives + falseNegatives);
+            double precision = truePositives / (truePositives + falsePositives);
+            double f = 2 * (precision * sensitivity) / (precision + sensitivity);
 
-            fTest.Text =
-                $"True Negatives:\t{trueNegatives}\n" +
+            fTest.Text = $"True Negatives:\t{trueNegatives}\n" +
                 $"False Negatives:\t{falseNegatives}\n" +
                 $"False Positives:\t{falsePositives}\n" +
                 $"True Positives:\t{truePositives}\n" +

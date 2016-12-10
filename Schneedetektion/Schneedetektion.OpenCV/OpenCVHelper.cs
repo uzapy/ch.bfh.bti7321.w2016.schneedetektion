@@ -187,7 +187,7 @@ namespace Schneedetektion.OpenCV
             return result;
         }
 
-        public Image<Bgr, byte> CombineImagesMadian(IEnumerable<string> imagePaths)
+        public Image<Bgr, byte> CombineImagesMedian(IEnumerable<string> imagePaths)
         {
             List<Image<Bgr, byte>> images = new List<Image<Bgr, byte>>();
             for (int i = 0; i < imagePaths.Count(); i++)

@@ -4,11 +4,14 @@
              xmlns:local="clr-namespace:Schneedetektion.ImagePlayground">
     <DockPanel>
         <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
+            <GroupBox Header="By Combination Method">
+                <ListBox x:Name="combinationMethodList" Height="50" SelectionMode="Single" SelectionChanged="combinationMethodList_SelectionChanged" />
+            </GroupBox>
             <GroupBox Header="By Camera">
                 <ListBox x:Name="cameraList" Height="100" SelectionMode="Single" SelectionChanged="cameraList_SelectionChanged" />
             </GroupBox>
             <GroupBox Header="By Polygon">
-                <ListBox x:Name="polygonList" Height="200" SelectionMode="Single" SelectionChanged="polygonList_SelectionChanged" />
+                <ListBox x:Name="polygonList" Height="100" SelectionMode="Single" SelectionChanged="polygonList_SelectionChanged" />
             </GroupBox>
             <GroupBox Header="By TimeSlot">
                 <ListBox x:Name="timeSlotList" Height="200" SelectionMode="Single" SelectionChanged="timeSlotList_SelectionChanged" />
