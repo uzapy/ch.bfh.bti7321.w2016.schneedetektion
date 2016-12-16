@@ -50,7 +50,7 @@
                     <TextBlock Text="Snow" Grid.Column="0" Grid.Row="0" />
                     <Rectangle Grid.Column="1" Grid.Row="0" Width="20" Height="20" Fill="Blue" HorizontalAlignment="Center" />
                     <TextBlock Text="No Snow" Grid.Column="0" Grid.Row="1" />
-                    <Rectangle Grid.Column="1" Grid.Row="1" Width="20" Height="20" Fill="Yellow" HorizontalAlignment="Center" />
+                    <Rectangle Grid.Column="1" Grid.Row="1" Width="20" Height="20" Fill="Red" HorizontalAlignment="Center" />
                 </Grid>
             </GroupBox>
         </StackPanel>

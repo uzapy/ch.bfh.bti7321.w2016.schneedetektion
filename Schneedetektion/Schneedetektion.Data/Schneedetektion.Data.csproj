@@ -112,7 +112,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Queries\coverageOfCategories.sql" />
+    <Content Include="Queries\CoverageOfCategories.sql" />
+    <Content Include="Queries\LogitRegressionQuery.sql" />
     <Content Include="Queries\NumberOfDayImagesByPlace.sql" />
     <Content Include="Queries\StatisticsDuplicates.sql" />
   </ItemGroup>

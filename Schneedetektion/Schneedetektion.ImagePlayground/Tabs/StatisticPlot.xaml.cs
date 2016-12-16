@@ -33,7 +33,12 @@ namespace Schneedetektion.ImagePlayground
             cameraList.ItemsSource = cameraNames;
             polygonList.ItemsSource = polygonNames;
 
-            IEnumerable<string> cameras = dataContext.Entity_Statistics.Where(es => es.Polygon != null).Select(es => es.Image.Place).Distinct();
+            IEnumerable<string> cameras = dataContext.Entity_Statistics
+                .Where(es => es.Polygon != null)
+                .Select(es => es.Image.Place)
+                .Distinct()
+                .OrderBy(es => es);
+
             foreach (var camera in cameras)
             {
                 cameraNames.Add(camera);
@@ -114,7 +119,7 @@ namespace Schneedetektion.ImagePlayground
                                             where es.Polygon.ID == polygonID
                                             select es.Statistic;
 
-                DrawPoints(statisticsWithoutSnow, selectedX, selectedColor, Brushes.Yellow);
+                DrawPoints(statisticsWithoutSnow, selectedX, selectedColor, Brushes.Red);
             }
         }
         #endregion

@@ -393,6 +393,10 @@ namespace Schneedetektion.OpenCV
             statistic.ContrastGreen = (statistic.MaximumGreen.Value - statistic.MinimumGreen.Value) / (statistic.MaximumGreen.Value + statistic.MinimumGreen.Value);
             statistic.ContrastRed = (statistic.MaximumRed.Value - statistic.MinimumRed.Value) / (statistic.MaximumRed.Value + statistic.MinimumRed.Value);
 
+            if (Double.IsNaN(statistic.ContrastBlue.Value)) statistic.ContrastBlue = 0;
+            if (Double.IsNaN(statistic.ContrastGreen.Value)) statistic.ContrastGreen = 0;
+            if (Double.IsNaN(statistic.ContrastRed.Value)) statistic.ContrastRed = 0;
+
             // Median
             bluePixels.Sort();
             greenPixels.Sort();

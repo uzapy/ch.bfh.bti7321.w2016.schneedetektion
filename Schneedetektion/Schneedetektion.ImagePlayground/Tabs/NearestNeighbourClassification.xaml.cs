@@ -39,7 +39,7 @@ namespace Schneedetektion.ImagePlayground
                 combinationMethods.Add(method);
             }
 
-            IEnumerable<string> cameras = dataContext.Combined_Statistics.Select(cs => cs.Polygon.CameraName).Distinct();
+            IEnumerable<string> cameras = dataContext.Combined_Statistics.Select(cs => cs.Polygon.CameraName).Distinct().OrderBy(es => es);
             foreach (var camera in cameras)
             {
                 cameraNames.Add(camera);

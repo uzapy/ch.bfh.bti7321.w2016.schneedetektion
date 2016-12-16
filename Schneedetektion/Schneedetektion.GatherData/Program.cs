@@ -39,10 +39,10 @@ namespace Schneedetektion.GatherData
             //    "mvk163", "mvk164" };
             //cameraNames = new List<string>() { "mvk106" };
 
-            CombineStatistics("mvk108");
+            CombineStatistics("mvk021");
 
-            //CalculateImageStatistics();
-            //CalculatePatchStatistics();
+            // CalculateImageStatistics();
+            // CalculatePatchStatistics();
             // RegisterImagesInDB();
             // UpdateDateTime();
             // RemoveDataWithoutFile();
@@ -180,9 +180,9 @@ namespace Schneedetektion.GatherData
             Console.WriteLine($"Found Images: {images.Count()}");
 
             // combine images
-            Image<Bgr, byte> combinedImage = openCVHelper.CombineImagesMedian(images.Select(i => Path.Combine(folderName, i.Place, i.Name + ".jpg")));
-            combinedImage.Save(@"C:\Users\uzapy\Desktop\test\" + count + "median.png");
-            Console.WriteLine(@"C:\Users\uzapy\Desktop\test\" + count + "madian.png");
+            Image<Bgr, byte> combinedImage = openCVHelper.CombineImagesMean(images.Select(i => Path.Combine(folderName, i.Place, i.Name + ".jpg")));
+            combinedImage.Save(@"C:\Users\uzapy\Desktop\test\" + count + "_mean.png");
+            Console.WriteLine(@"C:\Users\uzapy\Desktop\test\" + count + "_mean.png");
             count++;
 
             foreach (var polygon in polygons)
@@ -202,7 +202,7 @@ namespace Schneedetektion.GatherData
                 combinedStatistic.BadLighting = badlighting;
                 combinedStatistic.Foggy = foggy;
                 combinedStatistic.Rainy = rainy;
-                combinedStatistic.CombinationMethod = "Median";
+                combinedStatistic.CombinationMethod = "Mean";
 
                 Console.WriteLine($"Polygon: {combinedStatistic.Polygon.ID}");
             }
@@ -265,22 +265,22 @@ namespace Schneedetektion.GatherData
 
         private static void CalculatePatchStatistics()
         {
-            string camera = "mvk108";
+            string camera = "mvk021";
             IEnumerable<Polygon> polygons = dataContext.Polygons.Where(p => p.CameraName == camera);
 
             IEnumerable<Image> images = (from i in dataContext.Images
-                                            where i.Place == camera
-                                            where i.Day == true
-                                            where (from es in i.Entity_Statistics where es.Polygon_ID != null select es).Count() == 0
-                                            select i).Take(take);
+                                        where i.Place == camera
+                                        where i.Day == true
+                                        where (from es in i.Entity_Statistics where es.Polygon_ID != null select es).Count() == 0
+                                        select i).Take(take);
 
             foreach (var image in images)
             {
-
                 foreach (var polygon in polygons)
                 {
                     var imagePath = Path.Combine(folderName, image.Place, image.Name + ".jpg");
                     var polygonPoints = JsonConvert.DeserializeObject<Media.PointCollection>(polygon.PolygonPointCollection);
+
                     Statistic imageStatistic = openCVHelper.GetStatisticForPatchFromImagePath(imagePath, polygonPoints);
 
                     Console.WriteLine("I: " + image.ID + " - " + image.Name + " - P:" + polygon.ID + " - " + polygon.ImageArea);

@@ -36,7 +36,12 @@ namespace Schneedetektion.ImagePlayground
             cameraList.ItemsSource = cameraNames;
             polygonList.ItemsSource = polygonNames;
 
-            IEnumerable<string> cameras = dataContext.Entity_Statistics.Where(es => es.Polygon != null).Select(es => es.Image.Place).Distinct();
+            IEnumerable<string> cameras = dataContext.Entity_Statistics
+                .Where(es => es.Polygon != null)
+                .Select(es => es.Image.Place)
+                .Distinct()
+                .OrderBy(es => es);
+
             foreach (var camera in cameras)
             {
                 cameraNames.Add(camera);
