@@ -93,8 +93,11 @@
     <Compile Include="Tabs\CombinedStatistic2DPlot.xaml.cs">
       <DependentUpon>CombinedStatistic2DPlot.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tabs\NearestNeighbourClassification.xaml.cs">
-      <DependentUpon>NearestNeighbourClassification.xaml</DependentUpon>
+    <Compile Include="Tabs\SlidingNNNClassification.xaml.cs">
+      <DependentUpon>SlidingNNNClassification.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tabs\NNNClassification.xaml.cs">
+      <DependentUpon>NNNClassification.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tabs\StatisticPlot.xaml.cs">
       <DependentUpon>StatisticPlot.xaml</DependentUpon>
@@ -130,7 +133,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tabs\NearestNeighbourClassification.xaml">
+    <Page Include="Tabs\SlidingNNNClassification.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Tabs\NNNClassification.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

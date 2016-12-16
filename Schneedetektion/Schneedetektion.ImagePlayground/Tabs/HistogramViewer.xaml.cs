@@ -32,7 +32,7 @@ namespace Schneedetektion.ImagePlayground
             {
                 imageViewModel1 = selectedImage;
                 image1.Source = imageViewModel1.Bitmap;
-                histogram1 = openCVHelper.GetHistogram(imageViewModel1.FileName);
+                histogram1 = openCVHelper.GetHistogram(imageViewModel1.Image.FileName);
 
                 canvas1.Children.Clear();
                 for (int i = 0; i < histogram1[0].Length; i++)
@@ -46,7 +46,7 @@ namespace Schneedetektion.ImagePlayground
             {
                 imageViewModel2 = selectedImage;
                 image2.Source = imageViewModel2.Bitmap;
-                histogram2 = openCVHelper.GetHistogram(imageViewModel2.FileName);
+                histogram2 = openCVHelper.GetHistogram(imageViewModel2.Image.FileName);
 
                 canvas2.Children.Clear();
                 for (int i = 0; i < histogram2[0].Length; i++)

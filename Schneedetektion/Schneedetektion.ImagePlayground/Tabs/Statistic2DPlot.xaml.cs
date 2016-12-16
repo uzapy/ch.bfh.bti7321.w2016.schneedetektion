@@ -206,8 +206,7 @@ namespace Schneedetektion.ImagePlayground
             fullImage.Source = imageViewModel.Bitmap;
 
             patchImage.Source = openCVHelper.GetPatchBitmapImage(
-                imageViewModel.FileName,
-                PolygonHelper.DeserializePointCollection(entityStatitistic.Polygon.PolygonPointCollection));
+                imageViewModel.Image.FileName, PolygonHelper.DeserializePointCollection(entityStatitistic.Polygon.PolygonPointCollection));
         }
 
         private double ScaleToCanvas(double value, string property, double scale)

@@ -52,7 +52,7 @@ namespace Schneedetektion.ImagePlayground
                 }
                 else
                 {
-                    BitmapImage patchImage = openCVHelper.GetPatchBitmapImage(imageViewModel.FileName,
+                    BitmapImage patchImage = openCVHelper.GetPatchBitmapImage(imageViewModel.Image.FileName,
                         PolygonHelper.DeserializePointCollection(es.Polygon.PolygonPointCollection));
                     PatchViewModel patchViewModel = new PatchViewModel(es.Statistic, patchImage, imageViewModel, es.Polygon);
                     patches.Add(patchViewModel);

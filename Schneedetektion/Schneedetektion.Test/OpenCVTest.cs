@@ -25,7 +25,7 @@ namespace Schneedetektion.Test
             // Zufälliges Bild auswählen
             int count = dataContext.Images.Where(i => i.Day.Value).Count();
             ImageViewModel imageViewModel = new ImageViewModel(dataContext.Images.Where(i => i.Day.Value).Skip(random.Next(0, count)).First());
-            string image = imageViewModel.FileName;
+            string image = imageViewModel.Image.FileName;
 
             // Open CV
             OpenCVHelper helper = new OpenCVHelper();
@@ -53,8 +53,8 @@ namespace Schneedetektion.Test
             foreach (var polygon in polygons)
             {
                 IEnumerable<Point> pointCollection = PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection);
-                Statistic statistic = openCVHelper.GetStatisticForPatchFromImagePath(imageViewModel.FileName, pointCollection);
-                BitmapImage patchImage = openCVHelper.GetPatchBitmapImage(imageViewModel.FileName, pointCollection);
+                Statistic statistic = openCVHelper.GetStatisticForPatchFromImagePath(imageViewModel.Image.FileName, pointCollection);
+                BitmapImage patchImage = openCVHelper.GetPatchBitmapImage(imageViewModel.Image.FileName, pointCollection);
                 patches.Add(new PatchViewModel(statistic, patchImage, imageViewModel, polygon));
             }
 
@@ -83,7 +83,8 @@ namespace Schneedetektion.Test
             ImageViewModel imageViewModel = new ImageViewModel(dataContext.Images.Where(i => i.Day.Value).Skip(random.Next(0, count)).First());
 
             Polygon polygon = dataContext.Polygons.Where(p => p.CameraName == imageViewModel.Image.Place).First();
-            openCVHelper.SaveBitmask(imageViewModel.FileName,
+            openCVHelper.SaveBitmask(
+                imageViewModel.Image.FileName,
                 @"C:\Users\uzapy\Desktop\astra2016\bitmasks\1.png",
                 PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection));
         }

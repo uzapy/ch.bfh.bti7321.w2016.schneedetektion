@@ -91,7 +91,7 @@ namespace Schneedetektion.ImagePlayground
             foreach (var polygon in polygons)
             {
                 string bitmaskFileName = Path.Combine(folderName, "bitmasks", polygon.CameraName + "_" + polygon.ID + ".png");
-                openCVHelper.SaveBitmask(imageViewModel.FileName, bitmaskFileName,
+                openCVHelper.SaveBitmask(imageViewModel.Image.FileName, bitmaskFileName,
                     PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection));
                 polygon.Bitmask = bitmaskFileName;
                 dataContext.SubmitChanges();

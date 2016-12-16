@@ -10,7 +10,7 @@ using System.Windows.Controls;
 
 namespace Schneedetektion.ImagePlayground
 {
-    public partial class NearestNeighbourClassification : UserControl
+    public partial class NNNClassification : UserControl
     {
         #region Fields
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
@@ -25,7 +25,7 @@ namespace Schneedetektion.ImagePlayground
         #endregion
 
         #region Constructor
-        public NearestNeighbourClassification()
+        public NNNClassification()
         {
             InitializeComponent();
 
@@ -75,10 +75,8 @@ namespace Schneedetektion.ImagePlayground
 
         private void Load_Click(object sender, RoutedEventArgs e)
         {
-            if (combinationMethodList.SelectedItem != null &&
-                cameraList.SelectedItem != null &&
-                numberOfImages.Value.HasValue &&
-                numberOfNeighbours.Value.HasValue)
+            if (combinationMethodList.SelectedItem != null && cameraList.SelectedItem != null &&
+                numberOfImages.Value.HasValue && numberOfNeighbours.Value.HasValue)
             {
                 string selectedCombinationMethod = combinationMethodList.SelectedItem as String;
                 string selectedCamera = cameraList.SelectedItem as String;
@@ -158,8 +156,7 @@ namespace Schneedetektion.ImagePlayground
             foreach (var polygon in polygons)
             {
                 imageStatistics.Add(polygon,
-                    openCVHelper.GetStatisticForPatchFromImagePath(
-                        classificationViewModel.FileName,
+                    openCVHelper.GetStatisticForPatchFromImagePath(classificationViewModel.Image.FileName,
                         PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection)));
             }
 

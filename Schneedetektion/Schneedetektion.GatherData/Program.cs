@@ -13,7 +13,6 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using Media = System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace Schneedetektion.GatherData
 {
@@ -180,7 +179,7 @@ namespace Schneedetektion.GatherData
             Console.WriteLine($"Found Images: {images.Count()}");
 
             // combine images
-            Image<Bgr, byte> combinedImage = openCVHelper.CombineImagesMean(images.Select(i => Path.Combine(folderName, i.Place, i.Name + ".jpg")));
+            Image<Bgr, byte> combinedImage = openCVHelper.CombineImagesMean(images.Select(i => i.FileName));
             combinedImage.Save(@"C:\Users\uzapy\Desktop\test\" + count + "_mean.png");
             Console.WriteLine(@"C:\Users\uzapy\Desktop\test\" + count + "_mean.png");
             count++;
@@ -235,7 +234,7 @@ namespace Schneedetektion.GatherData
                 ManualResetEvent resetEvent = new ManualResetEvent(false);
                 ThreadPool.QueueUserWorkItem(arg =>
                 {
-                    Statistic imageStatistic = openCVHelper.GetStatisticForImage(Path.Combine(folderName, image.Place, image.Name + ".jpg"));
+                    Statistic imageStatistic = openCVHelper.GetStatisticForImage(image.FileName);
                     Console.WriteLine(image.ID + " - " + image.Name);
 
                     image.Entity_Statistics.Add(new Entity_Statistic()
@@ -278,10 +277,9 @@ namespace Schneedetektion.GatherData
             {
                 foreach (var polygon in polygons)
                 {
-                    var imagePath = Path.Combine(folderName, image.Place, image.Name + ".jpg");
                     var polygonPoints = JsonConvert.DeserializeObject<Media.PointCollection>(polygon.PolygonPointCollection);
 
-                    Statistic imageStatistic = openCVHelper.GetStatisticForPatchFromImagePath(imagePath, polygonPoints);
+                    Statistic imageStatistic = openCVHelper.GetStatisticForPatchFromImagePath(image.FileName, polygonPoints);
 
                     Console.WriteLine("I: " + image.ID + " - " + image.Name + " - P:" + polygon.ID + " - " + polygon.ImageArea);
 

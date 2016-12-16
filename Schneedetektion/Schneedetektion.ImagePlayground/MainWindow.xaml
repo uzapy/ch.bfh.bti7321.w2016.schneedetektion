@@ -34,8 +34,11 @@
         <TabItem Header="Combined Stat 2D Plot" x:Name="combinedStatistic2DPlotTab">
             <local:CombinedStatistic2DPlot x:Name="combinedStatistic2DPlot" />
         </TabItem>
-        <TabItem Header="NNN Classification" x:Name="nearestNeighborClassificationTab">
-            <local:NearestNeighbourClassification x:Name="nearestNeighborClassificationPlot" />
+        <TabItem Header="NNN Classification" x:Name="nnClassificationTab">
+            <local:NNNClassification x:Name="nnClassification" />
+        </TabItem>
+        <TabItem Header="Sliding NNN Classification" x:Name="slidingNNClassificationTab">
+            <local:NNNClassification x:Name="slidingNNClassification" />
         </TabItem>
     </TabControl>
 </Window>

@@ -1,11 +1,19 @@
 ﻿using Schneedetektion.Data.Properties;
-using System;
+using System.IO;
 
 namespace Schneedetektion.Data
 {
     public partial class Image
     {
         private static string folderName = Settings.Default.WorkingFolder;
+
+        public string FileName
+        {
+            get
+            {
+                return Path.Combine(folderName, this.Place, this.Name + ".jpg");
+            }
+        }
 
         public void SaveCategories(bool? isSnow, bool? isNoSnow, bool? isNight, bool? isDusk, bool? isDay, bool? isFoggy, bool? isCloudy, bool? isRainy,
             bool? isBadLighting, bool? isGoodLighting)
