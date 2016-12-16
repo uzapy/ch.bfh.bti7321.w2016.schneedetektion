@@ -60,6 +60,19 @@ namespace Schneedetektion.ImagePlayground
         #endregion
 
         #region Event Handler
+        private void cameraList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cameraList.SelectedItem != null)
+            {
+                string selectedCamera = cameraList.SelectedItem as String;
+
+                double total = dataContext.Images.Where(i => i.Day.Value && i.Place == selectedCamera).Count();
+                double snow = dataContext.Images.Where(i => i.Day.Value && i.Place == selectedCamera && i.Snow.Value).Count();
+
+                ratio.Value = 100d / total * snow;
+            }
+        }
+
         private void Load_Click(object sender, RoutedEventArgs e)
         {
             if (combinationMethodList.SelectedItem != null &&
@@ -85,17 +98,19 @@ namespace Schneedetektion.ImagePlayground
                 // Zufällige Bilder ohne Schnee auswählen
                 var dbImagesWithoutSnow = dataContext.Images
                     .Where(i => i.Day.Value && i.Place == selectedCamera && i.NoSnow.Value)
+                    .OrderBy(i => random.Next())
                     .Take(numberOfImagesWithoutSnow);
                 // Zufällige Bilder mit Schnee auswählen
                 var dbImagesWithSnow = dataContext.Images
                     .Where(i => i.Day.Value && i.Place == selectedCamera && i.Snow.Value)
+                    .OrderBy(i => random.Next())
                     .Take(numberOfImagesWithSnow);
 
                 // beide Listen kombinieren und shuffeln
-                var selectedImages = Shuffle(dbImagesWithoutSnow.Concat(dbImagesWithSnow).ToList());
+                // var selectedImages = Shuffle(dbImagesWithoutSnow.Concat(dbImagesWithSnow).ToList());
 
-                // Bilder anzeigen
-                foreach (var image in selectedImages)
+                // Beide Listen kombinieren und Bilder anzeigen
+                foreach (var image in dbImagesWithoutSnow.Concat(dbImagesWithSnow))
                 {
                     classificationViewModels.Add(new ClassificationViewModel(image));
                 }

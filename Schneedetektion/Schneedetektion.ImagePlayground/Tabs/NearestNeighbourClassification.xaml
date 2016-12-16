@@ -9,14 +9,21 @@
                 <ListBox x:Name="combinationMethodList" Height="50" SelectionMode="Single" />
             </GroupBox>
             <GroupBox Header="By Camera">
-                <ListBox x:Name="cameraList" Height="100" SelectionMode="Single" />
+                <ListBox x:Name="cameraList" Height="100" SelectionMode="Single" SelectionChanged="cameraList_SelectionChanged" />
             </GroupBox>
             <StackPanel Orientation="Horizontal"  Margin="0,5">
                 <TextBlock Text="Number" Margin="0,2,0,0" />
                 <xseed:IntegerUpDown x:Name="numberOfImages" Minimum="1" Maximum="10000" Value="100" Width="83" Margin="23,0,0,0" />
             </StackPanel>
-            <TextBlock Text="Snow / NotSnow Ratio" />
-            <Slider x:Name="ratio" Minimum="10" Maximum="50" LargeChange="1" Value="10" Margin="0,5,0,5" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Snow Ratio: " />
+                <TextBlock Text="{Binding ElementName=ratio, Path=Value, StringFormat={}{0:0.00}%}" />
+            </StackPanel>
+            <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                <TextBlock Text="5" Margin="5,0,5,0" />
+                <Slider x:Name="ratio" Minimum="5" Maximum="50" LargeChange="1" Value="10" Width="110" />
+                <TextBlock Text="50" Margin="5,0,5,0" />
+            </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <TextBlock Text="Neighbours" Margin="0,2,0,0" />
                 <xseed:IntegerUpDown x:Name="numberOfNeighbours" Minimum="1" Value="7" Width="83" Margin="5,0,0,5" />
