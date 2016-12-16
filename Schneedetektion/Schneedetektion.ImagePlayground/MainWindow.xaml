@@ -38,7 +38,7 @@
             <local:NNNClassification x:Name="nnClassification" />
         </TabItem>
         <TabItem Header="Sliding NNN Classification" x:Name="slidingNNClassificationTab">
-            <local:NNNClassification x:Name="slidingNNClassification" />
+            <local:SlidingNNNClassification x:Name="slidingNNClassification" />
         </TabItem>
     </TabControl>
 </Window>

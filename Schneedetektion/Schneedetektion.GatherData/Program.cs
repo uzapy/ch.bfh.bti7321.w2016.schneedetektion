@@ -38,7 +38,7 @@ namespace Schneedetektion.GatherData
             //    "mvk163", "mvk164" };
             //cameraNames = new List<string>() { "mvk106" };
 
-            CombineStatistics("mvk021");
+            CombineStatistics("mvk022");
 
             // CalculateImageStatistics();
             // CalculatePatchStatistics();
@@ -180,8 +180,8 @@ namespace Schneedetektion.GatherData
 
             // combine images
             Image<Bgr, byte> combinedImage = openCVHelper.CombineImagesMean(images.Select(i => i.FileName));
-            combinedImage.Save(@"C:\Users\uzapy\Desktop\test\" + count + "_mean.png");
-            Console.WriteLine(@"C:\Users\uzapy\Desktop\test\" + count + "_mean.png");
+            combinedImage.Save(@"C:\Users\uzapy\Desktop\test\" + count + "_Mean.png");
+            Console.WriteLine(@"C:\Users\uzapy\Desktop\test\" + count + "_Mean.png");
             count++;
 
             foreach (var polygon in polygons)
@@ -203,8 +203,9 @@ namespace Schneedetektion.GatherData
                 combinedStatistic.Rainy = rainy;
                 combinedStatistic.CombinationMethod = "Mean";
 
-                Console.WriteLine($"Polygon: {combinedStatistic.Polygon.ID}");
+                Console.Write($"Polygon: {combinedStatistic.Polygon.ID} | ");
             }
+            Console.WriteLine();
         }
 
         private static List<double> GetAverageHistogram(IQueryable<List<double>> histograms)
