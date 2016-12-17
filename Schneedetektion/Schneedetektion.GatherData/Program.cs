@@ -38,7 +38,7 @@ namespace Schneedetektion.GatherData
             //    "mvk163", "mvk164" };
             //cameraNames = new List<string>() { "mvk106" };
 
-            CombineStatistics("mvk022");
+            CombineStatistics("mvk131");
 
             // CalculateImageStatistics();
             // CalculatePatchStatistics();

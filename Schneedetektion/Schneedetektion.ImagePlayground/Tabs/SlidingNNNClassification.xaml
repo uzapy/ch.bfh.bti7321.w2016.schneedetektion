@@ -9,7 +9,7 @@
                 <ListBox x:Name="combinationMethodList" Height="50" SelectionMode="Single" />
             </GroupBox>
             <GroupBox Header="By Camera">
-                <ListBox x:Name="cameraList" Height="100" SelectionMode="Single" SelectionChanged="cameraList_SelectionChanged" />
+                <ListBox x:Name="cameraList" Height="200" SelectionMode="Single" SelectionChanged="cameraList_SelectionChanged" />
             </GroupBox>
             <StackPanel Orientation="Horizontal"  Margin="0,5">
                 <TextBlock Text="Number" Margin="0,2,0,0" />
