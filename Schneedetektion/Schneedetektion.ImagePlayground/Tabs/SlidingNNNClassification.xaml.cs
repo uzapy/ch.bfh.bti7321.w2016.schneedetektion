@@ -203,14 +203,14 @@ namespace Schneedetektion.ImagePlayground
 
             foreach (var polygon in polygons)
             {
-                foreach (var source in imageStatistics[polygon])
-                {
-                    var combinedStatisticsForPolygon = this.combinedStatistics.Where(cs => cs.Polygon_ID == polygon.ID);
-                    Dictionary<Combined_Statistic, double> distances = new Dictionary<Combined_Statistic, double>();
+                var combinedStatisticsForPolygon = this.combinedStatistics.Where(cs => cs.Polygon_ID == polygon.ID);
+                Dictionary<Combined_Statistic, double> distances = new Dictionary<Combined_Statistic, double>();
 
-                    foreach (var cs in combinedStatisticsForPolygon)
+                foreach (var sourceStatistics in imageStatistics[polygon])
+                {
+                    foreach (var combinedStatistics in combinedStatisticsForPolygon)
                     {
-                        distances.Add(cs, source.DistanceTo(cs.Statistic));
+                        distances.Add(combinedStatistics, sourceStatistics.DistanceTo(combinedStatistics.Statistic));
                     }
 
                     var nearestNeighbours = distances.OrderBy(d => d.Value).Take(numberOfNearestNeighbours);
@@ -222,6 +222,8 @@ namespace Schneedetektion.ImagePlayground
                     foggy += nearestNeighbours.Where(nn => nn.Key.Foggy.Value).Count();
                     rainy += nearestNeighbours.Where(nn => nn.Key.Rainy.Value).Count();
                     goodWeather += nearestNeighbours.Where(nn => !nn.Key.Foggy.Value && !nn.Key.Rainy.Value).Count();
+
+                    distances.Clear();
                 }
             }
 
