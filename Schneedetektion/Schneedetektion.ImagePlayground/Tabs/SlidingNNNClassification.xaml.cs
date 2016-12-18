@@ -118,7 +118,7 @@ namespace Schneedetektion.ImagePlayground
 
         private void Classify_Click(object sender, RoutedEventArgs e)
         {
-            backgroundWorker.RunWorkerAsync(new int[] { numberOfNeighbours.Value.Value, numberOfSources.Value.Value });
+            backgroundWorker.RunWorkerAsync(numberOfNeighbours.Value.Value);
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e)
@@ -144,130 +144,90 @@ namespace Schneedetektion.ImagePlayground
 
         private void BackgroundWorker_FindNearestNeighbours(object sender, DoWorkEventArgs e)
         {
-            int numberOfNeighbours = ((int[])e.Argument)[0];
-            int numberOfSources = ((int[])e.Argument)[1];
-
             foreach (var classificationViewModel in classificationViewModels)
             {
-                FindNearestNeighbours(classificationViewModel, numberOfNeighbours, numberOfSources);
+                FindNearestNeighbours(classificationViewModel, (int)e.Argument);
             }
         }
 
-        private void FindNearestNeighbours(ClassificationViewModel classificationViewModel, int numberOfNearestNeighbours, int numberOfSources)
+        private void FindNearestNeighbours(ClassificationViewModel classificationViewModel, int numberOfNearestNeighbours)
         {
-            Dictionary<Polygon, Statistic> imageStatistics = new Dictionary<Polygon, Statistic>();
-            Dictionary<Polygon, Statistic> imageStatisticsBefore = new Dictionary<Polygon, Statistic>();
-            Dictionary<Polygon, Statistic> imageStatisticsAfter = new Dictionary<Polygon, Statistic>();
-
-            // find image before
-            Data.Image imageBefore = dataContext.Images
-                .Where(i => i.UnixTime < classificationViewModel.Image.UnixTime)
+            var olderImage = dataContext.Images
+                .Where(i => i.Place == classificationViewModel.Image.Place && i.UnixTime < classificationViewModel.Image.UnixTime)
                 .OrderByDescending(i => i.UnixTime)
                 .FirstOrDefault();
 
-            // find image after
-            Data.Image imageAfter = dataContext.Images
-                .Where(i => i.UnixTime > classificationViewModel.Image.UnixTime)
+            var newerImage = dataContext.Images
+                .Where(i => i.Place == classificationViewModel.Image.Place && i.UnixTime > classificationViewModel.Image.UnixTime)
                 .OrderBy(i => i.UnixTime)
                 .FirstOrDefault();
 
-            // Statistiken für Patches der Bilder berechnen
+            // Statistiken für Patches des Bildes berechnen
+            var imageStatistics = new Dictionary<Polygon, List<Statistic>>();
             foreach (var polygon in polygons)
             {
                 IEnumerable<Point> polygonPoints = PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection);
+                Statistic statistic = openCVHelper.GetStatisticForPatchFromImagePath(classificationViewModel.Image.FileName, polygonPoints);
+                Statistic olderStatistic = openCVHelper.GetStatisticForPatchFromImagePath(olderImage.FileName, polygonPoints);
+                Statistic newerStatistic = openCVHelper.GetStatisticForPatchFromImagePath(newerImage.FileName, polygonPoints);
 
-                Statistic imagePolygonStatistic = openCVHelper.GetStatisticForPatchFromImagePath(classificationViewModel.Image.FileName, polygonPoints);
-                imageStatistics.Add(polygon, imagePolygonStatistic);
+                double distanceToOlder = statistic.DistanceTo(olderStatistic);
+                double distanceToNewer = statistic.DistanceTo(newerStatistic);
+                double distanceBetweenSurrounding = olderStatistic.DistanceTo(newerStatistic);
 
-                Statistic imagePolygonStatisticBefore = openCVHelper.GetStatisticForPatchFromImagePath(imageBefore.FileName, polygonPoints);
-                imageStatisticsBefore.Add(polygon, imagePolygonStatisticBefore);
-
-                Statistic imagePolygonStatisticAfter = openCVHelper.GetStatisticForPatchFromImagePath(imageAfter.FileName, polygonPoints);
-                imageStatisticsAfter.Add(polygon, imagePolygonStatisticAfter);
+                if (distanceToOlder < 50 && distanceToNewer < 50 && distanceBetweenSurrounding < 50)
+                {
+                    imageStatistics.Add(polygon, (new Statistic[] { statistic, olderStatistic, newerStatistic }).ToList());
+                }
+                else if (distanceToOlder < distanceToNewer && distanceToOlder < distanceBetweenSurrounding)
+                {
+                    imageStatistics.Add(polygon, (new Statistic[] { statistic, olderStatistic }).ToList());
+                }
+                else if (distanceToNewer < distanceToOlder && distanceToNewer < distanceBetweenSurrounding)
+                {
+                    imageStatistics.Add(polygon, (new Statistic[] { statistic, newerStatistic }).ToList());
+                }
+                else if (distanceBetweenSurrounding < distanceToNewer && distanceBetweenSurrounding < distanceToOlder)
+                {
+                    imageStatistics.Add(polygon, (new Statistic[] { olderStatistic, newerStatistic }).ToList());
+                }
             }
 
-            // kombinierte statistiken nach Bild-Gruppen gruppieren
-            var groupedStatistics = combinedStatistics.GroupBy(cs => cs.Images);
+            int snow         = 0;
+            int noSnow       = 0;
+            int badLighting  = 0;
+            int goodLighting = 0;
+            int foggy        = 0;
+            int rainy        = 0;
+            int goodWeather  = 0;
 
-            List<NearestNeighbour> neighbours = new List<NearestNeighbour>();
-            List<NearestNeighbour> neighboursBefore = new List<NearestNeighbour>();
-            List<NearestNeighbour> neighboursAfter = new List<NearestNeighbour>();
-
-            // Pro Gruppe Nearest-Neighbor erstellen
-            foreach (var group in groupedStatistics)
+            foreach (var polygon in polygons)
             {
-                NearestNeighbour neighbour = new NearestNeighbour();
-                neighbour.Polygons = polygons;
-                neighbour.Image = classificationViewModel.Image;
-                // berechnete Statistiken vom aktuellen bild
-                neighbour.ImageStatistics = imageStatistics;
-
-                // vorberechnete Statistiken
-                foreach (var polygon in polygons)
+                foreach (var source in imageStatistics[polygon])
                 {
-                    neighbour.NeighbourStatistics.Add(polygon, group.Where(g => g.Polygon_ID.Value == polygon.ID).Single());
+                    var combinedStatisticsForPolygon = this.combinedStatistics.Where(cs => cs.Polygon_ID == polygon.ID);
+                    Dictionary<Combined_Statistic, double> distances = new Dictionary<Combined_Statistic, double>();
+
+                    foreach (var cs in combinedStatisticsForPolygon)
+                    {
+                        distances.Add(cs, source.DistanceTo(cs.Statistic));
+                    }
+
+                    var nearestNeighbours = distances.OrderBy(d => d.Value).Take(numberOfNearestNeighbours);
+
+                    snow += nearestNeighbours.Where(nn => nn.Key.Snow.Value).Count();
+                    noSnow += nearestNeighbours.Where(nn => !nn.Key.Snow.Value).Count();
+                    badLighting += nearestNeighbours.Where(nn => nn.Key.BadLighting.Value).Count();
+                    goodLighting += nearestNeighbours.Where(nn => !nn.Key.BadLighting.Value).Count();
+                    foggy += nearestNeighbours.Where(nn => nn.Key.Foggy.Value).Count();
+                    rainy += nearestNeighbours.Where(nn => nn.Key.Rainy.Value).Count();
+                    goodWeather += nearestNeighbours.Where(nn => !nn.Key.Foggy.Value && !nn.Key.Rainy.Value).Count();
                 }
-
-                // Distanzen berechnen
-                neighbour.CalculateDistances();
-                neighbours.Add(neighbour);
-
-                NearestNeighbour neighbourBefore = new NearestNeighbour();
-                neighbour.Polygons = polygons;
-                neighbour.Image = imageBefore;
-                // berechnete Statistiken vom aktuellen bild
-                neighbour.ImageStatistics = imageStatisticsBefore;
-
-                // vorberechnete Statistiken
-                foreach (var polygon in polygons)
-                {
-                    neighbourBefore.NeighbourStatistics.Add(polygon, group.Where(g => g.Polygon_ID.Value == polygon.ID).Single());
-                }
-
-                // Distanzen berechnen
-                neighbourBefore.CalculateDistances();
-                neighboursBefore.Add(neighbour);
-
-                NearestNeighbour neighbourAfter = new NearestNeighbour();
-                neighbour.Polygons = polygons;
-                neighbour.Image = imageAfter;
-                // berechnete Statistiken vom aktuellen bild
-                neighbour.ImageStatistics = imageStatisticsAfter;
-
-                // vorberechnete Statistiken
-                foreach (var polygon in polygons)
-                {
-                    neighbourAfter.NeighbourStatistics.Add(polygon, group.Where(g => g.Polygon_ID.Value == polygon.ID).Single());
-                }
-
-                // Distanzen berechnen
-                neighbourAfter.CalculateDistances();
-                neighboursAfter.Add(neighbour);
             }
-
-            // nachbaren nach distanz ordnen - nächste nachbaren auswählen
-            List<NearestNeighbour> nearestNeighbours = neighbours.OrderBy(n => n.Distance).Take(numberOfNearestNeighbours).ToList();
-            List<NearestNeighbour> nearestNeighboursBefore = neighboursBefore.OrderBy(n => n.Distance).Take(numberOfNearestNeighbours).ToList();
-            List<NearestNeighbour> nearestNeighboursAfter = neighboursAfter.OrderBy(n => n.Distance).Take(numberOfNearestNeighbours).ToList();
-
-            // eigenschaften der nächsten nachbaren für die klassifizierung nutzen
-            IEnumerable<Combined_Statistic> nearestCombinedStatistics = nearestNeighbours.SelectMany(nn => nn.NeighbourStatistics.Values);
-            IEnumerable<Combined_Statistic> nearestCombinedStatisticsBefore = nearestNeighboursBefore.SelectMany(nn => nn.NeighbourStatistics.Values);
-            IEnumerable<Combined_Statistic> nearestCombinedStatisticsAfter = nearestNeighboursAfter.SelectMany(nn => nn.NeighbourStatistics.Values);
-
-            IEnumerable<Combined_Statistic> nearestCombinedStatistics3 = nearestCombinedStatistics.Intersect(nearestCombinedStatisticsBefore).Intersect(nearestCombinedStatisticsAfter);
-
-            int snow = nearestCombinedStatistics3.Where(ns => ns.Snow.Value).Count();
-            int noSnow = nearestCombinedStatistics3.Where(ns => !ns.Snow.Value).Count();
-            int badLighting = nearestCombinedStatistics3.Where(ns => ns.BadLighting.Value).Count();
-            int goodLighting = nearestCombinedStatistics3.Where(ns => !ns.BadLighting.Value).Count();
-            int foggy = nearestCombinedStatistics3.Where(ns => ns.Foggy.Value).Count();
-            int rainy = nearestCombinedStatistics3.Where(ns => ns.Rainy.Value).Count();
-            int goodWeather = nearestCombinedStatistics3.Where(ns => !ns.Foggy.Value && !ns.Rainy.Value).Count();
 
             // resultate speichern
             classificationViewModel.SetResults(
-                snow > noSnow,
+                snow * 1.5 > noSnow,
                 foggy > goodWeather,
                 rainy > goodWeather,
                 badLighting > goodLighting);

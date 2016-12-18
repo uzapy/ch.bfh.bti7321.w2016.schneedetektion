@@ -158,10 +158,10 @@ namespace Schneedetektion.ImagePlayground
             BitmapImage bitmap = classificationViewModel.Bitmap;
 
             // combine input images
-            if (numberOfSources > 0)
+            if (numberOfSources > 1)
             {
-                List<string> bitmaps = new List<string>();
-                bitmaps.Add(classificationViewModel.Image.FileName);
+                List<string> sourcesFileNames = new List<string>();
+                sourcesFileNames.Add(classificationViewModel.Image.FileName);
                 int numberOfSourcesToFind = (numberOfSources - 1) / 2;
 
                 var olderImages = dataContext.Images
@@ -178,10 +178,10 @@ namespace Schneedetektion.ImagePlayground
 
                 foreach (var image in olderImages.Concat(newerImages))
                 {
-                    bitmaps.Add(image.FileName);
+                    sourcesFileNames.Add(image.FileName);
                 }
 
-                bitmap = OpenCVHelper.BitmapToBitmapImage(openCVHelper.CombineImagesMedian(bitmaps).Bitmap);
+                bitmap = OpenCVHelper.BitmapToBitmapImage(openCVHelper.CombineImagesMedian(sourcesFileNames).Bitmap);
             }
 
             // Statistiken für Patches des Bildes berechnen
