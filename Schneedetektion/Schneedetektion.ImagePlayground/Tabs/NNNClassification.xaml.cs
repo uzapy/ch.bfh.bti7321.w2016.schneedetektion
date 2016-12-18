@@ -94,21 +94,21 @@ namespace Schneedetektion.ImagePlayground
                 int numberOfImagesWithSnow = numberOfImagesTotal - numberOfImagesWithoutSnow;
 
                 // Zufällige Bilder ohne Schnee auswählen
-                var dbImagesWithoutSnow = dataContext.Images
+                var dbImagesWithoutSnow = Shuffle(dataContext.Images
                     .Where(i => i.Day.Value && i.Place == selectedCamera && i.NoSnow.Value)
-                    .OrderBy(i => random.Next())
+                    .ToList())
                     .Take(numberOfImagesWithoutSnow);
                 // Zufällige Bilder mit Schnee auswählen
-                var dbImagesWithSnow = dataContext.Images
+                var dbImagesWithSnow = Shuffle(dataContext.Images
                     .Where(i => i.Day.Value && i.Place == selectedCamera && i.Snow.Value)
-                    .OrderBy(i => random.Next())
+                    .ToList())
                     .Take(numberOfImagesWithSnow);
 
                 // beide Listen kombinieren und shuffeln
                 // var selectedImages = Shuffle(dbImagesWithoutSnow.Concat(dbImagesWithSnow).ToList());
 
                 // Beide Listen kombinieren und Bilder anzeigen
-                foreach (var image in dbImagesWithoutSnow.Concat(dbImagesWithSnow))
+                foreach (var image in dbImagesWithSnow.Concat(dbImagesWithoutSnow))
                 {
                     classificationViewModels.Add(new ClassificationViewModel(image));
                 }
