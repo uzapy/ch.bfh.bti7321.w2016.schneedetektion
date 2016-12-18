@@ -118,7 +118,7 @@ namespace Schneedetektion.ImagePlayground
 
         private void Classify_Click(object sender, RoutedEventArgs e)
         {
-            backgroundWorker.RunWorkerAsync(numberOfNeighbours.Value.Value);
+            backgroundWorker.RunWorkerAsync(new int[] { numberOfNeighbours.Value.Value, numberOfSources.Value.Value });
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e)
@@ -144,13 +144,16 @@ namespace Schneedetektion.ImagePlayground
 
         private void BackgroundWorker_FindNearestNeighbours(object sender, DoWorkEventArgs e)
         {
+            int numberOfNeighbours = ((int[])e.Argument)[0];
+            int numberOfSources = ((int[])e.Argument)[1];
+
             foreach (var classificationViewModel in classificationViewModels)
             {
-                FindNearestNeighbours(classificationViewModel, (int)e.Argument);
+                FindNearestNeighbours(classificationViewModel, numberOfNeighbours, numberOfSources);
             }
         }
 
-        private void FindNearestNeighbours(ClassificationViewModel classificationViewModel, int numberOfNearestNeighbours)
+        private void FindNearestNeighbours(ClassificationViewModel classificationViewModel, int numberOfNearestNeighbours, int numberOfSources)
         {
             Dictionary<Polygon, Statistic> imageStatistics = new Dictionary<Polygon, Statistic>();
             Dictionary<Polygon, Statistic> imageStatisticsBefore = new Dictionary<Polygon, Statistic>();

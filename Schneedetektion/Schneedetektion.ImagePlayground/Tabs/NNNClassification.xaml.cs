@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace Schneedetektion.ImagePlayground
 {
@@ -117,7 +118,7 @@ namespace Schneedetektion.ImagePlayground
 
         private void Classify_Click(object sender, RoutedEventArgs e)
         {
-            backgroundWorker.RunWorkerAsync(numberOfNeighbours.Value.Value);
+            backgroundWorker.RunWorkerAsync(new int[] { numberOfNeighbours.Value.Value, numberOfSources.Value.Value });
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e)
@@ -143,21 +144,52 @@ namespace Schneedetektion.ImagePlayground
 
         private void BackgroundWorker_FindNearestNeighbours(object sender, DoWorkEventArgs e)
         {
+            int numberOfNeighbours = ((int[])e.Argument)[0];
+            int numberOfSources = ((int[])e.Argument)[1];
+
             foreach (var classificationViewModel in classificationViewModels)
             {
-                FindNearestNeighbours(classificationViewModel, (int)e.Argument);
+                FindNearestNeighbours(classificationViewModel, numberOfNeighbours, numberOfSources);
             }
         }
 
-        private void FindNearestNeighbours(ClassificationViewModel classificationViewModel, int numberOfNearestNeighbours)
+        private void FindNearestNeighbours(ClassificationViewModel classificationViewModel, int numberOfNearestNeighbours, int numberOfSources)
         {
-            // Statistiken für Patches des Bilder berechnen
+            BitmapImage bitmap = classificationViewModel.Bitmap;
+
+            // combine input images
+            if (numberOfSources > 0)
+            {
+                List<string> bitmaps = new List<string>();
+                bitmaps.Add(classificationViewModel.Image.FileName);
+                int numberOfSourcesToFind = (numberOfSources - 1) / 2;
+
+                var olderImages = dataContext.Images
+                    .Where(i => i.Place == classificationViewModel.Image.Place && i.UnixTime < classificationViewModel.Image.UnixTime)
+                    .OrderByDescending(i => i.UnixTime)
+                    .Take(numberOfSourcesToFind);
+
+                var newerImages = dataContext.Images
+                    .Where(i => i.Place == classificationViewModel.Image.Place && i.UnixTime > classificationViewModel.Image.UnixTime)
+                    .OrderBy(i => i.UnixTime)
+                    .Take(numberOfSourcesToFind);
+
+                var additionalSources = olderImages.Concat(newerImages);
+
+                foreach (var image in olderImages.Concat(newerImages))
+                {
+                    bitmaps.Add(image.FileName);
+                }
+
+                bitmap = OpenCVHelper.BitmapToBitmapImage(openCVHelper.CombineImagesMedian(bitmaps).Bitmap);
+            }
+
+            // Statistiken für Patches des Bildes berechnen
             Dictionary<Polygon, Statistic> imageStatistics = new Dictionary<Polygon, Statistic>();
             foreach (var polygon in polygons)
             {
                 imageStatistics.Add(polygon,
-                    openCVHelper.GetStatisticForPatchFromImagePath(classificationViewModel.Image.FileName,
-                        PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection)));
+                    openCVHelper.GetStatisticForPatchFromBitmapImage(bitmap, PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection)));
             }
 
             // kombinierte statistiken nach Bild-Gruppen gruppieren

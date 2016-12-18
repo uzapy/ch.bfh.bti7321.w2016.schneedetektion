@@ -62,6 +62,11 @@ namespace Schneedetektion.OpenCV
             return GetStatisticForPatchFromImage(new Image<Bgr, byte>(imagePath), pointCollection);
         }
 
+        public Statistic GetStatisticForPatchFromBitmapImage(BitmapImage bitmapimage, IEnumerable<Point> pointCollection)
+        {
+            return GetStatisticForPatchFromImage(new Image<Bgr, byte>(BitmapImageToBitmap(bitmapimage)), pointCollection);
+        }
+
         public Statistic GetStatisticForPatchFromImage(Image<Bgr, byte> original, IEnumerable<Point> pointCollection)
         {
             // Create Matrix

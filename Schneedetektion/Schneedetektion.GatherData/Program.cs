@@ -38,10 +38,10 @@ namespace Schneedetektion.GatherData
             //    "mvk163", "mvk164" };
             //cameraNames = new List<string>() { "mvk106" };
 
-            CombineStatistics("mvk131");
+            // CombineStatistics("mvk131");
 
             // CalculateImageStatistics();
-            // CalculatePatchStatistics();
+            CalculatePatchStatistics();
             // RegisterImagesInDB();
             // UpdateDateTime();
             // RemoveDataWithoutFile();
@@ -265,7 +265,7 @@ namespace Schneedetektion.GatherData
 
         private static void CalculatePatchStatistics()
         {
-            string camera = "mvk021";
+            string camera = "mvk107";
             IEnumerable<Polygon> polygons = dataContext.Polygons.Where(p => p.CameraName == camera);
 
             IEnumerable<Image> images = (from i in dataContext.Images
@@ -295,7 +295,10 @@ namespace Schneedetektion.GatherData
             dataContext.SubmitChanges();
             Console.WriteLine("Saved!");
 
-            CalculatePatchStatistics();
+            if (images.Count() > 0)
+            {
+                CalculatePatchStatistics(); 
+            }
         }
 
         private static void MoveOldPictures()
