@@ -231,7 +231,7 @@ namespace Schneedetektion.ImagePlayground
 
             // resultate speichern
             classificationViewModel.SetResults(
-                snow > noSnow,
+                snow * 1.5 > noSnow,
                 foggy > goodWeather,
                 rainy > goodWeather,
                 badLighting > goodLighting);
