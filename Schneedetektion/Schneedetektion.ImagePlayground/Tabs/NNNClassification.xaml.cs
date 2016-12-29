@@ -1,4 +1,5 @@
-﻿using Schneedetektion.Data;
+﻿using Newtonsoft.Json;
+using Schneedetektion.Data;
 using Schneedetektion.OpenCV;
 using System;
 using System.Collections.Generic;
@@ -199,6 +200,11 @@ namespace Schneedetektion.ImagePlayground
             // Pro Gruppe Nearest-Neighbor erstellen
             foreach (var group in groupedStatistics)
             {
+                if (!group.First().Snow.Value && JsonConvert.DeserializeObject<IEnumerable<int>>(group.First().Images).Count() < 10)
+                {
+                    continue;
+                }
+
                 NearestNeighbour neighbour = new NearestNeighbour();
                 neighbour.Polygons = polygons;
                 neighbour.Image = classificationViewModel.Image;

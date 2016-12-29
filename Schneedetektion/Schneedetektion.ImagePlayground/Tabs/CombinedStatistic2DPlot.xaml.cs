@@ -1,4 +1,5 @@
-﻿using Schneedetektion.Data;
+﻿using Newtonsoft.Json;
+using Schneedetektion.Data;
 using Schneedetektion.OpenCV;
 using System;
 using System.Collections.Generic;
@@ -221,6 +222,11 @@ namespace Schneedetektion.ImagePlayground
         {
             foreach (var combinedStatistic in combinedStatistics)
             {
+                if (!combinedStatistic.Snow.Value && JsonConvert.DeserializeObject<IEnumerable<int>>(combinedStatistic.Images).Count() < 10)
+                {
+                    continue;
+                }
+
                 double left = ScaleToCanvas(combinedStatistic.Statistic.Get(selectedX, selectedColorX), selectedX, plotCanvas.ActualWidth - 10) + 5;
                 double top = (plotCanvas.ActualHeight - 5) - ScaleToCanvas(combinedStatistic.Statistic.Get(selectedY, selectedColorY), selectedY, plotCanvas.ActualHeight - 5);
 

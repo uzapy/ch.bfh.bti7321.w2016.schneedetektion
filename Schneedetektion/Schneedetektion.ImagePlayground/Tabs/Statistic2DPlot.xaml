@@ -5,7 +5,7 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
             <GroupBox Header="By Camera">
-                <ListBox x:Name="cameraList" Height="200" SelectionMode="Single" SelectionChanged="cameraList_SelectionChanged" />
+                <ListBox x:Name="cameraList" Height="250" SelectionMode="Single" SelectionChanged="cameraList_SelectionChanged" />
             </GroupBox>
             <GroupBox Header="By Polygon">
                 <ListBox x:Name="polygonList" Height="200" SelectionMode="Single" SelectionChanged="polygonList_SelectionChanged" />

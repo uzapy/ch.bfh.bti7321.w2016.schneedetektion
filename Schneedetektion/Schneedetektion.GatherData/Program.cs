@@ -38,10 +38,10 @@ namespace Schneedetektion.GatherData
             //    "mvk163", "mvk164" };
             //cameraNames = new List<string>() { "mvk106" };
 
-            // CombineStatistics("mvk131");
+            CombineStatistics("mvk131");
 
             // CalculateImageStatistics();
-            CalculatePatchStatistics();
+            // CalculatePatchStatistics();
             // RegisterImagesInDB();
             // UpdateDateTime();
             // RemoveDataWithoutFile();
@@ -107,8 +107,8 @@ namespace Schneedetektion.GatherData
             }
         }
 
-        private static void CreateCombinedStatisticFromStatistics(IQueryable<Image> images, IQueryable<Polygon> polygons, DateTime date, int slotStart,
-            bool snow, bool badlighting, bool foggy, bool rainy)
+        private static void CreateCombinedStatisticFromStatistics(
+            IQueryable<Image> images, IQueryable<Polygon> polygons, DateTime date, int slotStart, bool snow, bool badlighting, bool foggy, bool rainy)
         {
             images = images.Where(i => i.Snow == snow && i.BadLighting == badlighting && i.Foggy == foggy && i.Rainy == rainy);
 
@@ -164,8 +164,8 @@ namespace Schneedetektion.GatherData
             }
         }
 
-        private static void CreateCombinedStatisticFromImages(IQueryable<Image> images, IQueryable<Polygon> polygons, DateTime date, int slotStart,
-            bool snow, bool badlighting, bool foggy, bool rainy)
+        private static void CreateCombinedStatisticFromImages(
+            IQueryable<Image> images, IQueryable<Polygon> polygons, DateTime date, int slotStart, bool snow, bool badlighting, bool foggy, bool rainy)
         {
             // filter catergory
             images = images.Where(i => i.Snow == snow && i.BadLighting == badlighting && i.Foggy == foggy && i.Rainy == rainy);
@@ -179,9 +179,9 @@ namespace Schneedetektion.GatherData
             Console.WriteLine($"Found Images: {images.Count()}");
 
             // combine images
-            Image<Bgr, byte> combinedImage = openCVHelper.CombineImagesMean(images.Select(i => i.FileName));
-            combinedImage.Save(@"C:\Users\uzapy\Desktop\test\" + count + "_Mean.png");
-            Console.WriteLine(@"C:\Users\uzapy\Desktop\test\" + count + "_Mean.png");
+            Image<Bgr, byte> combinedImage = openCVHelper.CombineImagesMedian(images.Select(i => i.FileName));
+            combinedImage.Save(@"C:\Users\uzapy\Desktop\test\" + count + "_Median.png");
+            Console.WriteLine(@"C:\Users\uzapy\Desktop\test\" + count + "_Median.png");
             count++;
 
             foreach (var polygon in polygons)
@@ -201,7 +201,7 @@ namespace Schneedetektion.GatherData
                 combinedStatistic.BadLighting = badlighting;
                 combinedStatistic.Foggy = foggy;
                 combinedStatistic.Rainy = rainy;
-                combinedStatistic.CombinationMethod = "Mean";
+                combinedStatistic.CombinationMethod = "Median";
 
                 Console.Write($"Polygon: {combinedStatistic.Polygon.ID} | ");
             }
@@ -265,7 +265,7 @@ namespace Schneedetektion.GatherData
 
         private static void CalculatePatchStatistics()
         {
-            string camera = "mvk107";
+            string camera = "mvk131";
             IEnumerable<Polygon> polygons = dataContext.Polygons.Where(p => p.CameraName == camera);
 
             IEnumerable<Image> images = (from i in dataContext.Images

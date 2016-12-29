@@ -1,4 +1,5 @@
-﻿using Schneedetektion.Data;
+﻿using Newtonsoft.Json;
+using Schneedetektion.Data;
 using Schneedetektion.OpenCV;
 using System;
 using System.Collections.Generic;
@@ -208,9 +209,14 @@ namespace Schneedetektion.ImagePlayground
 
                 foreach (var sourceStatistics in imageStatistics[polygon])
                 {
-                    foreach (var combinedStatistics in combinedStatisticsForPolygon)
+                    foreach (var combinedStatistic in combinedStatisticsForPolygon)
                     {
-                        distances.Add(combinedStatistics, sourceStatistics.DistanceTo(combinedStatistics.Statistic));
+                        if (!combinedStatistic.Snow.Value && JsonConvert.DeserializeObject<IEnumerable<int>>(combinedStatistic.Images).Count() < 10)
+                        {
+                            continue;
+                        }
+
+                        distances.Add(combinedStatistic, sourceStatistics.DistanceTo(combinedStatistic.Statistic));
                     }
 
                     var nearestNeighbours = distances.OrderBy(d => d.Value).Take(numberOfNearestNeighbours);
