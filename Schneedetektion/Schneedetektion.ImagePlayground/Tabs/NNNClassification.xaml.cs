@@ -177,7 +177,7 @@ namespace Schneedetektion.ImagePlayground
 
                 var additionalSources = olderImages.Concat(newerImages);
 
-                foreach (var image in olderImages.Concat(newerImages))
+                foreach (var image in additionalSources)
                 {
                     sourcesFileNames.Add(image.FileName);
                 }
