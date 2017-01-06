@@ -227,6 +227,11 @@ namespace Schneedetektion.ImagePlayground
                     continue;
                 }
 
+                //if ()
+                //{
+
+                //}
+
                 double left = ScaleToCanvas(combinedStatistic.Statistic.Get(selectedX, selectedColorX), selectedX, plotCanvas.ActualWidth - 10) + 5;
                 double top = (plotCanvas.ActualHeight - 5) - ScaleToCanvas(combinedStatistic.Statistic.Get(selectedY, selectedColorY), selectedY, plotCanvas.ActualHeight - 5);
 
