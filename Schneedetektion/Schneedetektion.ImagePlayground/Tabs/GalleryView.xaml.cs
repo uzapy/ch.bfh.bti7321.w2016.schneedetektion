@@ -266,11 +266,11 @@ namespace Schneedetektion.ImagePlayground
         {
             images.Clear();
 
-            int minuteSpan = 6;
+            int minuteSpan = 15;
             DateTime exactTime = new DateTime(year, month, day, hour, minute, 0);
 
             // "all", "Snow", "No Snow", "Night", "Dusk", "Day", "Foggy", "Cloudy", "Precipitation", "Bad Lighting", "Good Lighting"
-            bool all           = selectedCategories.Contains("all") || selectedCategories.Count() >= 9;
+            bool allCategories = selectedCategories.Contains("all") || selectedCategories.Count() >= 9;
             bool snow          = selectedCategories.Contains("Snow");
             bool noSnow        = selectedCategories.Contains("No Snow");
             bool night         = selectedCategories.Contains("Night");
@@ -282,26 +282,100 @@ namespace Schneedetektion.ImagePlayground
             bool badLighting   = selectedCategories.Contains("Bad Lighting");
             bool goodLighting  = selectedCategories.Contains("Good Lighting");
 
-            var loadedImages = (from i in dataContext.Images
-                                where i.DateTime.Year == year || !hasDate
-                                where i.DateTime.Month == month || !hasDate
-                                where i.DateTime.Day == day || !hasDate
-                                where i.DateTime.Hour == hour || !hasTime
-                                where Math.Abs(i.DateTime.Minute - minute) < minuteSpan || !hasTime
-                                where i.Snow == snow || all
-                                where i.NoSnow == noSnow || all
-                                where i.Night == night || all
-                                where i.Dusk == dusk || all
-                                where i.Day == dayTime || all
-                                where i.Foggy == foggy || all
-                                where i.Cloudy == cloudy || all
-                                where i.Rainy == precipitation || all
-                                where i.BadLighting == badLighting || all
-                                where i.GoodLighting == goodLighting || all
-                                where selectedCameras.Contains(i.Place) || selectedCameras.Contains("all")
-                                select i).Distinct().Skip(skip).Take(page);
+            var loadedImages = from i in dataContext.Images select i;
 
-            foreach (var i in loadedImages)
+            if (!selectedCameras.Contains("all"))
+            {
+                loadedImages = from i in loadedImages
+                               where selectedCameras.Contains(i.Place)
+                               select i;
+            }
+
+            if (hasDate)
+            {
+                loadedImages = from i in loadedImages
+                               where i.DateTime.Year == year
+                               where i.DateTime.Month == month
+                               where i.DateTime.Day == day
+                               select i;
+            }
+
+            if (hasTime)
+            {
+                loadedImages = from i in loadedImages
+                               where i.DateTime.Hour == hour
+                               where Math.Abs(i.DateTime.Minute - minute) < minuteSpan
+                               select i;
+            }
+
+            if (!allCategories && snow)
+            {
+                loadedImages = loadedImages.Where(i => i.Snow == snow);
+            }
+            else if (!allCategories && noSnow)
+            {
+                loadedImages = loadedImages.Where(i => i.NoSnow == noSnow);
+            }
+
+            if (!allCategories && night)
+            {
+                loadedImages = loadedImages.Where(i => i.Night == night);
+            }
+
+            if (!allCategories && dusk)
+            {
+                loadedImages = loadedImages.Where(i => i.Dusk == dusk);
+            }
+
+            if (!allCategories && dayTime)
+            {
+                loadedImages = loadedImages.Where(i => i.Day == dayTime);
+            }
+
+            if (!allCategories && foggy)
+            {
+                loadedImages = loadedImages.Where(i => i.Foggy == foggy);
+            }
+
+            if (!allCategories && cloudy)
+            {
+                loadedImages = loadedImages.Where(i => i.Cloudy == cloudy);
+            }
+
+            if (!allCategories && precipitation)
+            {
+                loadedImages = loadedImages.Where(i => i.Rainy == precipitation);
+            }
+
+            if (!allCategories && badLighting)
+            {
+                loadedImages = loadedImages.Where(i => i.BadLighting == badLighting);
+            }
+            else if (!allCategories && goodLighting)
+            {
+                loadedImages = loadedImages.Where(i => i.GoodLighting == goodLighting);
+            }
+
+            //var loadedImages = (from i in dataContext.Images
+            //                    where i.DateTime.Year == year || !hasDate
+            //                    where i.DateTime.Month == month || !hasDate
+            //                    where i.DateTime.Day == day || !hasDate
+            //                    where i.DateTime.Hour == hour || !hasTime
+            //                    where Math.Abs(i.DateTime.Minute - minute) < minuteSpan || !hasTime
+            //                    where i.Snow == snow || allCategorie
+            //                    where i.NoSnow == noSnow || allCategorie
+            //                    where i.Night == night || allCategorie
+            //                    where i.Dusk == dusk || allCategorie
+            //                    where i.Day == dayTime || allCategorie
+            //                    where i.Foggy == foggy || allCategorie
+            //                    where i.Cloudy == cloudy || allCategorie
+            //                    where i.Rainy == precipitation || allCategorie
+            //                    where i.BadLighting == badLighting || allCategorie
+            //                    where i.GoodLighting == goodLighting || allCategorie
+            //                    where selectedCameras.Contains(i.Place) || selectedCameras.Contains("all")
+            //                    select i).Distinct().Skip(skip).Take(page);
+
+            foreach (var i in loadedImages.Skip(skip).Take(page))
             {
                 images.Add(new ImageViewModel(i));
             }
