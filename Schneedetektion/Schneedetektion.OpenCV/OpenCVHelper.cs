@@ -317,12 +317,7 @@ namespace Schneedetektion.OpenCV
 
         private Statistic GetStatistic(Image<Bgr, byte> image, Image<Gray, byte> bitmask)
         {
-            // Pro Kanal ein Grauwert-Bild erstellen
-            Image<Gray, byte> blueChannel = image[(int)EChannel.Blue];
-            Image<Gray, byte> greenChannel = image[(int)EChannel.Green];
-            Image<Gray, byte> redChannel = image[(int)EChannel.Red];
-
-            // Pro Kanal eine Liste der Länge 256
+            // Pro Kanal eine leere Liste der Länge 256 erstellen
             List<double> blueHistogram = new List<double>();
             blueHistogram.AddRange(new double[256]);
             List<double> greenHistogram = new List<double>();
@@ -336,22 +331,26 @@ namespace Schneedetektion.OpenCV
             List<double> redPixels = new List<double>();
 
             // Ein Loop für alles
+            // Für alle Spalten im Bild
             for (int i = 0; i < image.Cols; i++)
             {
+                // Für alle Zeilen im Bild
                 for (int j = 0; j < image.Rows; j++)
                 {
-                    // Wenn keine Bitmask angegeben wurde, oder die Bitmaske an dieser stelle schwarz ist
+                    // Wenn keine Bitmaske angegeben wurde,
+                    // oder die Bitmaske an dieser stelle schwarz ist
                     if (bitmask == null || bitmask[j, i].MCvScalar.V0 == 0)
                     {
-                        // Histogram abfüllen
-                        blueHistogram[(int)blueChannel[j, i].MCvScalar.V0]++;
-                        greenHistogram[(int)greenChannel[j, i].MCvScalar.V0]++;
-                        redHistogram[(int)redChannel[j, i].MCvScalar.V0]++;
+                        // Histogram pro Kanal abfüllen
+                        // Listen-Element inkrementieren, dass dem Farbwert des aktuellen Bildpunkts entspricht
+                        blueHistogram[(int)image[j, i].MCvScalar.V0]++;
+                        greenHistogram[(int)image[j, i].MCvScalar.V1]++;
+                        redHistogram[(int)image[j, i].MCvScalar.V2]++;
 
                         // Pixel in Listen abspitzen
-                        bluePixels.Add(blueChannel[j, i].MCvScalar.V0);
-                        greenPixels.Add(greenChannel[j, i].MCvScalar.V0);
-                        redPixels.Add(redChannel[j, i].MCvScalar.V0);
+                        bluePixels.Add(image[j, i].MCvScalar.V0);
+                        greenPixels.Add(image[j, i].MCvScalar.V2);
+                        redPixels.Add(image[j, i].MCvScalar.V2);
                     }
                 }
             }

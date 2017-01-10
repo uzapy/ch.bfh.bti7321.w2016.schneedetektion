@@ -56,7 +56,7 @@ namespace Schneedetektion.ImagePlayground
             Polygon polygon = new Polygon();
             polygon.Stroke = fillBrushes[Array.IndexOf(imageAreas, imageArea)];
             polygon.Fill = strokeBrushes[Array.IndexOf(imageAreas, imageArea)];
-            polygon.Opacity = 0.33d;
+            polygon.Opacity = 0.66d;
             polygonCanvas?.Children.Add(polygon);
             foreach (Point point in JsonConvert.DeserializeObject<PointCollection>(polygonPointCollection))
             {

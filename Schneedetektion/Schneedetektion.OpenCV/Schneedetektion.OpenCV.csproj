@@ -80,7 +80,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OpenCVColor.cs" />
     <Compile Include="OpenCVHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
