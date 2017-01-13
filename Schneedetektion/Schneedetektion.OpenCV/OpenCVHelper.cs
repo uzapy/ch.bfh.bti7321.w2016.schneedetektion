@@ -325,7 +325,7 @@ namespace Schneedetektion.OpenCV
             List<double> redHistogram = new List<double>();
             redHistogram.AddRange(new double[256]);
 
-            // List for other Statistic Values
+            // Eindimensionale Liste aller Pixel im Bild
             List<double> bluePixels = new List<double>();
             List<double> greenPixels = new List<double>();
             List<double> redPixels = new List<double>();
@@ -347,9 +347,9 @@ namespace Schneedetektion.OpenCV
                         greenHistogram[(int)image[j, i].MCvScalar.V1]++;
                         redHistogram[(int)image[j, i].MCvScalar.V2]++;
 
-                        // Pixel in Listen abspitzen
+                        // Pixel in entsprechende Farbkanal-Liste abspitzen
                         bluePixels.Add(image[j, i].MCvScalar.V0);
-                        greenPixels.Add(image[j, i].MCvScalar.V2);
+                        greenPixels.Add(image[j, i].MCvScalar.V1);
                         redPixels.Add(image[j, i].MCvScalar.V2);
                     }
                 }
@@ -362,7 +362,7 @@ namespace Schneedetektion.OpenCV
             statistic.GreenHistogramList = greenHistogram;
             statistic.RedHistogramList = redHistogram;
 
-            // Mode
+            // Mode: Farbwert (Index) des grössten Werts im Histogramm
             statistic.ModeBlue = blueHistogram.IndexOf(blueHistogram.Max());
             statistic.ModeGreen = greenHistogram.IndexOf(greenHistogram.Max());
             statistic.ModeRed = redHistogram.IndexOf(redHistogram.Max());
