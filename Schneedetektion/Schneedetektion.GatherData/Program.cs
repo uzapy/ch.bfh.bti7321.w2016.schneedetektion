@@ -271,7 +271,9 @@ namespace Schneedetektion.GatherData
             IEnumerable<Image> images = (from i in dataContext.Images
                                         where i.Place == camera
                                         where i.Day == true
-                                        where (from es in i.Entity_Statistics where es.Polygon_ID != null select es).Count() == 0
+                                        where (from es in i.Entity_Statistics
+                                               where es.Polygon_ID != null
+                                               select es).Count() == 0
                                         select i).Take(take);
 
             foreach (var image in images)
