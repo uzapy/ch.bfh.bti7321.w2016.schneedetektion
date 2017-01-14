@@ -41,7 +41,7 @@ namespace Schneedetektion.GatherData
             CombineStatistics("mvk131");
 
             // CalculateImageStatistics();
-            // CalculatePatchStatistics();
+            // CalculatePatchStatistics("mvk131");
             // RegisterImagesInDB();
             // UpdateDateTime();
             // RemoveDataWithoutFile();
@@ -263,11 +263,14 @@ namespace Schneedetektion.GatherData
             }
         }
 
-        private static void CalculatePatchStatistics()
+        private static void CalculatePatchStatistics(string camera)
         {
-            string camera = "mvk131";
+            // Alle Segment-Definitionen der Kamera auslesen
             IEnumerable<Polygon> polygons = dataContext.Polygons.Where(p => p.CameraName == camera);
 
+            // Alle Bilder (dieser Kameras, am Tag) auslesen
+            // deren Patch-Statistiken noch nicht berechnet wurden
+            // Davon nur die ersten 1000 (take) auslesen
             IEnumerable<Image> images = (from i in dataContext.Images
                                         where i.Place == camera
                                         where i.Day == true
@@ -276,16 +279,21 @@ namespace Schneedetektion.GatherData
                                                select es).Count() == 0
                                         select i).Take(take);
 
+            // Für alle geladenen Bilder der Kamera
             foreach (var image in images)
             {
+                // Für jedes Segment der Kamera
                 foreach (var polygon in polygons)
                 {
+                    // Polygon des Segments auslesen
                     var polygonPoints = JsonConvert.DeserializeObject<Media.PointCollection>(polygon.PolygonPointCollection);
 
+                    // Bild ausschneiden und Statistiken für das Segment berechnen
                     Statistic imageStatistic = openCVHelper.GetStatisticForPatchFromImagePath(image.FileName, polygonPoints);
 
                     Console.WriteLine("I: " + image.ID + " - " + image.Name + " - P:" + polygon.ID + " - " + polygon.ImageArea);
 
+                    // Statistische Werte in Datenstruktur ablegen
                     image.Entity_Statistics.Add(new Entity_Statistic()
                     {
                         Statistic = imageStatistic,
@@ -294,12 +302,13 @@ namespace Schneedetektion.GatherData
                 }
             }
 
+            // In Datenbank abspeichern
             dataContext.SubmitChanges();
             Console.WriteLine("Saved!");
 
             if (images.Count() > 0)
             {
-                CalculatePatchStatistics(); 
+                CalculatePatchStatistics(camera);
             }
         }
 
