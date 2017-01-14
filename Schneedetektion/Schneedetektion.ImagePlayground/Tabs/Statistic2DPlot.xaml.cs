@@ -22,10 +22,10 @@ namespace Schneedetektion.ImagePlayground
         private List<object> initialElements = new List<object>();
         private string selectedCamera = String.Empty;
         private string selectedPolygon = String.Empty;
-        private string selectedX = String.Empty;
-        private string selectedY = String.Empty;
-        private string selectedColorX = String.Empty;
-        private string selectedColorY = String.Empty;
+        private string selectedXAttribute = String.Empty;
+        private string selectedYAttribute = String.Empty;
+        private string selectedXColor = String.Empty;
+        private string selectedYColor = String.Empty;
         #endregion
 
         #region Constructor
@@ -87,7 +87,7 @@ namespace Schneedetektion.ImagePlayground
         {
             if (comboX.SelectedValue != null)
             {
-                selectedX = (comboX.SelectedValue as ComboBoxItem).Content as String;
+                selectedXAttribute = (comboX.SelectedValue as ComboBoxItem).Content as String;
             }
         }
 
@@ -95,7 +95,7 @@ namespace Schneedetektion.ImagePlayground
         {
             if (comboY.SelectedValue != null)
             {
-                selectedY = (comboY.SelectedValue as ComboBoxItem).Content as String;
+                selectedYAttribute = (comboY.SelectedValue as ComboBoxItem).Content as String;
             }
         }
 
@@ -103,7 +103,7 @@ namespace Schneedetektion.ImagePlayground
         {
             if (comboColorX.SelectedValue != null)
             {
-                selectedColorX = (comboColorX.SelectedValue as ComboBoxItem).Content as String;
+                selectedXColor = (comboColorX.SelectedValue as ComboBoxItem).Content as String;
             }
         }
 
@@ -111,7 +111,7 @@ namespace Schneedetektion.ImagePlayground
         {
             if (comboColorY.SelectedValue != null)
             {
-                selectedColorY = (comboColorY.SelectedValue as ComboBoxItem).Content as String;
+                selectedYColor = (comboColorY.SelectedValue as ComboBoxItem).Content as String;
             }
         }
 
@@ -123,10 +123,10 @@ namespace Schneedetektion.ImagePlayground
 
             if (!String.IsNullOrEmpty(selectedCamera) &&
                 !String.IsNullOrEmpty(selectedPolygon) && Int32.TryParse(selectedPolygon.Split('-')[0], out polygonID) &&
-                !String.IsNullOrEmpty(selectedX) &&
-                !String.IsNullOrEmpty(selectedY) &&
-                !String.IsNullOrEmpty(selectedColorX) &&
-                !String.IsNullOrEmpty(selectedColorY))
+                !String.IsNullOrEmpty(selectedXAttribute) &&
+                !String.IsNullOrEmpty(selectedYAttribute) &&
+                !String.IsNullOrEmpty(selectedXColor) &&
+                !String.IsNullOrEmpty(selectedYColor))
             {
                 var statisticsWithSnow = from es in dataContext.Entity_Statistics
                                          where es.Image.Place == selectedCamera
@@ -134,7 +134,7 @@ namespace Schneedetektion.ImagePlayground
                                          where es.Polygon.ID == polygonID
                                          select es.Statistic;
 
-                DrawPoints(statisticsWithSnow, selectedX, selectedY, selectedColorX, selectedColorY, Brushes.Blue);
+                DrawPoints(statisticsWithSnow, selectedXAttribute, selectedYAttribute, selectedXColor, selectedYColor, Brushes.Blue);
 
                 var statisticsWithoutSnow = from es in dataContext.Entity_Statistics
                                             where es.Image.Place == selectedCamera
@@ -142,7 +142,7 @@ namespace Schneedetektion.ImagePlayground
                                             where es.Polygon.ID == polygonID
                                             select es.Statistic;
 
-                DrawPoints(statisticsWithoutSnow, selectedX, selectedY, selectedColorX, selectedColorY, Brushes.Magenta);
+                DrawPoints(statisticsWithoutSnow, selectedXAttribute, selectedYAttribute, selectedXColor, selectedYColor, Brushes.Magenta);
             }
         }
         #endregion
@@ -171,25 +171,35 @@ namespace Schneedetektion.ImagePlayground
         }
 
         private void DrawPoints(IEnumerable<Statistic> statistics,
-            string selectedX, string selectedY, string selectedColorX, string selectedColorY, Brush brush)
+            string selectedXAttribute, string selectedYAttribute, string selectedXColor, string selectedYColor, Brush brush)
         {
+            // Für alle Statistik-Objekte
             foreach (var statistic in statistics)
             {
-                double left = ScaleToCanvas(statistic.Get(selectedX, selectedColorX), selectedX, plotCanvas.ActualWidth - 10) + 5;
-                double top = (plotCanvas.ActualHeight - 5) - ScaleToCanvas(statistic.Get(selectedY, selectedColorY), selectedY, plotCanvas.ActualHeight - 5);
+                // X-Position des Punktes aus dem Statistik-Objekt auslesen
+                // Wert bei Bedarf skalieren auf den Werteberich [0,255]
+                double left = ScaleToCanvas(statistic.Get(selectedXAttribute, selectedXColor), selectedXAttribute, plotCanvas.ActualWidth - 10) + 5;
+                // Y-Position des Punktes aus dem Statistik-Objekt auslesen
+                double top = (plotCanvas.ActualHeight - 5) - ScaleToCanvas(statistic.Get(selectedYAttribute, selectedYColor), selectedYAttribute, plotCanvas.ActualHeight - 5);
 
+                // Eine Ellipse erstellen
                 Ellipse e = new Ellipse()
                 {
+                    // Die Ellipse soll so breit sein wie sie hoch ist
                     Width = 8,
                     Height = 8,
+                    // Farbe des Balkens (Blau oder Magenta)
                     Fill = brush,
+                    // 50% Transparent
                     Opacity = 0.5,
+                    // Position auf der Zeichnungsebene
                     Margin = new Thickness(left, top, 0, 0),
                     Tag = statistic.ID
                 };
 
                 e.MouseLeftButtonUp += new MouseButtonEventHandler(HandleEllipseClick);
 
+                // Punkt zur Zeichnungsebene hinzufügen
                 plotCanvas.Children.Add(e);
             }
         }
