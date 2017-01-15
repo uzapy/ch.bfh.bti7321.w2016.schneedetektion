@@ -194,6 +194,7 @@ namespace Schneedetektion.ImagePlayground
                     Opacity = 0.5,
                     // Position auf der Zeichnungsebene
                     Margin = new Thickness(left, top, 0, 0),
+                    // ID des Statistik-Objekts in die Ellipse schreiben
                     Tag = statistic.ID
                 };
 

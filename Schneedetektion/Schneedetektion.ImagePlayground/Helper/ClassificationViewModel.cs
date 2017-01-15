@@ -83,7 +83,7 @@ namespace Schneedetektion.ImagePlayground
                 }
                 else
                 {
-                    return "/Resources/sun.png";
+                    return "/Resources/nosnow.png";
                 }
             }
         }
@@ -134,7 +134,7 @@ namespace Schneedetektion.ImagePlayground
                     }
                     else
                     {
-                        return "/Resources/sun.png";
+                        return "/Resources/nosnow.png";
                     }
                 }
                 else
