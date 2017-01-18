@@ -66,6 +66,7 @@ namespace Schneedetektion.GatherData
             while (date < DateTime.Today)
             {
                 // select images in current monday to sunday period
+                // Bilder einer Kamera aus der aktuell betrachteten Jahreswoche auslesen
                 var imagesOfWeek = from i in dataContext.Images
                                    where i.DateTime > date
                                    where i.DateTime <= date.AddDays(7)
@@ -74,27 +75,31 @@ namespace Schneedetektion.GatherData
                                    select i;
 
                 // iterate through time slots
+                // Durch die 2-Stunden-Zeitfenster iterieren
                 for (int slotStart = 6; slotStart < 20; slotStart += 2)
                 {
                     // select images in current 2 hour time slot
+                    // Bilder aus der Jahreswoche einschränken auf das Zeitfenster
                     var imagesInTimeSlot = from i in imagesOfWeek
                                            where i.DateTime.Hour >= slotStart && i.DateTime.Hour <= (slotStart + 1)
                                            select i;
+
                     Console.WriteLine($"Time Slot: {slotStart} - {slotStart + 2}");
                     
                     // all category-permutations
+                    // Statistische Werte für alle auftretenden Kategorie-Permutationen berechnen
                     CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  true,  false, false);
                     CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  true,  true,  false);
-                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  true,  false, true);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  true,  false, true );
                     CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  false, false, false);
                     CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  false, true,  false);
-                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  false, false, true);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, true,  false, false, true );
                     CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, true,  false, false);
                     CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, true,  true,  false);
-                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, true,  false, true);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, true,  false, true );
                     CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, false, false, false);
                     CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, false, true,  false);
-                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, false, false, true);
+                    CreateCombinedStatisticFromImages(imagesInTimeSlot, polygons, date, slotStart, false, false, false, true );
                 }
 
                 // save changes (one week worth)
@@ -170,7 +175,7 @@ namespace Schneedetektion.GatherData
             // filter catergory
             images = images.Where(i => i.Snow == snow && i.BadLighting == badlighting && i.Foggy == foggy && i.Rainy == rainy);
 
-            // wenn weniger als 2 bilder in kollektion => verwerfen
+            // wenn weniger als 3 bilder in kollektion => verwerfen
             if (images.Count() < 3)
             {
                 return;
