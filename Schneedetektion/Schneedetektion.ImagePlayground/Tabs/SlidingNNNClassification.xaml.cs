@@ -31,8 +31,8 @@ namespace Schneedetektion.ImagePlayground
             InitializeComponent();
 
             combinationMethodList.ItemsSource = combinationMethods;
-            cameraList.ItemsSource            = cameraNames;
-            imageContainer.ItemsSource        = classificationViewModels;
+            cameraList.ItemsSource = cameraNames;
+            imageContainer.ItemsSource = classificationViewModels;
 
             IEnumerable<string> methods = dataContext.Combined_Statistics.Select(cs => cs.CombinationMethod).Distinct();
             foreach (var method in methods)
@@ -65,11 +65,16 @@ namespace Schneedetektion.ImagePlayground
         {
             if (cameraList.SelectedItem != null)
             {
+                // Gewählte Kamera aus der Liste auslesen
                 string selectedCamera = cameraList.SelectedItem as String;
 
+                // Anzahl aller Bilder dieser Kamera am Tag auslesen
                 double total = dataContext.Images.Where(i => i.Day.Value && i.Place == selectedCamera).Count();
+                // Anzahl aller Schneebilder dieser Kamera am Tag auslesen
                 double snow = dataContext.Images.Where(i => i.Day.Value && i.Place == selectedCamera && i.Snow.Value).Count();
 
+                // Verhältnis zwische Schneebildern und schneefreien Bildern
+                // ausrechenen und dem Lsider zuweisen
                 ratio.Value = 100d / total * snow;
             }
         }
@@ -169,46 +174,55 @@ namespace Schneedetektion.ImagePlayground
             {
                 IEnumerable<Point> polygonPoints = PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection);
                 Statistic statistic = openCVHelper.GetStatisticForPatchFromImagePath(classificationViewModel.Image.FileName, polygonPoints);
-                Statistic olderStatistic = openCVHelper.GetStatisticForPatchFromImagePath(olderImage.FileName, polygonPoints);
-                Statistic newerStatistic = openCVHelper.GetStatisticForPatchFromImagePath(newerImage.FileName, polygonPoints);
+                if (olderImage != null && newerImage != null)
+                {
+                    Statistic olderStatistic = openCVHelper.GetStatisticForPatchFromImagePath(olderImage.FileName, polygonPoints);
+                    Statistic newerStatistic = openCVHelper.GetStatisticForPatchFromImagePath(newerImage.FileName, polygonPoints);
 
-                double distanceToOlder = statistic.DistanceTo(olderStatistic);
-                double distanceToNewer = statistic.DistanceTo(newerStatistic);
-                double distanceBetweenSurrounding = olderStatistic.DistanceTo(newerStatistic);
+                    double distanceToOlder = statistic.DistanceTo(olderStatistic);
+                    double distanceToNewer = statistic.DistanceTo(newerStatistic);
+                    double distanceBetweenSurrounding = olderStatistic.DistanceTo(newerStatistic);
 
-                if (distanceToOlder < 50 && distanceToNewer < 50 && distanceBetweenSurrounding < 50)
-                {
-                    imageStatistics.Add(polygon, (new Statistic[] { statistic, olderStatistic, newerStatistic }).ToList());
-                }
-                else if (distanceToOlder < distanceToNewer && distanceToOlder < distanceBetweenSurrounding)
-                {
-                    imageStatistics.Add(polygon, (new Statistic[] { statistic, olderStatistic }).ToList());
-                }
-                else if (distanceToNewer < distanceToOlder && distanceToNewer < distanceBetweenSurrounding)
-                {
-                    imageStatistics.Add(polygon, (new Statistic[] { statistic, newerStatistic }).ToList());
-                }
-                else if (distanceBetweenSurrounding < distanceToNewer && distanceBetweenSurrounding < distanceToOlder)
-                {
-                    imageStatistics.Add(polygon, (new Statistic[] { olderStatistic, newerStatistic }).ToList());
+                    if (distanceToOlder < 50 && distanceToNewer < 50 && distanceBetweenSurrounding < 50)
+                    {
+                        imageStatistics.Add(polygon, (new Statistic[] { statistic, olderStatistic, newerStatistic }).ToList());
+                    }
+                    else if (distanceToOlder < distanceToNewer && distanceToOlder < distanceBetweenSurrounding)
+                    {
+                        imageStatistics.Add(polygon, (new Statistic[] { statistic, olderStatistic }).ToList());
+                    }
+                    else if (distanceToNewer < distanceToOlder && distanceToNewer < distanceBetweenSurrounding)
+                    {
+                        imageStatistics.Add(polygon, (new Statistic[] { statistic, newerStatistic }).ToList());
+                    }
+                    else if (distanceBetweenSurrounding < distanceToNewer && distanceBetweenSurrounding < distanceToOlder)
+                    {
+                        imageStatistics.Add(polygon, (new Statistic[] { olderStatistic, newerStatistic }).ToList());
+                    }
                 }
             }
 
-            int snow         = 0;
-            int noSnow       = 0;
-            int badLighting  = 0;
+            int snow = 0;
+            int noSnow = 0;
+            int badLighting = 0;
             int goodLighting = 0;
-            int foggy        = 0;
-            int rainy        = 0;
-            int goodWeather  = 0;
+            int foggy = 0;
+            int rainy = 0;
+            int goodWeather = 0;
 
+            // Für jedes Patch der Kamera
             foreach (var polygon in polygons)
             {
+                // Alle Kombinierte Statistiken des Pes Polygons laden
                 var combinedStatisticsForPolygon = this.combinedStatistics.Where(cs => cs.Polygon_ID == polygon.ID);
+                // Leere Dictionary erstellen, die einen kombinierten statistischen Wert mit der
+                // Distanz zu den statistischen Werten des aktuell betrachteten Patches verbindet
                 Dictionary<Combined_Statistic, double> distances = new Dictionary<Combined_Statistic, double>();
 
+                // Für alle 
                 foreach (var sourceStatistics in imageStatistics[polygon])
                 {
+                    // Für jede kombinierte Statistik
                     foreach (var combinedStatistic in combinedStatisticsForPolygon)
                     {
                         if (!combinedStatistic.Snow.Value && JsonConvert.DeserializeObject<IEnumerable<int>>(combinedStatistic.Images).Count() < 10)
@@ -216,17 +230,28 @@ namespace Schneedetektion.ImagePlayground
                             continue;
                         }
 
+                        // Distanz zu den statistischen Werten des aktuell betrachteten Patches berechnen
+                        // und Kollektion ablegen
                         distances.Add(combinedStatistic, sourceStatistics.DistanceTo(combinedStatistic.Statistic));
                     }
 
+                    // Kollektion nach Distanz sortieren
+                    // Kollektion auf die erstren k Elemente reduzieren (take)
                     var nearestNeighbours = distances.OrderBy(d => d.Value).Take(numberOfNearestNeighbours);
 
+                    // Anzahl Schnee-Bilder unter nächsten Nachbaren bestimmen
                     snow += nearestNeighbours.Where(nn => nn.Key.Snow.Value).Count();
+                    // Anzahl Nicht-Schnee-Bilder unter nächsten Nachbaren Bestimmen
                     noSnow += nearestNeighbours.Where(nn => !nn.Key.Snow.Value).Count();
+                    // Anzahl Bilder mit schlechten Lichtverhältnissen unter nächsten Nachbaren Bestimmen
                     badLighting += nearestNeighbours.Where(nn => nn.Key.BadLighting.Value).Count();
+                    // Anzahl Bilder mit guten Lichtverhältnissen unter nächsten Nachbaren Bestimmen
                     goodLighting += nearestNeighbours.Where(nn => !nn.Key.BadLighting.Value).Count();
+                    // Anzahl Bilder mit Nebel unter nächsten Nachbaren Bestimmen
                     foggy += nearestNeighbours.Where(nn => nn.Key.Foggy.Value).Count();
+                    // Anzahl Bilder mit Regen unter nächsten Nachbaren Bestimmen
                     rainy += nearestNeighbours.Where(nn => nn.Key.Rainy.Value).Count();
+                    // Anzahl Bilder mit gutem Wetter unter nächsten Nachbaren Bestimmen
                     goodWeather += nearestNeighbours.Where(nn => !nn.Key.Foggy.Value && !nn.Key.Rainy.Value).Count();
 
                     distances.Clear();
@@ -235,9 +260,14 @@ namespace Schneedetektion.ImagePlayground
 
             // resultate speichern
             classificationViewModel.SetResults(
-                snow * 1.5 > noSnow,
+                // Falls es mehr nächste Nachbaren gibt die, die Kategorie 'Schnee' haben als 'kein Schnee',
+                // Wird die Kategorie 'Schnee' gesetzt.
+                snow * 1.25 > noSnow,
+                // Mehr nächste Nachbaren mit Nebel als mit gutem Wetter?
                 foggy > goodWeather,
+                // Mehr nächste Nachbaren mit Regen als mit gutem Wetter?
                 rainy > goodWeather,
+                // Mehr nächste Nachbaren mit schlechten Lichtverhältnissen als mit guten?
                 badLighting > goodLighting);
 
             backgroundWorker.ReportProgress(0, null);

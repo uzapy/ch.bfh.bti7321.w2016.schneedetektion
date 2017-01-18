@@ -193,7 +193,7 @@ namespace Schneedetektion.ImagePlayground
                     openCVHelper.GetStatisticForPatchFromBitmapImage(bitmap, PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection)));
             }
 
-            // kombinierte statistiken nach Bild-Gruppen gruppieren
+            // Kombinierte statistiken nach Quell-Bildern gruppieren
             var groupedStatistics = combinedStatistics.GroupBy(cs => cs.Images);
 
             List<NearestNeighbour> neighbours = new List<NearestNeighbour>();
