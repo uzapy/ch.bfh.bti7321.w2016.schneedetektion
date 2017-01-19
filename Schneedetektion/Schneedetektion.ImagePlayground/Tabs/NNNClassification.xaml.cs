@@ -158,30 +158,45 @@ namespace Schneedetektion.ImagePlayground
         {
             BitmapImage bitmap = classificationViewModel.Bitmap;
 
-            // combine input images
+            // Falls mehr als ein Bild für die Klassifizierung berücksichtigt werden soll
             if (numberOfSources > 1)
             {
+                // Leere Liste für die Dateinamen der Bilder erstellen
                 List<string> sourcesFileNames = new List<string>();
+                // Das aktuell betrachtete Bild zur Liste hinzufügen
                 sourcesFileNames.Add(classificationViewModel.Image.FileName);
+
+                // Bestimmen wie viele ältere und jüngere Bilder geladen werden sollen
                 int numberOfSourcesToFind = (numberOfSources - 1) / 2;
 
+                // Nächst ältere Bilder suchen
                 var olderImages = dataContext.Images
+                    // Alle Bilder deren Aufnahmezeutpunkt kleiner ist als des aktuellen
                     .Where(i => i.Place == classificationViewModel.Image.Place && i.UnixTime < classificationViewModel.Image.UnixTime)
+                    // Absteigend nach Aufnahmezeitpunkt sortieren
                     .OrderByDescending(i => i.UnixTime)
+                    // Vorbestimmte Menge laden
                     .Take(numberOfSourcesToFind);
 
+                // Jüngere Biler suchen
                 var newerImages = dataContext.Images
+                    // Alle Bilder deren Aufnahmezeutpunkt grösser ist als des aktuellen
                     .Where(i => i.Place == classificationViewModel.Image.Place && i.UnixTime > classificationViewModel.Image.UnixTime)
+                    // Aufsteigend nach Aufnahmezeitpunkt sortieren
                     .OrderBy(i => i.UnixTime)
+                    // Vorbestimmte Menge laden
                     .Take(numberOfSourcesToFind);
 
+                // Ältere und jüngere in eine Kollektion aufnehmen
                 var additionalSources = olderImages.Concat(newerImages);
 
+                // Alle gefundenen Bilder in Liste aufnehmen
                 foreach (var image in additionalSources)
                 {
                     sourcesFileNames.Add(image.FileName);
                 }
 
+                // Alle Bilder mit der Median-Methode kombinieren und in Bitmap umwandeln
                 bitmap = OpenCVHelper.BitmapToBitmapImage(openCVHelper.CombineImagesMedian(sourcesFileNames).Bitmap);
             }
 
