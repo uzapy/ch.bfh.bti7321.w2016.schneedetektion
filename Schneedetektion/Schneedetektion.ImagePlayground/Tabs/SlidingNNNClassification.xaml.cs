@@ -168,33 +168,45 @@ namespace Schneedetektion.ImagePlayground
                 .OrderBy(i => i.UnixTime)
                 .FirstOrDefault();
 
-            // Statistiken für Patches des Bildes berechnen
+            // Neue Kollektion für statisitsche Werte initialisieren
             var imageStatistics = new Dictionary<Polygon, List<Statistic>>();
+            // Für jedes Patch des Bildes
             foreach (var polygon in polygons)
             {
                 IEnumerable<Point> polygonPoints = PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection);
+                // Statisitsche Werte für das aktuelle Bild Berechnen
                 Statistic statistic = openCVHelper.GetStatisticForPatchFromImagePath(classificationViewModel.Image.FileName, polygonPoints);
                 if (olderImage != null && newerImage != null)
                 {
+                    // Statisitsche Werte für das ältere Bild berechnen
                     Statistic olderStatistic = openCVHelper.GetStatisticForPatchFromImagePath(olderImage.FileName, polygonPoints);
+                    // Statisitsche Werte für das jüngere Bild berechnen
                     Statistic newerStatistic = openCVHelper.GetStatisticForPatchFromImagePath(newerImage.FileName, polygonPoints);
 
+                    // Distanz zwischen aktuellem und älterem Patch berechnen
                     double distanceToOlder = statistic.DistanceTo(olderStatistic);
+                    // Distanz zwischen aktuellem und jüngerem Patch berechnen
                     double distanceToNewer = statistic.DistanceTo(newerStatistic);
+                    // Distanz zwischen älterem und jüngerem Patch berechnen
                     double distanceBetweenSurrounding = olderStatistic.DistanceTo(newerStatistic);
 
+                    // Falls die DIstanzen zwischen den drei beobachteten Patches klein ist,
+                    // werden alle berücksichtigt für die Klassifikation
                     if (distanceToOlder < 50 && distanceToNewer < 50 && distanceBetweenSurrounding < 50)
                     {
                         imageStatistics.Add(polygon, (new Statistic[] { statistic, olderStatistic, newerStatistic }).ToList());
                     }
+                    // Das jüngere Bild ist der Ausreisser und wird verworfen
                     else if (distanceToOlder < distanceToNewer && distanceToOlder < distanceBetweenSurrounding)
                     {
                         imageStatistics.Add(polygon, (new Statistic[] { statistic, olderStatistic }).ToList());
                     }
+                    // Das ältere Bild ist der Ausreisser und wird verworfen
                     else if (distanceToNewer < distanceToOlder && distanceToNewer < distanceBetweenSurrounding)
                     {
                         imageStatistics.Add(polygon, (new Statistic[] { statistic, newerStatistic }).ToList());
                     }
+                    // Das aktuelle Bild ist der Ausreisser und wird verworfen
                     else if (distanceBetweenSurrounding < distanceToNewer && distanceBetweenSurrounding < distanceToOlder)
                     {
                         imageStatistics.Add(polygon, (new Statistic[] { olderStatistic, newerStatistic }).ToList());
