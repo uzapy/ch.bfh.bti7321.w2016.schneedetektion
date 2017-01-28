@@ -131,6 +131,9 @@
     <Compile Include="Tabs\StatisticsView.xaml.cs">
       <DependentUpon>StatisticsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tabs\TimeLapse.xaml.cs">
+      <DependentUpon>TimeLapse.xaml</DependentUpon>
+    </Compile>
     <Page Include="Tabs\CombinedStatistic2DPlot.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -188,6 +191,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Tabs\StatisticsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\TimeLapse.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

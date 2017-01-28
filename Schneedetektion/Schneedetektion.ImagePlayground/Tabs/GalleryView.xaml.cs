@@ -155,6 +155,14 @@ namespace Schneedetektion.ImagePlayground
             menuItemGoodLighting.IsChecked = selectedImage.Image.GoodLighting.Value;
         }
 
+        private void ShowImageTimeLapse_Click(object sender, RoutedEventArgs e)
+        {
+            if (SendImage != null)
+            {
+                this.SendImage(this, new SendImageEventArgs(selectedImage, EPanel.TimeLapse));
+            }
+        }
+
         private void ShowImageHistogram1_Click(object sender, RoutedEventArgs e)
         {
             if (SendImage != null)

@@ -1,0 +1,9 @@
+﻿<UserControl x:Class="Schneedetektion.ImagePlayground.TimeLapse"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Schneedetektion.ImagePlayground">
+    <DockPanel>
+        <Slider x:Name="slider" DockPanel.Dock="Top" Margin="0,0,0,0" Height="21" ValueChanged="slider_ValueChanged" SmallChange="1" IsSnapToTickEnabled="True" />
+        <Image x:Name="timeLapesImage" DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Top" />
+    </DockPanel>
+</UserControl>

@@ -2,6 +2,7 @@
 {
     public enum EPanel
     {
+        TimeLapse,
         HistogramLeft,
         HistogramRight,
         MaskTool,

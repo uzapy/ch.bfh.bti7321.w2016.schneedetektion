@@ -16,7 +16,11 @@ namespace Schneedetektion.ImagePlayground
         {
             if (recordCategoriesTab.IsSelected)
             {
-                recordCategories.HandleKey(e); 
+                recordCategories.HandleKey(e);
+            }
+            else if (TimeLapseTab.IsSelected)
+            {
+                timeLapse.HandleKey(e);
             }
         }
 
@@ -24,6 +28,10 @@ namespace Schneedetektion.ImagePlayground
         {
             switch (e.Panel)
             {
+                case EPanel.TimeLapse:
+                    timeLapse.ShowImage(e.SelectedImage);
+                    TimeLapseTab.IsSelected = true;
+                    break;
                 case EPanel.HistogramLeft:
                 case EPanel.HistogramRight:
                     histogramViewer.ShowImage(e.SelectedImage, e.Panel);

@@ -10,6 +10,9 @@
         <TabItem Header="Gallery">
             <local:GalleryView x:Name="galleryView" />
         </TabItem>
+        <TabItem Header="Time Lapse" x:Name="TimeLapseTab">
+            <local:TimeLapse x:Name="timeLapse" />
+        </TabItem>
         <TabItem Header="Categories" x:Name="recordCategoriesTab">
             <local:RecordCategories x:Name="recordCategories" />
         </TabItem>
