@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -153,6 +154,11 @@ namespace Schneedetektion.ImagePlayground
             menuItemRainy.IsChecked        = selectedImage.Image.Rainy.Value;
             menuItemBadLighting.IsChecked  = selectedImage.Image.BadLighting.Value;
             menuItemGoodLighting.IsChecked = selectedImage.Image.GoodLighting.Value;
+        }
+
+        private void ShowFileInFolder_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("explorer.exe", $"/select, {selectedImage.Image.FileName}");
         }
 
         private void ShowImageTimeLapse_Click(object sender, RoutedEventArgs e)

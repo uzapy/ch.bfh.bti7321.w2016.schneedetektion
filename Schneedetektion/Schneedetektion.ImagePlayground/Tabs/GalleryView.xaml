@@ -46,6 +46,7 @@
             </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="ShowHistogram" StaysOpen="True">
+                    <MenuItem Header="Show File in Folder" Click="ShowFileInFolder_Click" />
                     <MenuItem Header="Select day for Timelapse" Click="ShowImageTimeLapse_Click" />
                     <MenuItem Header="Show Histogram 1" Click="ShowImageHistogram1_Click" />
                     <MenuItem Header="Show Histogram 2" Click="ShowImageHistogram2_Click" />

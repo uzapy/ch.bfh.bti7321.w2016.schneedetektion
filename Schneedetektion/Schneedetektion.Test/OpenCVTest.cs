@@ -90,7 +90,7 @@ namespace Schneedetektion.Test
         }
 
         [TestMethod]
-        public void CombinePictures()
+        public void CombinePicturesMean()
         {
             int[] ids = new int[] { 400049, 400050, 400051, 400052, 400053, 400054, 400194, 400195, 400196, 400197, 400338, 400339, 400340, 400341, 400342, 400481, 400482, 400483, 400484, 400485, 400486 };
             IEnumerable<string> imagePaths = dataContext.Images
@@ -98,6 +98,17 @@ namespace Schneedetektion.Test
                 .Select(i => Path.Combine(@"C:\Users\uzapy\Desktop\astra2016", i.Place, i.Name + ".jpg"));
 
             openCVHelper.CombineImagesMean(imagePaths);
+        }
+
+        [TestMethod]
+        public void CombinePicturesMedian()
+        {
+            List<string> imagePaths = new List<string>();
+            imagePaths.Add(@"C:\Users\uzapy\Desktop\astra2016\mvk131\mvk131_20150102_120002.jpg");
+            imagePaths.Add(@"C:\Users\uzapy\Desktop\astra2016\mvk131\mvk131_20150103_120001.jpg");
+            imagePaths.Add(@"C:\Users\uzapy\Desktop\astra2016\mvk131\mvk131_20150104_120001.jpg");
+
+            openCVHelper.CombineImagesMedian(imagePaths);
         }
 
         [TestMethod]

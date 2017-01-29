@@ -21,11 +21,13 @@ namespace Schneedetektion.ImagePlayground
         private ObservableCollection<string> cameraNames        = new ObservableCollection<string>();
         private ObservableCollection<string> polygonNames       = new ObservableCollection<string>();
         private ObservableCollection<string> timeSlotNames      = new ObservableCollection<string>();
+        private ObservableCollection<DateTime> weekNames        = new ObservableCollection<DateTime>();
         private List<object> initialElements                    = new List<object>();
         private string selectedCombinationMethod                = String.Empty;
         private string selectedCamera                           = String.Empty;
         private string selectedPolygon                          = String.Empty;
         private string selectedTimeSlot                         = String.Empty;
+        private DateTime selectedWeek                           = DateTime.MinValue;
         private string selectedX                                = String.Empty;
         private string selectedY                                = String.Empty;
         private string selectedColorX                           = String.Empty;
@@ -41,6 +43,7 @@ namespace Schneedetektion.ImagePlayground
             cameraList.ItemsSource            = cameraNames;
             polygonList.ItemsSource           = polygonNames;
             timeSlotList.ItemsSource          = timeSlotNames;
+            weekList.ItemsSource              = weekNames;
 
             IEnumerable<string> methods = dataContext.Combined_Statistics.Select(cs => cs.CombinationMethod).Distinct();
             foreach (var method in methods)
@@ -97,6 +100,21 @@ namespace Schneedetektion.ImagePlayground
                 {
                     polygonNames.Add(polygon);
                 }
+
+                weekNames.Clear();
+                weekNames.Add(DateTime.MinValue);
+                IEnumerable<DateTime?> weeks = dataContext.Combined_Statistics
+                    .Where(cs => cs.Polygon.CameraName == selectedCamera)
+                    .Select(cs => cs.StartOfWeek)
+                    .Distinct()
+                    .OrderBy(sow => sow);
+                foreach (var week in weeks)
+                {
+                    if (week.HasValue)
+                    {
+                        weekNames.Add(week.Value);
+                    }
+                }
             }
         }
 
@@ -113,6 +131,14 @@ namespace Schneedetektion.ImagePlayground
             if (timeSlotList.SelectedItem != null)
             {
                 selectedTimeSlot = timeSlotList.SelectedItem as String;
+            }
+        }
+
+        private void weekList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (weekList.SelectedItem != null)
+            {
+                selectedWeek = (DateTime)weekList.SelectedItem;
             }
         }
 
@@ -155,6 +181,7 @@ namespace Schneedetektion.ImagePlayground
             int polygonID = 0;
             int timeSlot = 0;
             bool hasTimeSlot = false;
+            bool hasWeek = false;
 
             if (!String.IsNullOrEmpty(selectedCombinationMethod) &&
                 !String.IsNullOrEmpty(selectedCamera) &&
@@ -171,11 +198,14 @@ namespace Schneedetektion.ImagePlayground
                     hasTimeSlot = true;
                 }
 
+                hasWeek = selectedWeek > DateTime.MinValue;
+
                 var combinedStatisticsWithSnow = from es in dataContext.Combined_Statistics
                                                  where es.Polygon.CameraName == selectedCamera
                                                  where es.Snow == true
                                                  where es.Polygon.ID == polygonID
                                                  where es.StartTime == timeSlot || !hasTimeSlot
+                                                 where es.StartOfWeek == selectedWeek || !hasWeek
                                                  where es.CombinationMethod == selectedCombinationMethod
                                                  select es;
 
@@ -186,6 +216,7 @@ namespace Schneedetektion.ImagePlayground
                                                     where es.Snow == false
                                                     where es.Polygon.ID == polygonID
                                                     where es.StartTime == timeSlot || !hasTimeSlot
+                                                    where es.StartOfWeek == selectedWeek || !hasWeek
                                                     where es.CombinationMethod == selectedCombinationMethod
                                                     select es;
 

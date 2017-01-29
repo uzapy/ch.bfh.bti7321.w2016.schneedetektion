@@ -8,13 +8,16 @@
                 <ListBox x:Name="combinationMethodList" Height="50" SelectionMode="Single" SelectionChanged="combinationMethodList_SelectionChanged" />
             </GroupBox>
             <GroupBox Header="By Camera">
-                <ListBox x:Name="cameraList" Height="250" SelectionMode="Single" SelectionChanged="cameraList_SelectionChanged" />
+                <ListBox x:Name="cameraList" Height="170" SelectionMode="Single" SelectionChanged="cameraList_SelectionChanged" />
             </GroupBox>
             <GroupBox Header="By Polygon">
                 <ListBox x:Name="polygonList" Height="110" SelectionMode="Single" SelectionChanged="polygonList_SelectionChanged" />
             </GroupBox>
             <GroupBox Header="By TimeSlot">
                 <ListBox x:Name="timeSlotList" Height="170" SelectionMode="Single" SelectionChanged="timeSlotList_SelectionChanged" />
+            </GroupBox>
+            <GroupBox Header="By Week">
+                <ListBox x:Name="weekList" Height="170" SelectionMode="Single" SelectionChanged="weekList_SelectionChanged" />
             </GroupBox>
             <GroupBox Header="By Property">
                 <StackPanel>
