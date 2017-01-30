@@ -237,7 +237,7 @@ namespace Schneedetektion.ImagePlayground
                     // Für jede kombinierte Statistik
                     foreach (var combinedStatistic in combinedStatisticsForPolygon)
                     {
-                        if (!combinedStatistic.Snow.Value && JsonConvert.DeserializeObject<IEnumerable<int>>(combinedStatistic.Images).Count() < 10)
+                        if (!combinedStatistic.Snow.Value && JsonConvert.DeserializeObject<IEnumerable<int>>(combinedStatistic.Images).Count() < 7)
                         {
                             continue;
                         }
