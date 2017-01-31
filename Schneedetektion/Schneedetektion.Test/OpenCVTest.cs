@@ -88,6 +88,29 @@ namespace Schneedetektion.Test
                 @"C:\Users\uzapy\Desktop\astra2016\bitmasks\1.png",
                 PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection));
         }
+        
+        [TestMethod]
+        public void GetPatchBitmapImageTest()
+        {
+            List<string> images = new List<string>()
+            {
+                @"C:\Users\uzapy\Desktop\astra2016\mvk101\mvk101_20141203_130002.jpg",
+                @"C:\Users\uzapy\Desktop\astra2016\mvk101\mvk101_20141203_131001.jpg",
+                @"C:\Users\uzapy\Desktop\astra2016\mvk101\mvk101_20141203_132001.jpg",
+            };
+
+            var polygons = dataContext.Polygons.Where(p => p.CameraName == "mvk101");
+
+            foreach (var polygon in polygons)
+            {
+                IEnumerable<Point> points = PolygonHelper.DeserializePointCollection(polygon.PolygonPointCollection);
+
+                foreach (var image in images)
+                {
+                    openCVHelper.GetPatchBitmapImage(image, points);
+                }
+            }
+        }
 
         [TestMethod]
         public void CombinePicturesMean()
