@@ -155,6 +155,8 @@ namespace Schneedetektion.OpenCV
             // Crop Bitmaps
             image.ROI = GetRegionOfInterest(scaledPoints);
 
+            // image.Save(@"C:\Users\uzapy\Desktop\test\" + DateTime.Now.Millisecond + ".png");
+            
             // Return
             return OpenCVHelper.BitmapToBitmapImage(image.Bitmap);
         }
