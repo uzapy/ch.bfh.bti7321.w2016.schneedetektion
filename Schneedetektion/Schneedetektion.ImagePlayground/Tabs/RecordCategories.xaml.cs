@@ -121,7 +121,7 @@ namespace Schneedetektion.ImagePlayground
 
         private void SaveCategories()
         {
-            if (images.Count > currentImageViewModel)
+            if (images.Count > currentImageViewModel && saveCategories.IsChecked.Value)
             {
                 images[currentImageViewModel].Image.SaveCategories(
                     snowButton.IsChecked,
