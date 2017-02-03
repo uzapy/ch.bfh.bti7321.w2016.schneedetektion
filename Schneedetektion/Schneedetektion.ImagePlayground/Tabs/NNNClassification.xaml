@@ -62,13 +62,13 @@
                         </Grid.RowDefinitions>
                         <Image Grid.Row="0" Source="{Binding Bitmap}" Width="{Binding ElementName=imageSizeSlider, Path=Value}" />
                         <StackPanel Grid.Row="1" Orientation="Horizontal" Width="{Binding ElementName=imageSizeSlider, Path=Value}" Height="25">
-                            <TextBlock Text="Truth" Margin="5,3,5,0" />
+                            <TextBlock Text="Truth" Width="30" Margin="5,3,5,0" />
                             <Image Source="{Binding TruthSnow}" Margin="0,0,5,0" />
                             <Image Source="{Binding TruthWeather}" Margin="0,0,5,0" />
                             <Image Source="{Binding TruthBadLighting}" />
                         </StackPanel>
                         <StackPanel Grid.Row="2" Orientation="Horizontal" Width="{Binding ElementName=imageSizeSlider, Path=Value}" Height="25">
-                            <TextBlock Text="Class" Margin="5,3,6,0" />
+                            <TextBlock Text="Class" Width="30" Margin="5,3,5,0" />
                             <Image Source="{Binding ClassifiedSnow}" Margin="0,0,5,0" />
                             <Image Source="{Binding ClassifiedWeather}" Margin="0,0,5,0" />
                             <Image Source="{Binding ClassifiedBadLighting}" />

@@ -227,6 +227,15 @@ namespace Schneedetektion.ImagePlayground
             {
                 // Alle Kombinierte Statistiken des Pes Polygons laden
                 var combinedStatisticsForPolygon = this.combinedStatistics.Where(cs => cs.Polygon_ID == polygon.ID);
+
+                // Nur Bilder aus dem aktuellen Timeslot wählen
+                //from cs in combinedStatistics
+                //where cs.Polygon_ID == polygon.ID
+                //where cs.StartTime <= classificationViewModel.Image.DateTime.Hour
+                //where cs.EndTime > classificationViewModel.Image.DateTime.Hour
+                //select cs;
+
+
                 // Leere Dictionary erstellen, die einen kombinierten statistischen Wert mit der
                 // Distanz zu den statistischen Werten des aktuell betrachteten Patches verbindet
                 Dictionary<Combined_Statistic, double> distances = new Dictionary<Combined_Statistic, double>();
@@ -237,7 +246,7 @@ namespace Schneedetektion.ImagePlayground
                     // Für jede kombinierte Statistik
                     foreach (var combinedStatistic in combinedStatisticsForPolygon)
                     {
-                        if (!combinedStatistic.Snow.Value && JsonConvert.DeserializeObject<IEnumerable<int>>(combinedStatistic.Images).Count() < 7)
+                        if (!combinedStatistic.Snow.Value && JsonConvert.DeserializeObject<IEnumerable<int>>(combinedStatistic.Images).Count() < 5)
                         {
                             continue;
                         }
